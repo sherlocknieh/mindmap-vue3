@@ -134,7 +134,8 @@ import MouseAction from './MouseAction.vue'
 import { langList } from '@/config'
 import i18n from '@/i18n'
 import { storeLang, getLang } from '@/api'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import pkg from 'simple-mind-map/package.json'
 import Demonstrate from './Demonstrate.vue'
 
@@ -160,7 +161,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isReadonly: state => state.isReadonly,
       isDark: state => state.localConfig.isDark
     })
@@ -169,7 +170,7 @@ export default {
     this.lang = getLang()
   },
   methods: {
-    ...mapMutations([
+    ...mapActions(useAppStore, [
       'setLocalConfig',
       'setIsReadonly',
       'setIsSourceCodeEdit',

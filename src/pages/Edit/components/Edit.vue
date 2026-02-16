@@ -105,7 +105,8 @@ import { getData, getConfig, storeData } from '@/api'
 import Navigator from './Navigator.vue'
 import NodeImgPreview from './NodeImgPreview.vue'
 import SidebarTrigger from './SidebarTrigger.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import icon from '@/config/icon'
 import Vue from 'vue'
 import Search from './Search.vue'
@@ -199,7 +200,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isZenMode: state => state.localConfig.isZenMode,
       openNodeRichText: state => state.localConfig.openNodeRichText,
       isShowScrollbar: state => state.localConfig.isShowScrollbar,

@@ -140,7 +140,8 @@
 <script>
 import { fontFamilyList, fontSizeList, alignList } from '@/config'
 import Color from './Color.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 export default {
   components: {
@@ -165,7 +166,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark
     }),
 

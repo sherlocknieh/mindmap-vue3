@@ -24,7 +24,8 @@
 
 <script>
 import { colorList } from '@/config'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 // 颜色选择器
 export default {
@@ -41,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark
     })
   },

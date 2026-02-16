@@ -150,8 +150,9 @@ import NodeNote from './NodeNote.vue'
 import NodeTag from './NodeTag.vue'
 import Export from './Export.vue'
 import Import from './Import.vue'
-import { mapState } from 'vuex'
-import { Notification } from 'element-ui'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
+import { ElNotification } from 'element-plus'
 import exampleData from 'simple-mind-map/example/exampleData'
 import { getData } from '../../../api'
 import ToolbarNodeBtnList from './ToolbarNodeBtnList.vue'
@@ -210,7 +211,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       isHandleLocalFile: state => state.isHandleLocalFile,
       openNodeRichText: state => state.localConfig.openNodeRichText,
@@ -235,7 +236,7 @@ export default {
   watch: {
     isHandleLocalFile(val) {
       if (!val) {
-        Notification.closeAll()
+        ElNotification.closeAll()
       }
     },
     btnLit: {
@@ -427,7 +428,7 @@ export default {
       fileReader.onload = async () => {
         this.$store.commit('setIsHandleLocalFile', true)
         this.setData(fileReader.result)
-        Notification.closeAll()
+        ElNotification.closeAll()
         Notification({
           title: this.$t('toolbar.tip'),
           message: `${this.$t('toolbar.editingLocalFileTipFront')}${

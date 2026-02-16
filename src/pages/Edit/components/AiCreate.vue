@@ -110,7 +110,8 @@ import {
   checkNodeOuter,
   getStrWithBrFromHtml
 } from 'simple-mind-map/src/utils'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import AiConfigDialog from './AiConfigDialog.vue'
 
 export default {

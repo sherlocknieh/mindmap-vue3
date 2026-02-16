@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 export default {
   model: {
@@ -128,7 +129,7 @@ export default {
     this.initFormData()
   },
   methods: {
-    ...mapMutations(['setLocalConfig']),
+    ...mapActions(useAppStore, ['setLocalConfig']),
 
     close() {
       this.$emit('change', false)

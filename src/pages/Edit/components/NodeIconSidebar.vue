@@ -56,7 +56,8 @@
 
 <script>
 import Sidebar from './Sidebar.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { nodeIconList } from 'simple-mind-map/src/svg/icons'
 import { mergerIconList } from 'simple-mind-map/src/utils/index'
 import icon from '@/config/icon'
@@ -77,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar,
       isDark: state => state.localConfig.isDark
     })

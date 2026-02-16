@@ -526,7 +526,8 @@ import {
   linearGradientDirList,
   alignList
 } from '@/config'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 // 节点样式设置
 export default {
@@ -578,7 +579,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     }),

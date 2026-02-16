@@ -375,7 +375,8 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import Color from './Color.vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import {
   lineWidthList,
   borderDasharrayList,
@@ -412,7 +413,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar,
       isDark: state => state.localConfig.isDark,
       borderDasharrayList() {
@@ -444,7 +445,7 @@ export default {
     this.mindMap.off('outer_frame_deactivate', this.hide)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     onOuterFrameActive(el, parentNode, range) {
       // 取范围内第一个节点的外框样式

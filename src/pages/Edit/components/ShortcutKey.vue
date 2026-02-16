@@ -22,7 +22,8 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import { shortcutKeyList } from '@/config'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 // 快捷键
 export default {
@@ -33,7 +34,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     }),

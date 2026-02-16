@@ -17,7 +17,8 @@
 
 <script>
 import { store } from '@/config'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 // 侧边栏容器
 export default {
@@ -34,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark
     })
   },
@@ -52,7 +53,7 @@ export default {
     this.$bus.$off('closeSideBar', this.handleCloseSidebar)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     handleCloseSidebar() {
       this.close()

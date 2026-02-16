@@ -59,7 +59,8 @@
 
 <script>
 import Sidebar from './Sidebar.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { createUid } from 'simple-mind-map/src/utils'
 import MarkdownIt from 'markdown-it'
 
@@ -77,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     })

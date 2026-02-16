@@ -73,7 +73,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { isUndef, getTextFromHtml } from 'simple-mind-map/src/utils/index'
 
 // 搜索替换
@@ -98,7 +99,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isReadonly: state => state.isReadonly,
       isDark: state => state.localConfig.isDark
     })

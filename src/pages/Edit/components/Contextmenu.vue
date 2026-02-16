@@ -182,7 +182,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { getTextFromHtml, imgToDataUrl } from 'simple-mind-map/src/utils'
 import { transformToMarkdown } from 'simple-mind-map/src/parse/toMarkdown'
 import { transformToTxt } from 'simple-mind-map/src/parse/toTxt'
@@ -214,7 +215,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isZenMode: state => state.localConfig.isZenMode,
       isDark: state => state.localConfig.isDark,
       enableAi: state => state.localConfig.enableAi
@@ -324,7 +325,7 @@ export default {
     this.$bus.$off('node_mousedown', this.onNodeMousedown)
   },
   methods: {
-    ...mapMutations(['setLocalConfig']),
+    ...mapActions(useAppStore, ['setLocalConfig']),
 
     // 计算右键菜单元素的显示位置
     getShowPosition(x, y) {

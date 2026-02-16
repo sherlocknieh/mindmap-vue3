@@ -217,7 +217,8 @@ import {
   fontSizeList,
   borderDasharrayList
 } from '@/config'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 const defaultStyle = {
   associativeLineColor: '',
@@ -252,7 +253,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar,
       isDark: state => state.localConfig.isDark
     }),
@@ -282,7 +283,7 @@ export default {
     )
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     onAssociativeLineClick(a, b, node, toNode) {
       this.activeLineNode = node
