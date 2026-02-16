@@ -101,14 +101,13 @@ import ShortcutKey from './ShortcutKey.vue'
 import Contextmenu from './Contextmenu.vue'
 import RichTextToolbar from './RichTextToolbar.vue'
 import NodeNoteContentShow from './NodeNoteContentShow.vue'
-import { getData, getConfig, storeData } from '@/api'
+import { getData, getConfig, storeData, setGetCurrentDataFn } from '@/api'
 import Navigator from './Navigator.vue'
 import NodeImgPreview from './NodeImgPreview.vue'
 import SidebarTrigger from './SidebarTrigger.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import icon from '@/config/icon'
-import Vue from 'vue'
 import Search from './Search.vue'
 import NodeIconSidebar from './NodeIconSidebar.vue'
 import NodeIconToolbar from './NodeIconToolbar.vue'
@@ -495,10 +494,10 @@ export default {
       }
       // api/index.js文件使用
       // 当正在编辑本地文件时通过该方法获取最新数据
-      Vue.prototype.getCurrentData = () => {
+      setGetCurrentDataFn(() => {
         const fullData = this.mindMap.getData(true)
         return { ...fullData }
-      }
+      })
       // 协同测试
       this.cooperateTest()
     },

@@ -7,6 +7,12 @@ const SIMPLE_MIND_MAP_LANG = 'SIMPLE_MIND_MAP_LANG'
 const SIMPLE_MIND_MAP_LOCAL_CONFIG = 'SIMPLE_MIND_MAP_LOCAL_CONFIG'
 
 let mindMapData = null
+let getCurrentDataFn = null
+
+// Set the function to get current data (called from Edit component)
+export const setGetCurrentDataFn = (fn) => {
+  getCurrentDataFn = fn
+}
 
 // 获取缓存的思维导图数据
 export const getData = () => {
@@ -16,7 +22,9 @@ export const getData = () => {
     return mindMapData
   }
   // 操作本地文件模式
-  // Note: In Vue 3, we'll handle this through composables or direct store access
+  if (getCurrentDataFn) {
+    return getCurrentDataFn()
+  }
   let store = localStorage.getItem(SIMPLE_MIND_MAP_DATA)
   if (store === null) {
     return simpleDeepClone(exampleData)
