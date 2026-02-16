@@ -14,7 +14,8 @@
 <script>
 import { nodeIconList as _nodeIconList } from 'simple-mind-map/src/svg/icons'
 import icon from '@/config/icon'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 const allIconList = [..._nodeIconList, ...icon]
 
@@ -63,7 +64,7 @@ export default {
         this.$bus.$off('close_node_icon_toolbar', this.close)
     },
     methods: {
-        ...mapMutations(['setActiveSidebar']),
+        ...mapActions(useAppStore, ['setActiveSidebar']),
 
         show(node, icon) {
             this.node = node

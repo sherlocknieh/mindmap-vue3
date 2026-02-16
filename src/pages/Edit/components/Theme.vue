@@ -30,7 +30,8 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import { storeData } from '@/api'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import themeImgMap from 'simple-mind-map-plugin-themes/themeImgMap'
 import themeList from 'simple-mind-map-plugin-themes/themeList'
 
@@ -65,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar,
       extendThemeGroupList: state => state.extendThemeGroupList
@@ -100,7 +101,7 @@ export default {
     this.mindMap.off('view_theme_change', this.handleViewThemeChange)
   },
   methods: {
-    ...mapMutations(['setLocalConfig']),
+    ...mapActions(useAppStore, ['setLocalConfig']),
 
     handleViewThemeChange() {
       this.theme = this.mindMap.getTheme()

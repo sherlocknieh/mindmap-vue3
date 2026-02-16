@@ -59,7 +59,8 @@
 <script>
 import xmind from 'simple-mind-map/src/parse/xmind.js'
 import markdown from 'simple-mind-map/src/parse/markdown.js'
-import { mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import Vue from 'vue'
 
 // 导入
@@ -98,7 +99,7 @@ export default {
     this.$bus.$off('importFile', this.handleImportFile)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     handleShowImport() {
       this.dialogVisible = true

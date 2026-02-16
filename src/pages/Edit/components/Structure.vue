@@ -26,7 +26,8 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import { storeData } from '@/api'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { layoutImgMap } from '@/config/constant.js'
 import { layoutGroupList } from '@/config'
 
@@ -47,7 +48,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     }),

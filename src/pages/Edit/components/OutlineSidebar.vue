@@ -37,7 +37,8 @@
 
 <script>
 import Sidebar from './Sidebar.vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import Outline from './Outline.vue'
 import { printOutline } from '@/utils'
 
@@ -53,7 +54,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     })
@@ -68,7 +69,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setIsOutlineEdit', 'setActiveSidebar']),
+    ...mapActions(useAppStore, ['setIsOutlineEdit', 'setActiveSidebar']),
 
     onChangeToOutlineEdit() {
       this.setActiveSidebar(null)

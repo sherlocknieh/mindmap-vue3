@@ -20,7 +20,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 // 鼠标操作设置
 export default {
@@ -36,13 +37,13 @@ export default {
     return {}
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       useLeftKeySelectionRightKeyDrag: state =>
         state.localConfig.useLeftKeySelectionRightKeyDrag
     })
   },
   methods: {
-    ...mapMutations(['setLocalConfig']),
+    ...mapActions(useAppStore, ['setLocalConfig']),
 
     toggleAction() {
       let val = !this.useLeftKeySelectionRightKeyDrag

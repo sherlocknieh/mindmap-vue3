@@ -194,7 +194,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 
 export default {
   props: {
@@ -221,7 +222,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark
     }),
     hasRoot() {
@@ -260,7 +261,7 @@ export default {
     this.$bus.$off('painter_end', this.onPainterEnd)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     // 监听模式切换
     onModeChange(mode) {

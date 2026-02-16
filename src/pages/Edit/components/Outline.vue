@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import {
   nodeRichTextToTextWithWrap,
   textToNodeRichTextWithWrap,
@@ -71,7 +72,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isReadonly: state => state.isReadonly,
       isDark: state => state.localConfig.isDark
     })
@@ -92,7 +93,7 @@ export default {
     this.$bus.$off('hide_text_edit', this.handleHideTextEdit)
   },
   methods: {
-    ...mapMutations(['setIsDragOutlineTreeNode']),
+    ...mapActions(useAppStore, ['setIsDragOutlineTreeNode']),
 
     handleHideTextEdit() {
       if (this.notHandleDataChange) {

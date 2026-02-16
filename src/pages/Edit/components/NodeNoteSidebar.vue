@@ -6,7 +6,8 @@
 
 <script>
 import Sidebar from './Sidebar.vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer'
 import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 
@@ -26,7 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar
     })
@@ -52,7 +53,7 @@ export default {
     this.mindMap.off('node_note_click', this.onNodeNoteClick)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     onNodeActive(...args) {
       if (this.activeSidebar !== 'noteSidebar') {

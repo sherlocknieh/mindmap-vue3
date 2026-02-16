@@ -374,7 +374,8 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import { storeConfig } from '@/api'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import Color from './Color.vue'
 
 export default {
@@ -429,7 +430,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar,
       localConfig: state => state.localConfig,
       isDark: state => state.localConfig.isDark
@@ -454,7 +455,7 @@ export default {
     this.$bus.$off('toggleOpenNodeRichText', this.onToggleOpenNodeRichText)
   },
   methods: {
-    ...mapMutations(['setLocalConfig']),
+    ...mapActions(useAppStore, ['setLocalConfig']),
 
     // 初始化其他配置
     initConfig() {

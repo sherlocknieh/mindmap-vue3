@@ -793,7 +793,8 @@ import {
 } from '@/config'
 import ImgUpload from '@/components/ImgUpload/index.vue'
 import { storeData, storeConfig } from '@/api'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import {
   supportLineStyleLayoutsMap,
   supportLineRadiusLayouts,
@@ -874,7 +875,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar,
       localConfig: state => state.localConfig,
       isDark: state => state.localConfig.isDark,

@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { sidebarTriggerList } from '@/config'
 
 // 侧边栏触发器
@@ -36,7 +37,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isDark: state => state.localConfig.isDark,
       activeSidebar: state => state.activeSidebar,
       isReadonly: state => state.isReadonly,
@@ -73,7 +74,7 @@ export default {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     trigger(item) {
       this.setActiveSidebar(item.value)

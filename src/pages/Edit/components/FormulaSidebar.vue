@@ -32,7 +32,8 @@
 
 <script>
 import Sidebar from './Sidebar.vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { formulaList } from '@/config/constant'
 
 export default {
@@ -51,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       activeSidebar: state => state.activeSidebar, 
       isDark: state => state.localConfig.isDark, 
       localConfig: state => state.localConfig
@@ -76,7 +77,7 @@ export default {
     this.init()
   },
   methods: {
-    ...mapMutations(['setActiveSidebar']),
+    ...mapActions(useAppStore, ['setActiveSidebar']),
 
     init() {
       if (!window.katex) return

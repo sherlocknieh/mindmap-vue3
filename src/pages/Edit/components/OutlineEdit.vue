@@ -64,7 +64,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import {
   nodeRichTextToTextWithWrap,
   textToNodeRichTextWithWrap,
@@ -93,7 +94,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       isReadonly: state => state.isReadonly,
       isDark: state => state.localConfig.isDark,
       isOutlineEdit: state => state.isOutlineEdit
@@ -116,7 +117,7 @@ export default {
     window.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
-    ...mapMutations(['setIsOutlineEdit']),
+    ...mapActions(useAppStore, ['setIsOutlineEdit']),
 
     // 刷新树数据
     refresh() {

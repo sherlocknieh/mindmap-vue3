@@ -145,7 +145,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useAppStore } from '@/store'
 import { downTypeList } from '@/config'
 import { isMobile } from 'simple-mind-map/src/utils/index'
 import MarkdownIt from 'markdown-it'
@@ -171,7 +172,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState(useAppStore, {
       openNodeRichText: state => state.localConfig.openNodeRichText,
       isDark: state => state.localConfig.isDark,
     }),
@@ -212,7 +213,7 @@ export default {
     this.$bus.$off('showExport', this.handleShowExport)
   },
   methods: {
-    ...mapMutations(['setExtraTextOnExport']),
+    ...mapActions(useAppStore, ['setExtraTextOnExport']),
 
     handleShowExport() {
       this.dialogVisible = true
