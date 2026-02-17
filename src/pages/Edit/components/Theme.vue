@@ -27,184 +27,174 @@
   </Sidebar>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import Sidebar from './Sidebar.vue'
 import { storeData } from '@/api'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import themeImgMap from 'simple-mind-map-plugin-themes/themeImgMap'
 import themeList from 'simple-mind-map-plugin-themes/themeList'
+import { ElMessageBox } from 'element-plus'
 
-// 主题
-export default {
-  components: {
-    Sidebar
+const props = defineProps({
+  data: {
+    type: [Object, null],
+    default: null
   },
-  props: {
-    data: {
-      type: [Object, null],
-      default: null
+  mindMap: {
+    type: Object
+  }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const sidebar = ref(null)
+const themeListData = ref([
+  {
+    name: '默认主题',
+    value: 'default',
+    dark: false
+  },
+  ...themeList
+].reverse())
+const theme = ref('')
+const activeName = ref('')
+const defaultGroupList = ref([])
+
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+const extendThemeGroupList = computed(() => appStore.extendThemeGroupList)
+
+const groupList = computed(() => {
+  return [...defaultGroupList.value, ...extendThemeGroupList.value]
+})
+
+const currentList = computed(() => {
+  return groupList.value.find(item => {
+    return item.name === activeName.value
+  }).list
+})
+
+watch(activeSidebar, (val) => {
+  if (val === 'theme') {
+    theme.value = props.mindMap.getTheme()
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const handleViewThemeChange = () => {
+  theme.value = props.mindMap.getTheme()
+  handleDark()
+}
+
+const initGroup = () => {
+  const baiduThemes = [
+    'default',
+    'skyGreen',
+    'classic2',
+    'classic3',
+    'classicGreen',
+    'classicBlue',
+    'blueSky',
+    'brainImpairedPink',
+    'earthYellow',
+    'freshGreen',
+    'freshRed',
+    'romanticPurple',
+    'pinkGrape',
+    'mint'
+  ]
+  const baiduList = []
+  const classicsList = []
+  themeListData.value.forEach(item => {
+    if (baiduThemes.includes(item.value)) {
+      baiduList.push(item)
+    } else if (!item.dark) {
+      classicsList.push(item)
+    }
+  })
+  defaultGroupList.value = [
+    {
+      name: proxy.$t('theme.classics'),
+      list: classicsList
     },
-    mindMap: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      themeList: [
-        {
-          name: '默认主题',
-          value: 'default',
-          dark: false
-        },
-        ...themeList
-      ].reverse(),
-      themeImgMap,
-      theme: '',
-      activeName: '',
-      defaultGroupList: []
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar,
-      extendThemeGroupList: state => state.extendThemeGroupList
-    }),
-
-    groupList() {
-      return [...this.defaultGroupList, ...this.extendThemeGroupList]
+    {
+      name: proxy.$t('theme.dark'),
+      list: themeListData.value.filter(item => {
+        return item.dark
+      })
     },
-
-    currentList() {
-      return this.groupList.find(item => {
-        return item.name === this.activeName
-      }).list
+    {
+      name: proxy.$t('theme.simple'),
+      list: baiduList
     }
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'theme') {
-        this.theme = this.mindMap.getTheme()
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
+  ]
+  activeName.value = defaultGroupList.value[0].name
+}
+
+const useTheme = (themeItem) => {
+  if (themeItem.value === theme.value) return
+  theme.value = themeItem.value
+  handleDark()
+  const customThemeConfig = props.mindMap.getCustomThemeConfig()
+  const hasCustomThemeConfig = Object.keys(customThemeConfig).length > 0
+  if (hasCustomThemeConfig) {
+    ElMessageBox.confirm(proxy.$t('theme.coverTip'), proxy.$t('theme.tip'), {
+      confirmButtonText: proxy.$t('theme.cover'),
+      cancelButtonText: proxy.$t('theme.reserve'),
+      type: 'warning',
+      distinguishCancelAndClose: true,
+      callback: action => {
+        if (action === 'confirm') {
+          props.mindMap.setThemeConfig({}, true)
+          props.data.theme.config = {}
+          changeTheme(themeItem, {})
+        } else if (action === 'cancel') {
+          changeTheme(themeItem, customThemeConfig)
+        }
       }
-    }
-  },
-  created() {
-    this.initGroup()
-    this.theme = this.mindMap.getTheme()
-    this.mindMap.on('view_theme_change', this.handleViewThemeChange)
-  },
-  beforeDestroy() {
-    this.mindMap.off('view_theme_change', this.handleViewThemeChange)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setLocalConfig']),
-
-    handleViewThemeChange() {
-      this.theme = this.mindMap.getTheme()
-      this.handleDark()
-    },
-
-    initGroup() {
-      const baiduThemes = [
-        'default',
-        'skyGreen',
-        'classic2',
-        'classic3',
-        'classicGreen',
-        'classicBlue',
-        'blueSky',
-        'brainImpairedPink',
-        'earthYellow',
-        'freshGreen',
-        'freshRed',
-        'romanticPurple',
-        'pinkGrape',
-        'mint'
-      ]
-      const baiduList = []
-      const classicsList = []
-      this.themeList.forEach(item => {
-        if (baiduThemes.includes(item.value)) {
-          baiduList.push(item)
-        } else if (!item.dark) {
-          classicsList.push(item)
-        }
-      })
-      this.defaultGroupList = [
-        {
-          name: this.$t('theme.classics'),
-          list: classicsList
-        },
-        {
-          name: this.$t('theme.dark'),
-          list: this.themeList.filter(item => {
-            return item.dark
-          })
-        },
-        {
-          name: this.$t('theme.simple'),
-          list: baiduList
-        }
-      ]
-      this.activeName = this.defaultGroupList[0].name
-    },
-
-    useTheme(theme) {
-      if (theme.value === this.theme) return
-      this.theme = theme.value
-      this.handleDark()
-      const customThemeConfig = this.mindMap.getCustomThemeConfig()
-      const hasCustomThemeConfig = Object.keys(customThemeConfig).length > 0
-      if (hasCustomThemeConfig) {
-        this.$confirm(this.$t('theme.coverTip'), this.$t('theme.tip'), {
-          confirmButtonText: this.$t('theme.cover'),
-          cancelButtonText: this.$t('theme.reserve'),
-          type: 'warning',
-          distinguishCancelAndClose: true,
-          callback: action => {
-            if (action === 'confirm') {
-              this.mindMap.setThemeConfig({}, true)
-              this.data.theme.config = {}
-              this.changeTheme(theme, {})
-            } else if (action === 'cancel') {
-              this.changeTheme(theme, customThemeConfig)
-            }
-          }
-        })
-      } else {
-        this.changeTheme(theme, customThemeConfig)
-      }
-    },
-
-    changeTheme(theme, config) {
-      this.$bus.$emit('showLoading')
-      this.mindMap.setTheme(theme.value)
-      storeData({
-        theme: {
-          template: theme.value,
-          config
-        }
-      })
-    },
-
-    handleDark() {
-      const extendThemeList = []
-      this.extendThemeGroupList.forEach(group => {
-        extendThemeList.push(...group.list)
-      })
-      let target = [...this.themeList, ...extendThemeList].find(item => {
-        return item.value === this.theme
-      })
-      this.setLocalConfig({
-        isDark: target.dark
-      })
-    }
+    })
+  } else {
+    changeTheme(themeItem, customThemeConfig)
   }
 }
+
+const changeTheme = (themeItem, config) => {
+  proxy.$bus.$emit('showLoading')
+  props.mindMap.setTheme(themeItem.value)
+  storeData({
+    theme: {
+      template: themeItem.value,
+      config
+    }
+  })
+}
+
+const handleDark = () => {
+  const extendThemeList = []
+  extendThemeGroupList.value.forEach(group => {
+    extendThemeList.push(...group.list)
+  })
+  let target = [...themeListData.value, ...extendThemeList].find(item => {
+    return item.value === theme.value
+  })
+  appStore.setLocalConfig({
+    isDark: target.dark
+  })
+}
+
+onMounted(() => {
+  initGroup()
+  theme.value = props.mindMap.getTheme()
+  props.mindMap.on('view_theme_change', handleViewThemeChange)
+})
+
+onBeforeUnmount(() => {
+  props.mindMap.off('view_theme_change', handleViewThemeChange)
+})
 </script>
 
 <style lang="less" scoped>
@@ -223,7 +213,7 @@ export default {
   .tabBox {
     flex-shrink: 0;
 
-    /deep/ .el-tabs__nav-wrap {
+    :deep(.el-tabs__nav-wrap) {
       display: flex;
       justify-content: center;
     }
