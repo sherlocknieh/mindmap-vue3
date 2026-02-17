@@ -61,12 +61,12 @@ const handleShowNodeImage = () => {
   reset()
   if (activeNodes.value.length > 0) {
     let firstNode = activeNodes.value[0]
-    let imgData = firstNode.getImageUrl() || ''
-    if (imgData) {
-      if (/^https?:\/\//.test(imgData)) {
-        imgUrl.value = imgData
+    let existingImgUrl = firstNode.getImageUrl() || ''
+    if (existingImgUrl) {
+      if (/^https?:\/\//.test(existingImgUrl)) {
+        imgUrl.value = existingImgUrl
       } else {
-        img.value = imgData
+        img.value = existingImgUrl
       }
     }
     imgTitle.value = firstNode.getData('imageTitle') || ''
@@ -96,17 +96,17 @@ const confirm = async () => {
       return
     }
     let res = null
-    let imgData = ''
+    let imageUrl = ''
     if (img.value) {
-      imgData = img.value
+      imageUrl = img.value
       res = await ImgUploadRef.value.getSize()
     } else if (imgUrl.value) {
-      imgData = imgUrl.value
-      res = await getImageSize(imgData)
+      imageUrl = imgUrl.value
+      res = await getImageSize(imageUrl)
     }
     activeNodes.value.forEach(node => {
       node.setImage({
-        url: imgData || 'none',
+        url: imageUrl || 'none',
         title: imgTitle.value,
         width: res.width || 100,
         height: res.height || 100
