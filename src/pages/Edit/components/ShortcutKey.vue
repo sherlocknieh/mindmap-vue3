@@ -19,40 +19,31 @@
   </Sidebar>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Sidebar from './Sidebar.vue'
-import { shortcutKeyList } from '@/config'
-import { mapState, mapActions } from 'pinia'
+import { shortcutKeyList as shortcutKeyListConfig } from '@/config'
 import { useAppStore } from '@/store'
 
-// 快捷键
-export default {
-  components: {
-    Sidebar
-  },
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
-    }),
+const sidebar = ref(null)
+const { locale } = useI18n()
+const appStore = useAppStore()
 
-    shortcutKeyList() {
-      return shortcutKeyList[this.$i18n.locale] || shortcutKeyList.zh
-    }
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'shortcutKey') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    }
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+
+const shortcutKeyList = computed(() => {
+  return shortcutKeyListConfig[locale.value] || shortcutKeyListConfig.zh
+})
+
+watch(activeSidebar, (val) => {
+  if (val === 'shortcutKey') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
   }
-}
+})
 </script>
 
 <style lang="less" scoped>

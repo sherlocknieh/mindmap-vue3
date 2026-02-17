@@ -15,60 +15,59 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { store } from '@/config'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-// 侧边栏容器
-export default {
-  props: {
-    title: {
-      type: String,
-      default: ''
-    }
-  },
-  data() {
-    return {
-      show: false,
-      zIndex: 0
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
-  },
-  watch: {
-    show(val, oldVal) {
-      if (val && !oldVal) {
-        this.zIndex = store.sidebarZIndex++
-      }
-    }
-  },
-  created() {
-    this.$bus.$on('closeSideBar', this.handleCloseSidebar)
-  },
-  beforeDestroy() {
-    this.$bus.$off('closeSideBar', this.handleCloseSidebar)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
-
-    handleCloseSidebar() {
-      this.close()
-    },
-
-    close() {
-      this.show = false
-      this.setActiveSidebar(null)
-    },
-
-    getEl() {
-      return this.$refs.sidebarContent
-    }
+defineProps({
+  title: {
+    type: String,
+    default: ''
   }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const show = ref(false)
+const zIndex = ref(0)
+const sidebarContent = ref(null)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+watch(show, (val, oldVal) => {
+  if (val && !oldVal) {
+    zIndex.value = store.sidebarZIndex++
+  }
+})
+
+const handleCloseSidebar = () => {
+  close()
 }
+
+const close = () => {
+  show.value = false
+  appStore.setActiveSidebar(null)
+}
+
+const getEl = () => {
+  return sidebarContent.value
+}
+
+onMounted(() => {
+  proxy.$bus.$on('closeSideBar', handleCloseSidebar)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('closeSideBar', handleCloseSidebar)
+})
+
+defineExpose({
+  show,
+  close,
+  getEl
+})
 </script>
 
 <style lang="less" scoped>
