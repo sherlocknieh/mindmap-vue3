@@ -2,11 +2,11 @@
   <Sidebar ref="sidebar" :title="$t('ai.chatTitle')">
     <div class="aiChatBox" :class="{ isDark: isDark }">
       <div class="chatHeader">
-        <el-button size="mini" @click="clear">
+        <el-button size="small" @click="clear">
           <span class="el-icon-delete"></span>
           {{ $t('ai.clearRecords') }}
         </el-button>
-        <el-button size="mini" @click="modifyAiConfig">
+        <el-button size="small" @click="modifyAiConfig">
           <span class="el-icon-edit"></span>
           {{ $t('ai.modifyAIConfiguration') }}
         </el-button>
@@ -39,13 +39,13 @@
           :placeholder="$t('ai.chatInputPlaceholder')"
           @keydown="onKeydown"
         ></textarea>
-        <el-button class="btn" size="mini" @click="send" :loading="isCreating">
+        <el-button class="btn" size="small" @click="send" :loading="isCreating">
           {{ $t('ai.send') }}
           <span class="el-icon-position"></span>
         </el-button>
         <el-button
           class="stop"
-          size="mini"
+          size="small"
           type="warning"
           @click="stop"
           v-show="isCreating"
@@ -57,118 +57,107 @@
   </Sidebar>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import Sidebar from './Sidebar.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { createUid } from 'simple-mind-map/src/utils'
 import MarkdownIt from 'markdown-it'
+import { ElMessage } from 'element-plus'
 
 let md = null
 
-export default {
-  components: {
-    Sidebar,
-  },
-  data() {
-    return {
-      text: '',
-      chatList: [],
-      isCreating: false,
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const sidebar = ref(null)
+const chatResBoxRef = ref(null)
+const text = ref('')
+const chatList = ref([])
+const isCreating = ref(false)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+
+watch(activeSidebar, (val) => {
+  if (val === 'ai') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const onKeydown = (e) => {
+  if (e.keyCode === 13) {
+    if (!e.shiftKey) {
+      e.preventDefault()
+      send()
     }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-      activeSidebar: (state) => state.activeSidebar,
-    }),
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'ai') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    },
-  },
-  created() {},
-  beforeUnmount() {},
-  methods: {
-    onKeydown(e) {
-      if (e.keyCode === 13) {
-        if (!e.shiftKey) {
-          e.preventDefault()
-          this.send()
-        } else {
-        }
-      }
-    },
-
-    send() {
-      if (this.isCreating) return
-      const text = this.text.trim()
-      if (!text) {
-        return
-      }
-      this.text = ''
-      const historyUserMsgList = this.chatList
-        .filter((item) => {
-          return item.type === 'user'
-        })
-        .map((item) => {
-          return item.content
-        })
-      this.chatList.push({
-        id: createUid(),
-        type: 'user',
-        content: text,
-      })
-      this.chatList.push({
-        id: createUid(),
-        type: 'ai',
-        content: '',
-      })
-      this.isCreating = true
-      const textList = [...historyUserMsgList, text]
-      $emit(
-        this.$bus,
-        'ai_chat',
-        textList,
-        (res) => {
-          if (!md) {
-            md = new MarkdownIt()
-          }
-          this.chatList[this.chatList.length - 1].content = md.render(res)
-          this.$refs.chatResBoxRef.scrollTop =
-            this.$refs.chatResBoxRef.scrollHeight
-        },
-        () => {
-          this.isCreating = false
-        },
-        () => {
-          this.isCreating = false
-          this.$message.error(this.$t('ai.generationFailed'))
-        }
-      )
-    },
-
-    stop() {
-      $emit(this.$bus, 'ai_chat_stop')
-      this.isCreating = false
-    },
-
-    clear() {
-      this.chatList = []
-    },
-
-    modifyAiConfig() {
-      $emit(this.$bus, 'showAiConfigDialog')
-    },
-  },
-  emits: ['ai_chat', 'ai_chat_stop', 'showAiConfigDialog'],
+  }
 }
+
+const send = () => {
+  if (isCreating.value) return
+  const textValue = text.value.trim()
+  if (!textValue) {
+    return
+  }
+  text.value = ''
+  const historyUserMsgList = chatList.value
+    .filter(item => {
+      return item.type === 'user'
+    })
+    .map(item => {
+      return item.content
+    })
+  chatList.value.push({
+    id: createUid(),
+    type: 'user',
+    content: textValue
+  })
+  chatList.value.push({
+    id: createUid(),
+    type: 'ai',
+    content: ''
+  })
+  isCreating.value = true
+  const textListValue = [...historyUserMsgList, textValue]
+  proxy.$bus.$emit(
+    'ai_chat',
+    textListValue,
+    res => {
+      if (!md) {
+        md = new MarkdownIt()
+      }
+      chatList.value[chatList.value.length - 1].content = md.render(res)
+      chatResBoxRef.value.scrollTop = chatResBoxRef.value.scrollHeight
+    },
+    () => {
+      isCreating.value = false
+    },
+    () => {
+      isCreating.value = false
+      ElMessage.error(proxy.$t('ai.generationFailed'))
+    }
+  )
+}
+
+const stop = () => {
+  proxy.$bus.$emit('ai_chat_stop')
+  isCreating.value = false
+}
+
+const clear = () => {
+  chatList.value = []
+}
+
+const modifyAiConfig = () => {
+  proxy.$bus.$emit('showAiConfigDialog')
+}
+
+onMounted(() => {})
+
+onBeforeUnmount(() => {})
 </script>
 
 <style lang="less" scoped>
@@ -178,7 +167,6 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  &.isDark {
   }
 
   .chatHeader {
@@ -261,7 +249,7 @@ export default {
           }
         }
 
-        .content {
+        :deep(.content) {
           width: 100%;
           overflow: hidden;
           color: #3f4a54;
@@ -340,5 +328,5 @@ export default {
       top: -30px;
     }
   }
-}
+
 </style>
