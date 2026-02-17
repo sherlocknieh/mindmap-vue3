@@ -43,19 +43,19 @@ const emit = defineEmits(['update:modelValue'])
 const file = ref(null)
 
 const onImgUploadInputChange = (e) => {
-  let selectedFile = e.target.files[0]
+  const selectedFile = e.target.files[0]
   selectImg(selectedFile)
 }
 
 const onDrop = (e) => {
-  let dt = e.dataTransfer
-  let selectedFile = dt.files && dt.files[0]
+  const dt = e.dataTransfer
+  const selectedFile = dt.files && dt.files[0]
   selectImg(selectedFile)
 }
 
 const selectImg = (selectedFile) => {
   file.value = selectedFile
-  let fr = new FileReader()
+  const fr = new FileReader()
   fr.readAsDataURL(selectedFile)
   fr.onload = e => {
     emit('update:modelValue', e.target.result)
@@ -64,7 +64,7 @@ const selectImg = (selectedFile) => {
 
 const getSize = () => {
   return new Promise(resolve => {
-    let img = new Image()
+    const img = new Image()
     img.src = props.modelValue
     img.onload = () => {
       resolve({
