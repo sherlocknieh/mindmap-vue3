@@ -8,7 +8,7 @@
   >
     <div class="title">方式一</div>
     <ImgUpload
-      ref="ImgUploadRef"
+      ref="imgUploadRef"
       v-model="img"
       style="margin-bottom: 12px;"
     ></ImgUpload>
@@ -51,7 +51,7 @@ const imgUrl = ref('')
 const imgTitle = ref('')
 const activeNodes = ref(null)
 const isMobile = ref(isMobileUtil())
-const ImgUploadRef = ref(null)
+const imgUploadRef = ref(null)
 
 const handleNodeActive = (...args) => {
   activeNodes.value = [...args[1]]
@@ -99,7 +99,7 @@ const confirm = async () => {
     let imageUrl = ''
     if (img.value) {
       imageUrl = img.value
-      res = await ImgUploadRef.value.getSize()
+      res = await imgUploadRef.value.getSize()
     } else if (imgUrl.value) {
       imageUrl = imgUrl.value
       res = await getImageSize(imageUrl)
