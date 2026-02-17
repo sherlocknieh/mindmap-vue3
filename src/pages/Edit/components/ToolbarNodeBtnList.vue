@@ -193,129 +193,126 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
 
-export default {
-  props: {
-    dir: {
-      type: String,
-      default: 'h' // h（水平排列）、v（垂直排列）
-    },
-    list: {
-      type: Array,
-      default() {
-        return []
-      }
-    }
+const props = defineProps({
+  dir: {
+    type: String,
+    default: 'h' // h（水平排列）、v（垂直排列）
   },
-  data() {
-    return {
-      activeNodes: [],
-      backEnd: true,
-      forwardEnd: true,
-      readonly: false,
-      isFullDataFile: false,
-      timer: null,
-      isInPainter: false
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    }),
-    hasRoot() {
-      return (
-        this.activeNodes.findIndex(node => {
-          return node.isRoot
-        }) !== -1
-      )
-    },
-    hasGeneralization() {
-      return (
-        this.activeNodes.findIndex(node => {
-          return node.isGeneralization
-        }) !== -1
-      )
-    },
-    annotationRightHasBtn() {
-      const index = this.list.findIndex(item => {
-        return item === 'annotation'
-      })
-      return index !== -1 && index < this.list.length - 1
-    }
-  },
-  created() {
-    this.$bus.$on('mode_change', this.onModeChange)
-    this.$bus.$on('node_active', this.onNodeActive)
-    this.$bus.$on('back_forward', this.onBackForward)
-    this.$bus.$on('painter_start', this.onPainterStart)
-    this.$bus.$on('painter_end', this.onPainterEnd)
-  },
-  beforeDestroy() {
-    this.$bus.$off('mode_change', this.onModeChange)
-    this.$bus.$off('node_active', this.onNodeActive)
-    this.$bus.$off('back_forward', this.onBackForward)
-    this.$bus.$off('painter_start', this.onPainterStart)
-    this.$bus.$off('painter_end', this.onPainterEnd)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
-
-    // 监听模式切换
-    onModeChange(mode) {
-      this.readonly = mode === 'readonly'
-    },
-
-    // 监听节点激活
-    onNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-    },
-
-    // 监听前进后退
-    onBackForward(index, len) {
-      this.backEnd = index <= 0
-      this.forwardEnd = index >= len - 1
-    },
-
-    // 开始格式刷
-    onPainterStart() {
-      this.isInPainter = true
-    },
-
-    // 格式刷结束
-    onPainterEnd() {
-      this.isInPainter = false
-    },
-
-    // 显示节点图标侧边栏
-    showNodeIcon() {
-      this.$bus.$emit('close_node_icon_toolbar')
-      this.setActiveSidebar('nodeIconSidebar')
-    },
-
-    // 打开公式侧边栏
-    showFormula() {
-      this.setActiveSidebar('formulaSidebar')
-    },
-
-    // 选择附件
-    selectAttachmentFile() {
-      this.$bus.$emit('selectAttachment', this.activeNodes)
-    },
-
-    // 设置标记
-    onSetAnnotation(...args) {
-      this.$bus.$emit('execCommand', 'SET_NOTATION', this.activeNodes, ...args)
-    },
-
-    // AI生成整体
-    aiCrate() {
-      this.$bus.$emit('ai_create_all')
+  list: {
+    type: Array,
+    default() {
+      return []
     }
   }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const activeNodes = ref([])
+const backEnd = ref(true)
+const forwardEnd = ref(true)
+const readonly = ref(false)
+const isFullDataFile = ref(false)
+const timer = ref(null)
+const isInPainter = ref(false)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+const hasRoot = computed(() => {
+  return (
+    activeNodes.value.findIndex(node => {
+      return node.isRoot
+    }) !== -1
+  )
+})
+
+const hasGeneralization = computed(() => {
+  return (
+    activeNodes.value.findIndex(node => {
+      return node.isGeneralization
+    }) !== -1
+  )
+})
+
+const annotationRightHasBtn = computed(() => {
+  const index = props.list.findIndex(item => {
+    return item === 'annotation'
+  })
+  return index !== -1 && index < props.list.length - 1
+})
+
+// 监听模式切换
+const onModeChange = (mode) => {
+  readonly.value = mode === 'readonly'
 }
+
+// 监听节点激活
+const onNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+}
+
+// 监听前进后退
+const onBackForward = (index, len) => {
+  backEnd.value = index <= 0
+  forwardEnd.value = index >= len - 1
+}
+
+// 开始格式刷
+const onPainterStart = () => {
+  isInPainter.value = true
+}
+
+// 格式刷结束
+const onPainterEnd = () => {
+  isInPainter.value = false
+}
+
+// 显示节点图标侧边栏
+const showNodeIcon = () => {
+  proxy.$bus.$emit('close_node_icon_toolbar')
+  appStore.setActiveSidebar('nodeIconSidebar')
+}
+
+// 打开公式侧边栏
+const showFormula = () => {
+  appStore.setActiveSidebar('formulaSidebar')
+}
+
+// 选择附件
+const selectAttachmentFile = () => {
+  proxy.$bus.$emit('selectAttachment', activeNodes.value)
+}
+
+// 设置标记
+const onSetAnnotation = (...args) => {
+  proxy.$bus.$emit('execCommand', 'SET_NOTATION', activeNodes.value, ...args)
+}
+
+// AI生成整体
+const aiCrate = () => {
+  proxy.$bus.$emit('ai_create_all')
+}
+
+onMounted(() => {
+  proxy.$bus.$on('mode_change', onModeChange)
+  proxy.$bus.$on('node_active', onNodeActive)
+  proxy.$bus.$on('back_forward', onBackForward)
+  proxy.$bus.$on('painter_start', onPainterStart)
+  proxy.$bus.$on('painter_end', onPainterEnd)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('mode_change', onModeChange)
+  proxy.$bus.$off('node_active', onNodeActive)
+  proxy.$bus.$off('back_forward', onBackForward)
+  proxy.$bus.$off('painter_start', onPainterStart)
+  proxy.$bus.$off('painter_end', onPainterEnd)
+})
 </script>
 
 <style lang="less">

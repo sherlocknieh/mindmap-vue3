@@ -23,74 +23,66 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useAppStore } from '@/store'
 import { sidebarTriggerList } from '@/config'
+import { useI18n } from 'vue-i18n'
 
-// 侧边栏触发器
-export default {
-  data() {
-    return {
-      show: true,
-      maxHeight: 0
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar,
-      isReadonly: state => state.isReadonly,
-      enableAi: state => state.localConfig.enableAi
-    }),
+const appStore = useAppStore()
+const { locale } = useI18n()
 
-    triggerList() {
-      let list = sidebarTriggerList[this.$i18n.locale] || sidebarTriggerList.zh
-      if (this.isReadonly) {
-        list = list.filter(item => {
-          return ['outline', 'shortcutKey', 'ai'].includes(item.value)
-        })
-      }
-      if (!this.enableAi) {
-        list = list.filter(item => {
-          return item.value !== 'ai'
-        })
-      }
-      return list
-    }
-  },
-  watch: {
-    isReadonly(val) {
-      if (val) {
-        this.setActiveSidebar(null)
-      }
-    }
-  },
-  created() {
-    window.addEventListener('resize', this.onResize)
-    this.updateSize()
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
+const show = ref(true)
+const maxHeight = ref(0)
 
-    trigger(item) {
-      this.setActiveSidebar(item.value)
-    },
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+const isReadonly = computed(() => appStore.isReadonly)
+const enableAi = computed(() => appStore.localConfig.enableAi)
 
-    onResize() {
-      this.updateSize()
-    },
-
-    updateSize() {
-      const topMargin = 110
-      const bottomMargin = 80
-      this.maxHeight = window.innerHeight - topMargin - bottomMargin
-    }
+const triggerList = computed(() => {
+  let list = sidebarTriggerList[locale.value] || sidebarTriggerList.zh
+  if (isReadonly.value) {
+    list = list.filter(item => {
+      return ['outline', 'shortcutKey', 'ai'].includes(item.value)
+    })
   }
+  if (!enableAi.value) {
+    list = list.filter(item => {
+      return item.value !== 'ai'
+    })
+  }
+  return list
+})
+
+watch(isReadonly, (val) => {
+  if (val) {
+    appStore.setActiveSidebar(null)
+  }
+})
+
+const trigger = (item) => {
+  appStore.setActiveSidebar(item.value)
 }
+
+const onResize = () => {
+  updateSize()
+}
+
+const updateSize = () => {
+  const topMargin = 110
+  const bottomMargin = 80
+  maxHeight.value = window.innerHeight - topMargin - bottomMargin
+}
+
+onMounted(() => {
+  window.addEventListener('resize', onResize)
+  updateSize()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResize)
+})
 </script>
 
 <style lang="less" scoped>

@@ -95,166 +95,148 @@
     <div class="item">
       <el-dropdown @command="handleCommand">
         <div class="btn el-icon-more"></div>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="shortcutKey">
-            <span class="iconfont iconjianpan"></span>
-            {{ $t('navigatorToolbar.shortcutKeys') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="aiChat">
-            <span class="iconfont iconAIshengcheng"></span>
-            {{ $t('navigatorToolbar.ai') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="client">
-            <span class="iconfont iconxiazai"></span>
-            {{ $t('navigatorToolbar.downloadClient') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="github">
-            <span class="iconfont icongithub"></span>
-            Github
-          </el-dropdown-item>
-          <el-dropdown-item command="site">
-            <span class="iconfont iconwangzhan"></span>
-            {{ $t('navigatorToolbar.site') }}
-          </el-dropdown-item>
-          <el-dropdown-item disabled
-            >{{ $t('navigatorToolbar.current') }}v{{
-              version
-            }}</el-dropdown-item
-          >
-        </el-dropdown-menu>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="shortcutKey">
+              <span class="iconfont iconjianpan"></span>
+              {{ $t('navigatorToolbar.shortcutKeys') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="aiChat">
+              <span class="iconfont iconAIshengcheng"></span>
+              {{ $t('navigatorToolbar.ai') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="client">
+              <span class="iconfont iconxiazai"></span>
+              {{ $t('navigatorToolbar.downloadClient') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="github">
+              <span class="iconfont icongithub"></span>
+              Github
+            </el-dropdown-item>
+            <el-dropdown-item command="site">
+              <span class="iconfont iconwangzhan"></span>
+              {{ $t('navigatorToolbar.site') }}
+            </el-dropdown-item>
+            <el-dropdown-item disabled
+              >{{ $t('navigatorToolbar.current') }}v{{
+                version
+              }}</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
       </el-dropdown>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, getCurrentInstance } from 'vue'
 import Scale from './Scale.vue'
 import Fullscreen from './Fullscreen.vue'
 import MouseAction from './MouseAction.vue'
 import { langList } from '@/config'
 import i18n from '@/i18n'
 import { storeLang, getLang } from '@/api'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import pkg from 'simple-mind-map/package.json'
 import Demonstrate from './Demonstrate.vue'
 
-// 导航器工具栏
-export default {
-  components: {
-    Scale,
-    Fullscreen,
-    MouseAction,
-    Demonstrate
-  },
-  props: {
-    mindMap: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      version: pkg.version,
-      langList,
-      lang: '',
-      openMiniMap: false
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark
-    })
-  },
-  created() {
-    this.lang = getLang()
-  },
-  methods: {
-    ...mapActions(useAppStore, [
-      'setLocalConfig',
-      'setIsReadonly',
-      'setIsSourceCodeEdit',
-      'setActiveSidebar'
-    ]),
-
-    readonlyChange() {
-      this.setIsReadonly(!this.isReadonly)
-      this.mindMap.setMode(this.isReadonly ? 'readonly' : 'edit')
-    },
-
-    toggleMiniMap() {
-      this.openMiniMap = !this.openMiniMap
-      this.$bus.$emit('toggle_mini_map', this.openMiniMap)
-    },
-
-    onLangChange(lang) {
-      i18n.locale = lang
-      storeLang(lang)
-      this.$bus.$emit('lang_change')
-    },
-
-    showSearch() {
-      this.$bus.$emit('show_search')
-    },
-
-    toggleDark() {
-      this.setLocalConfig({
-        isDark: !this.isDark
-      })
-    },
-
-    handleCommand(command) {
-      if (command === 'shortcutKey') {
-        this.setActiveSidebar('shortcutKey')
-        return
-      } else if (command === 'aiChat') {
-        this.setActiveSidebar('ai')
-        return
-      } else if (command === 'client') {
-        this.$bus.$emit(
-          'showDownloadTip',
-          this.$t('navigatorToolbar.downloadClient'),
-          this.$t('navigatorToolbar.downloadDesc')
-        )
-        return
-      }
-      let url = ''
-      switch (command) {
-        case 'github':
-          url = 'https://github.com/wanglin2/mind-map'
-          break
-        case 'helpDoc':
-          url = 'https://wanglin2.github.io/mind-map-docs/help/help1.html'
-          break
-        case 'devDoc':
-          url =
-            'https://wanglin2.github.io/mind-map-docs/start/introduction.html'
-          break
-        case 'site':
-          url = 'https://wanglin2.github.io/mind-map-docs/'
-          break
-        case 'issue':
-          url = 'https://github.com/wanglin2/mind-map/issues/new'
-          break
-
-        default:
-          break
-      }
-      const a = document.createElement('a')
-      a.href = url
-      a.target = '_blank'
-      a.click()
-    },
-
-    backToRoot() {
-      this.mindMap.renderer.setRootNodeCenter()
-    },
-
-    openSourceCodeEdit() {
-      this.setIsSourceCodeEdit(true)
-    }
+const props = defineProps({
+  mindMap: {
+    type: Object
   }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const version = ref(pkg.version)
+const lang = ref('')
+const openMiniMap = ref(false)
+
+const isReadonly = computed(() => appStore.isReadonly)
+const isDark = computed(() => appStore.localConfig.isDark)
+
+const readonlyChange = () => {
+  appStore.setIsReadonly(!isReadonly.value)
+  props.mindMap.setMode(isReadonly.value ? 'readonly' : 'edit')
 }
+
+const toggleMiniMap = () => {
+  openMiniMap.value = !openMiniMap.value
+  proxy.$bus.$emit('toggle_mini_map', openMiniMap.value)
+}
+
+const onLangChange = (langValue) => {
+  i18n.locale = langValue
+  storeLang(langValue)
+  proxy.$bus.$emit('lang_change')
+}
+
+const showSearch = () => {
+  proxy.$bus.$emit('show_search')
+}
+
+const toggleDark = () => {
+  appStore.setLocalConfig({
+    isDark: !isDark.value
+  })
+}
+
+const handleCommand = (command) => {
+  if (command === 'shortcutKey') {
+    appStore.setActiveSidebar('shortcutKey')
+    return
+  } else if (command === 'aiChat') {
+    appStore.setActiveSidebar('ai')
+    return
+  } else if (command === 'client') {
+    proxy.$bus.$emit(
+      'showDownloadTip',
+      proxy.$t('navigatorToolbar.downloadClient'),
+      proxy.$t('navigatorToolbar.downloadDesc')
+    )
+    return
+  }
+  let url = ''
+  switch (command) {
+    case 'github':
+      url = 'https://github.com/wanglin2/mind-map'
+      break
+    case 'helpDoc':
+      url = 'https://wanglin2.github.io/mind-map-docs/help/help1.html'
+      break
+    case 'devDoc':
+      url =
+        'https://wanglin2.github.io/mind-map-docs/start/introduction.html'
+      break
+    case 'site':
+      url = 'https://wanglin2.github.io/mind-map-docs/'
+      break
+    case 'issue':
+      url = 'https://github.com/wanglin2/mind-map/issues/new'
+      break
+
+    default:
+      break
+  }
+  const a = document.createElement('a')
+  a.href = url
+  a.target = '_blank'
+  a.click()
+}
+
+const backToRoot = () => {
+  props.mindMap.renderer.setRootNodeCenter()
+}
+
+const openSourceCodeEdit = () => {
+  appStore.setIsSourceCodeEdit(true)
+}
+
+onMounted(() => {
+  lang.value = getLang()
+})
 </script>
 
 <style lang="less" scoped>
