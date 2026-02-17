@@ -10,7 +10,7 @@
       <el-input
         v-model="text"
         :placeholder="$t('nodeTagStyle.placeholder')"
-        size="mini"
+        size="small"
         @blur="updateTagText"
         @keydown.stop
         @keyup.enter.stop="updateTagText"
@@ -26,150 +26,139 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import Color from './Color.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-export default {
-  components: {
-    Color,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      show: false,
-      position: {
-        left: 0,
-        top: 0,
-      },
-      node: null,
-      index: 0,
-      text: '',
-      fill: '',
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  created() {
-    this.mindMap.on('node_tag_click', this.onNodeTagClick)
-    this.mindMap.on('scale', this.hide)
-    this.mindMap.on('translate', this.hide)
-    this.mindMap.on('svg_mousedown', this.hide)
-    this.mindMap.on('expand_btn_click', this.hide)
-  },
-  beforeUnmount() {
-    this.mindMap.off('node_tag_click', this.onNodeTagClick)
-    this.mindMap.off('scale', this.hide)
-    this.mindMap.off('translate', this.hide)
-    this.mindMap.off('svg_mousedown', this.hide)
-    this.mindMap.off('expand_btn_click', this.hide)
-  },
-  mounted() {
-    document.body.appendChild(this.$refs.elRef)
-  },
-  methods: {
-    onNodeTagClick(node, tag, index, el) {
-      this.node = node
-      this.index = index
-      if (typeof tag === 'string') {
-        this.text = tag
-      } else {
-        // v0.10.3+版本支持对象类型
-        this.text = tag.text
-        this.fill = tag.style && tag.style.fill ? tag.style.fill : ''
-      }
-      // 获取外框的位置大小信息
-      const { x, y, width, height } = el.rbox()
-      const boxWidth = 260
-      const boxHeight = 152
-      let left = x + width / 2 - boxWidth / 2
-      if (left < 0) {
-        left = 0
-      }
-      if (left + boxWidth > window.innerWidth) {
-        left = window.innerWidth - boxWidth
-      }
-      this.position.left = left + 'px'
-      let top = y + height + 5
-      if (top + boxHeight > window.innerHeight) {
-        top = window.innerHeight - boxHeight
-      }
-      this.position.top = top + 'px'
-      this.show = true
-    },
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    updateTagText() {
-      const text = this.text.trim()
-      if (!text) {
-        return
-      }
-      this.updateTagInfo({
-        text,
-      })
-    },
+const appStore = useAppStore()
+const elRef = ref(null)
 
-    updateTagFill(color) {
-      this.updateTagInfo({
-        style: {
-          fill: color,
-        },
-      })
-      this.fill = color
-    },
+const show = ref(false)
+const position = reactive({
+  left: 0,
+  top: 0
+})
+const node = ref(null)
+const index = ref(0)
+const text = ref('')
+const fill = ref('')
 
-    updateTagInfo({ text, style }) {
-      if (!this.node) return
-      const tagData = [...this.node.getData('tag')]
-      let item = null
-      if (typeof tagData[this.index] === 'string') {
-        item = {
-          text: tagData[this.index],
-          style: {},
-        }
-      } else {
-        item = tagData[this.index]
-        if (!item.style) {
-          item.style = {}
-        }
-      }
-      if (text) {
-        item.text = text
-      }
-      if (style) {
-        Object.keys(style).forEach((key) => {
-          item.style[key] = style[key]
-        })
-      }
+const isDark = computed(() => appStore.localConfig.isDark)
 
-      tagData[this.index] = item
-      this.mindMap.execCommand('SET_NODE_TAG', this.node, tagData)
-    },
-
-    deleteTag() {
-      if (!this.node) return
-      const tagData = [...this.node.getData('tag')]
-      tagData.splice(this.index, 1)
-      this.mindMap.execCommand('SET_NODE_TAG', this.node, tagData)
-      this.hide()
-    },
-
-    hide() {
-      this.show = false
-      this.node = null
-      this.index = 0
-      this.text = ''
-      this.fill = ''
-    },
-  },
+const onNodeTagClick = (n, tag, idx, el) => {
+  node.value = n
+  index.value = idx
+  if (typeof tag === 'string') {
+    text.value = tag
+  } else {
+    text.value = tag.text
+    fill.value = tag.style && tag.style.fill ? tag.style.fill : ''
+  }
+  const { x, y, width, height } = el.rbox()
+  const boxWidth = 260
+  const boxHeight = 152
+  let left = x + width / 2 - boxWidth / 2
+  if (left < 0) {
+    left = 0
+  }
+  if (left + boxWidth > window.innerWidth) {
+    left = window.innerWidth - boxWidth
+  }
+  position.left = left + 'px'
+  let top = y + height + 5
+  if (top + boxHeight > window.innerHeight) {
+    top = window.innerHeight - boxHeight
+  }
+  position.top = top + 'px'
+  show.value = true
 }
+
+const updateTagText = () => {
+  const textValue = text.value.trim()
+  if (!textValue) {
+    return
+  }
+  updateTagInfo({
+    text: textValue
+  })
+}
+
+const updateTagFill = (color) => {
+  updateTagInfo({
+    style: {
+      fill: color
+    }
+  })
+  fill.value = color
+}
+
+const updateTagInfo = ({ text: textValue, style }) => {
+  if (!node.value) return
+  const tagData = [...node.value.getData('tag')]
+  let item = null
+  if (typeof tagData[index.value] === 'string') {
+    item = {
+      text: tagData[index.value],
+      style: {}
+    }
+  } else {
+    item = tagData[index.value]
+    if (!item.style) {
+      item.style = {}
+    }
+  }
+  if (textValue) {
+    item.text = textValue
+  }
+  if (style) {
+    Object.keys(style).forEach(key => {
+      item.style[key] = style[key]
+    })
+  }
+
+  tagData[index.value] = item
+  props.mindMap.execCommand('SET_NODE_TAG', node.value, tagData)
+}
+
+const deleteTag = () => {
+  if (!node.value) return
+  const tagData = [...node.value.getData('tag')]
+  tagData.splice(index.value, 1)
+  props.mindMap.execCommand('SET_NODE_TAG', node.value, tagData)
+  hide()
+}
+
+const hide = () => {
+  show.value = false
+  node.value = null
+  index.value = 0
+  text.value = ''
+  fill.value = ''
+}
+
+onMounted(() => {
+  props.mindMap.on('node_tag_click', onNodeTagClick)
+  props.mindMap.on('scale', hide)
+  props.mindMap.on('translate', hide)
+  props.mindMap.on('svg_mousedown', hide)
+  props.mindMap.on('expand_btn_click', hide)
+  document.body.appendChild(elRef.value)
+})
+
+onBeforeUnmount(() => {
+  props.mindMap.off('node_tag_click', onNodeTagClick)
+  props.mindMap.off('scale', hide)
+  props.mindMap.off('translate', hide)
+  props.mindMap.off('svg_mousedown', hide)
+  props.mindMap.off('expand_btn_click', hide)
+})
 </script>
 
 <style lang="less" scoped>
@@ -239,8 +228,6 @@ export default {
         margin-right: 2px;
       }
 
-      .text {
-      }
     }
   }
 }

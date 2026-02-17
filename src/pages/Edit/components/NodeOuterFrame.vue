@@ -14,7 +14,7 @@
             <span class="name">{{ $t('nodeOuterFrame.boxStyle') }}</span>
             <!-- 宽度 -->
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="styleConfig.strokeWidth"
               placeholder=""
@@ -40,8 +40,8 @@
             </el-select>
             <!-- 实现虚线 -->
             <el-select
-              size="mini"
-              style="width: 80px; margin-left: 4px"
+              size="small"
+              style="width: 80px;margin-left: 4px;"
               v-model="styleConfig.strokeDasharray"
               placeholder=""
               @change="
@@ -51,7 +51,7 @@
               "
             >
               <el-option
-                v-for="item in borderDasharrayList"
+                v-for="item in borderDasharrayListComputed"
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
@@ -99,7 +99,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.radius') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="styleConfig.radius"
               placeholder=""
@@ -152,7 +152,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.fontFamily') }}</span>
             <el-select
-              size="mini"
+              size="small"
               v-model="styleConfig.fontFamily"
               placeholder=""
               @change="
@@ -162,7 +162,7 @@
               "
             >
               <el-option
-                v-for="item in fontFamilyList"
+                v-for="item in fontFamilyListComputed"
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
@@ -230,7 +230,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.lineHeight') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="styleConfig.lineHeight"
               placeholder=""
@@ -252,7 +252,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.fontSize') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="styleConfig.fontSize"
               placeholder=""
@@ -295,7 +295,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.textFillRadius') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="styleConfig.textFillRadius"
               placeholder=""
@@ -320,7 +320,7 @@
             <span class="name">{{ $t('nodeOuterFrame.textAlign') }}</span>
             <el-radio-group
               v-model="styleConfig.textAlign"
-              size="mini"
+              size="small"
               @change="
                 (value) => {
                   updateOuterFrame('textAlign', value)
@@ -372,10 +372,10 @@
   </Sidebar>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import Sidebar from './Sidebar.vue'
 import Color from './Color.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import {
   lineWidthList,
@@ -386,130 +386,109 @@ import {
   lineHeightList,
 } from '@/config'
 import OuterFrame from 'simple-mind-map/src/plugins/OuterFrame'
+import { useI18n } from 'vue-i18n'
 
-export default {
-  components: {
-    Sidebar,
-    Color,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      lineWidthList,
-      lineHeightList,
-      fontSizeList,
-      borderRadiusList,
-      styleConfig: {
-        ...OuterFrame.defaultStyle,
-      },
-      paddingStyle: {
-        paddingX: 0,
-        paddingY: 0,
-      },
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
+
+const { locale } = useI18n()
+const appStore = useAppStore()
+const sidebar = ref(null)
+
+const styleConfig = reactive({
+  ...OuterFrame.defaultStyle
+})
+const paddingStyle = reactive({
+  paddingX: 0,
+  paddingY: 0
+})
+
+const activeSidebar = computed(() => appStore.activeSidebar)
+const isDark = computed(() => appStore.localConfig.isDark)
+const borderDasharrayListComputed = computed(() => borderDasharrayList[locale.value] || borderDasharrayList.zh)
+const fontFamilyListComputed = computed(() => fontFamilyList[locale.value] || fontFamilyList.zh)
+
+watch(activeSidebar, (val) => {
+  if (val === 'nodeOuterFrameStyle') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const onOuterFrameActive = (el, parentNode, range) => {
+  const firstNode = parentNode.children[range[0]]
+  const firstNodeOuterFrame = firstNode.getData('outerFrame')
+  Object.keys(styleConfig).forEach(key => {
+    if (typeof firstNodeOuterFrame[key] !== 'undefined') {
+      styleConfig[key] = firstNodeOuterFrame[key]
+    } else {
+      styleConfig[key] = OuterFrame.defaultStyle[key]
     }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      activeSidebar: (state) => state.activeSidebar,
-      isDark: (state) => state.localConfig.isDark,
-      borderDasharrayList() {
-        return borderDasharrayList[this.$i18n.locale] || borderDasharrayList.zh
-      },
-    }),
-
-    fontFamilyList() {
-      return fontFamilyList[this.$i18n.locale] || fontFamilyList.zh
-    },
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'nodeOuterFrameStyle') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    },
-  },
-  created() {
-    this.mindMap.on('outer_frame_active', this.onOuterFrameActive)
-    this.mindMap.on('outer_frame_delete', this.hide)
-    this.mindMap.on('outer_frame_deactivate', this.hide)
-  },
-  beforeUnmount() {
-    this.mindMap.off('outer_frame_active', this.onOuterFrameActive)
-    this.mindMap.off('outer_frame_delete', this.hide)
-    this.mindMap.off('outer_frame_deactivate', this.hide)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
-
-    onOuterFrameActive(el, parentNode, range) {
-      // 取范围内第一个节点的外框样式
-      const firstNode = parentNode.children[range[0]]
-      const firstNodeOuterFrame = firstNode.getData('outerFrame')
-      Object.keys(this.styleConfig).forEach((key) => {
-        if (typeof firstNodeOuterFrame[key] !== 'undefined') {
-          this.styleConfig[key] = firstNodeOuterFrame[key]
-        } else {
-          this.styleConfig[key] = OuterFrame.defaultStyle[key]
-        }
-      })
-      const [pl, pt] = this.styleConfig.textFillPadding
-      this.paddingStyle.paddingX = pl
-      this.paddingStyle.paddingY = pt
-      this.setActiveSidebar('nodeOuterFrameStyle')
-    },
-
-    updateOuterFrame(key, val) {
-      this.styleConfig[key] = val
-      this.mindMap.outerFrame.updateActiveOuterFrame({
-        [key]: val,
-      })
-    },
-
-    // 切换加粗样式
-    toggleFontWeight() {
-      const newValue =
-        this.styleConfig.fontWeight === 'bold' ? 'normal' : 'bold'
-      this.updateOuterFrame('fontWeight', newValue)
-    },
-
-    // 切换字体样式
-    toggleFontStyle() {
-      const newValue =
-        this.styleConfig.fontStyle === 'italic' ? 'normal' : 'italic'
-      this.updateOuterFrame('fontStyle', newValue)
-    },
-
-    updatePadding(dir, value) {
-      const [pl, pt] = this.styleConfig.textFillPadding
-      if (dir === 'x') {
-        this.updateOuterFrame('textFillPadding', [value, pt, value, pt])
-      } else if (dir === 'y') {
-        this.updateOuterFrame('textFillPadding', [pl, value, pl, value])
-      }
-    },
-
-    deleteOuterFrame() {
-      this.mindMap.outerFrame.removeActiveOuterFrame()
-    },
-
-    deleteOuterFrameText() {
-      this.mindMap.outerFrame.removeActiveOuterFrameText()
-    },
-
-    hide() {
-      if (this.activeSidebar !== 'nodeOuterFrameStyle') {
-        return
-      }
-      this.setActiveSidebar(null)
-    },
-  },
+  })
+  const [pl, pt] = styleConfig.textFillPadding
+  paddingStyle.paddingX = pl
+  paddingStyle.paddingY = pt
+  appStore.setActiveSidebar('nodeOuterFrameStyle')
 }
+
+const updateOuterFrame = (key, val) => {
+  styleConfig[key] = val
+  props.mindMap.outerFrame.updateActiveOuterFrame({
+    [key]: val
+  })
+}
+
+const toggleFontWeight = () => {
+  const newValue =
+    styleConfig.fontWeight === 'bold' ? 'normal' : 'bold'
+  updateOuterFrame('fontWeight', newValue)
+}
+
+const toggleFontStyle = () => {
+  const newValue =
+    styleConfig.fontStyle === 'italic' ? 'normal' : 'italic'
+  updateOuterFrame('fontStyle', newValue)
+}
+
+const updatePadding = (dir, value) => {
+  const [pl, pt] = styleConfig.textFillPadding
+  if (dir === 'x') {
+    updateOuterFrame('textFillPadding', [value, pt, value, pt])
+  } else if (dir === 'y') {
+    updateOuterFrame('textFillPadding', [pl, value, pl, value])
+  }
+}
+
+const deleteOuterFrame = () => {
+  props.mindMap.outerFrame.removeActiveOuterFrame()
+}
+
+const deleteOuterFrameText = () => {
+  props.mindMap.outerFrame.removeActiveOuterFrameText()
+}
+
+const hide = () => {
+  if (activeSidebar.value !== 'nodeOuterFrameStyle') {
+    return
+  }
+  appStore.setActiveSidebar(null)
+}
+
+onMounted(() => {
+  props.mindMap.on('outer_frame_active', onOuterFrameActive)
+  props.mindMap.on('outer_frame_delete', hide)
+  props.mindMap.on('outer_frame_deactivate', hide)
+})
+
+onBeforeUnmount(() => {
+  props.mindMap.off('outer_frame_active', onOuterFrameActive)
+  props.mindMap.off('outer_frame_delete', hide)
+  props.mindMap.off('outer_frame_deactivate', hide)
+})
 </script>
 
 <style lang="less">

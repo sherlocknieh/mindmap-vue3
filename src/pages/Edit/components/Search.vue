@@ -14,10 +14,10 @@
         @focus="onFocus"
         @blur="onBlur"
       >
-        <template v-slot:prefix>
-          <el-icon class="el-input__icon"><el-icon-search /></el-icon>
+        <template #prefix>
+          <i class="el-input__icon el-icon-search"></i>
         </template>
-        <template v-slot:append>
+        <template #append>
           <el-button
             size="small"
             v-if="!isUndef(searchText)"
@@ -36,15 +36,15 @@
       :placeholder="$t('search.replacePlaceholder')"
       size="small"
       v-model="replaceText"
-      style="margin: 12px 0"
+      style="margin: 12px 0;"
       @keydown.stop
       @focus="onFocus"
       @blur="onBlur"
     >
-      <template v-slot:prefix>
-        <el-icon class="el-input__icon"><el-icon-edit /></el-icon>
+      <template #prefix>
+        <i class="el-input__icon el-icon-edit"></i>
       </template>
-      <template v-slot:append>
+      <template #append>
         <el-button size="small" @click="hideReplaceInput">{{
           $t('search.cancel')
         }}</el-button>
@@ -79,182 +79,165 @@
   </div>
 </template>
 
-<script>
-import { Search as ElIconSearch, Edit as ElIconEdit } from '@element-plus/icons-vue'
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
 import { isUndef, getTextFromHtml } from 'simple-mind-map/src/utils/index'
 
-export default {
-  components: {
-    ElIconSearch,
-    ElIconEdit,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      show: false,
-      searchText: '',
-      replaceText: '',
-      showReplaceInput: false,
-      currentIndex: 0,
-      total: 0,
-      showSearchInfo: false,
-      searchResultListHeight: 0,
-      searchResultList: [],
-      showSearchResultList: false,
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isReadonly: (state) => state.isReadonly,
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  watch: {
-    searchText() {
-      if (isUndef(this.searchText)) {
-        this.currentIndex = 0
-        this.total = 0
-        this.showSearchInfo = false
-      }
-    },
-  },
-  created() {
-    $on(this.$bus, 'show_search', this.showSearch)
-    this.mindMap.on('search_info_change', this.handleSearchInfoChange)
-    this.mindMap.on('node_click', this.blur)
-    this.mindMap.on('draw_click', this.blur)
-    this.mindMap.on('expand_btn_click', this.blur)
-    this.mindMap.on(
-      'search_match_node_list_change',
-      this.onSearchMatchNodeListChange
-    )
-    this.mindMap.keyCommand.addShortcut('Control+f', this.showSearch)
-    window.addEventListener('resize', this.setSearchResultListHeight)
-    $on(this.$bus, 'setData', this.close)
-  },
-  mounted() {
-    this.setSearchResultListHeight()
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'show_search', this.showSearch)
-    this.mindMap.off('search_info_change', this.handleSearchInfoChange)
-    this.mindMap.off('node_click', this.blur)
-    this.mindMap.off('draw_click', this.blur)
-    this.mindMap.off('expand_btn_click', this.blur)
-    this.mindMap.off(
-      'search_match_node_list_change',
-      this.onSearchMatchNodeListChange
-    )
-    this.mindMap.keyCommand.removeShortcut('Control+f', this.showSearch)
-    window.removeEventListener('resize', this.setSearchResultListHeight)
-    $off(this.$bus, 'setData', this.close)
-  },
-  methods: {
-    isUndef,
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    handleSearchInfoChange(data) {
-      this.currentIndex = data.currentIndex + 1
-      this.total = data.total
-      this.showSearchInfo = true
-    },
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
 
-    showSearch() {
-      $emit(this.$bus, 'closeSideBar')
-      this.show = true
-      this.$refs.searchInputRef.focus()
-    },
+const searchInputRef = ref(null)
+const replaceInputRef = ref(null)
+const show = ref(false)
+const searchText = ref('')
+const replaceText = ref('')
+const showReplaceInput = ref(false)
+const currentIndex = ref(0)
+const total = ref(0)
+const showSearchInfo = ref(false)
+const searchResultListHeight = ref(0)
+const searchResultList = ref([])
+const showSearchResultList = ref(false)
 
-    hideReplaceInput() {
-      this.showReplaceInput = false
-      this.replaceText = ''
-    },
+const isReadonly = computed(() => appStore.isReadonly)
+const isDark = computed(() => appStore.localConfig.isDark)
 
-    // 输入框聚焦时，禁止思维导图节点响应按键事件自动进入文本编辑
-    onFocus() {
-      this.mindMap.updateConfig({
-        enableAutoEnterTextEditWhenKeydown: false,
-      })
-    },
+watch(searchText, () => {
+  if (isUndef(searchText.value)) {
+    currentIndex.value = 0
+    total.value = 0
+    showSearchInfo.value = false
+  }
+})
 
-    // 输入框失焦时恢复
-    onBlur() {
-      this.mindMap.updateConfig({
-        enableAutoEnterTextEditWhenKeydown: true,
-      })
-    },
-
-    // 画布，节点点击时让输入框失焦
-    blur() {
-      if (this.$refs.searchInputRef) {
-        this.$refs.searchInputRef.blur()
-      }
-      if (this.$refs.replaceInputRef) {
-        this.$refs.replaceInputRef.blur()
-      }
-    },
-
-    onSearchNext() {
-      this.showSearchResultList = true
-      this.mindMap.search.search(this.searchText)
-    },
-
-    replace() {
-      this.mindMap.search.replace(this.replaceText, true)
-    },
-
-    replaceAll() {
-      this.mindMap.search.replaceAll(this.replaceText)
-    },
-
-    close() {
-      this.show = false
-      this.showSearchResultList = false
-      this.showSearchInfo = false
-      this.total = 0
-      this.currentIndex = 0
-      this.searchText = ''
-      this.hideReplaceInput()
-      this.mindMap.search.endSearch()
-    },
-
-    onSearchMatchNodeListChange(list) {
-      this.searchResultList = list.map((item) => {
-        const data = item.data || item.nodeData.data
-        let name = data.text
-        const id = data.uid
-        if (data.richText) {
-          name = getTextFromHtml(name)
-        }
-        const reg = new RegExp(`${this.searchText.trim()}`, 'g')
-        const text = name.replace(reg, (a) => {
-          return `<span class="match">${a}</span>`
-        })
-        return {
-          data: item,
-          id,
-          text,
-          name,
-        }
-      })
-    },
-
-    setSearchResultListHeight() {
-      this.searchResultListHeight = window.innerHeight - 267 - 24
-    },
-
-    onSearchResultItemClick(index) {
-      this.mindMap.search.jump(index)
-    },
-  },
-  emits: ['closeSideBar'],
+const handleSearchInfoChange = (data) => {
+  currentIndex.value = data.currentIndex + 1
+  total.value = data.total
+  showSearchInfo.value = true
 }
+
+const showSearch = () => {
+  proxy.$bus.$emit('closeSideBar')
+  show.value = true
+  searchInputRef.value.focus()
+}
+
+const hideReplaceInput = () => {
+  showReplaceInput.value = false
+  replaceText.value = ''
+}
+
+const onFocus = () => {
+  props.mindMap.updateConfig({
+    enableAutoEnterTextEditWhenKeydown: false
+  })
+}
+
+const onBlur = () => {
+  props.mindMap.updateConfig({
+    enableAutoEnterTextEditWhenKeydown: true
+  })
+}
+
+const blur = () => {
+  if (searchInputRef.value) {
+    searchInputRef.value.blur()
+  }
+  if (replaceInputRef.value) {
+    replaceInputRef.value.blur()
+  }
+}
+
+const onSearchNext = () => {
+  showSearchResultList.value = true
+  props.mindMap.search.search(searchText.value)
+}
+
+const replace = () => {
+  props.mindMap.search.replace(replaceText.value, true)
+}
+
+const replaceAll = () => {
+  props.mindMap.search.replaceAll(replaceText.value)
+}
+
+const close = () => {
+  show.value = false
+  showSearchResultList.value = false
+  showSearchInfo.value = false
+  total.value = 0
+  currentIndex.value = 0
+  searchText.value = ''
+  hideReplaceInput()
+  props.mindMap.search.endSearch()
+}
+
+const onSearchMatchNodeListChange = (list) => {
+  searchResultList.value = list.map(item => {
+    const data = item.data || item.nodeData.data
+    let name = data.text
+    const id = data.uid
+    if (data.richText) {
+      name = getTextFromHtml(name)
+    }
+    const reg = new RegExp(`${searchText.value.trim()}`, 'g')
+    const text = name.replace(reg, a => {
+      return `<span class="match">${a}</span>`
+    })
+    return {
+      data: item,
+      id,
+      text,
+      name
+    }
+  })
+}
+
+const setSearchResultListHeight = () => {
+  searchResultListHeight.value = window.innerHeight - 267 - 24
+}
+
+const onSearchResultItemClick = (index) => {
+  props.mindMap.search.jump(index)
+}
+
+onMounted(() => {
+  proxy.$bus.$on('show_search', showSearch)
+  props.mindMap.on('search_info_change', handleSearchInfoChange)
+  props.mindMap.on('node_click', blur)
+  props.mindMap.on('draw_click', blur)
+  props.mindMap.on('expand_btn_click', blur)
+  props.mindMap.on(
+    'search_match_node_list_change',
+    onSearchMatchNodeListChange
+  )
+  props.mindMap.keyCommand.addShortcut('Control+f', showSearch)
+  window.addEventListener('resize', setSearchResultListHeight)
+  proxy.$bus.$on('setData', close)
+  setSearchResultListHeight()
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('show_search', showSearch)
+  props.mindMap.off('search_info_change', handleSearchInfoChange)
+  props.mindMap.off('node_click', blur)
+  props.mindMap.off('draw_click', blur)
+  props.mindMap.off('expand_btn_click', blur)
+  props.mindMap.off(
+    'search_match_node_list_change',
+    onSearchMatchNodeListChange
+  )
+  props.mindMap.keyCommand.removeShortcut('Control+f', showSearch)
+  window.removeEventListener('resize', setSearchResultListHeight)
+  proxy.$bus.$off('setData', close)
+})
 </script>
 
 <style lang="less" scoped>

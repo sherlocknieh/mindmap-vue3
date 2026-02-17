@@ -21,98 +21,97 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      showImgPlacementToolbar: false,
-      style: {
-        left: 0,
-        top: 0,
-      },
-      imgPlacementList: ['top', 'bottom', 'left', 'right'],
-      node: null,
-      imgNode: null,
-      imgPlacement: '',
-    }
-  },
-  created() {
-    this.mindMap.on('node_img_click', this.show)
-    this.mindMap.on('draw_click', this.close)
-    this.mindMap.on('svg_mousedown', this.close)
-    this.mindMap.on('node_dblclick', this.close)
-    this.mindMap.on('node_active', this.onNodeActive)
-    this.mindMap.on('scale', this.onScale)
-    this.mindMap.on('node_img_adjust_btn_mousedown', this.close)
-    this.mindMap.on('delete_node_img_from_delete_btn', this.close)
-    this.mindMap.on('translate', this.close)
-  },
-  mounted() {
-    document.body.append(this.$refs.nodeImgPlacementToolbar)
-  },
-  beforeUnmount() {
-    this.mindMap.off('node_img_click', this.show)
-    this.mindMap.off('draw_click', this.close)
-    this.mindMap.off('svg_mousedown', this.close)
-    this.mindMap.off('node_dblclick', this.close)
-    this.mindMap.off('node_active', this.onNodeActive)
-    this.mindMap.off('scale', this.onScale)
-    this.mindMap.off('node_img_adjust_btn_mousedown', this.close)
-    this.mindMap.off('delete_node_img_from_delete_btn', this.close)
-    this.mindMap.off('translate', this.close)
-  },
-  methods: {
-    show(node, imgNode) {
-      this.node = node
-      this.imgPlacement = node.getStyle('imgPlacement')
-      this.imgNode = imgNode
-      this.showImgPlacementToolbar = true
-      this.$nextTick(() => {
-        this.updatePos()
-      })
-    },
+<script setup>
+import { ref, reactive, nextTick, onMounted, onBeforeUnmount } from 'vue'
 
-    close() {
-      this.showImgPlacementToolbar = false
-      this.node = null
-      this.imgPlacement = ''
-      this.imgNode = null
-      this.style.left = 0
-      this.style.top = 0
-    },
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    updatePos() {
-      if (!this.imgNode) return
-      const { width, height } =
-        this.$refs.nodeImgPlacementToolbar.getBoundingClientRect()
-      const { width: imgWidth, x, y } = this.imgNode.rbox()
-      this.style.left = x + imgWidth / 2 - width / 2 + 'px'
-      this.style.top = y - height - 5 + 'px'
-    },
+const nodeImgPlacementToolbar = ref(null)
+const showImgPlacementToolbar = ref(false)
+const style = reactive({
+  left: 0,
+  top: 0
+})
+const imgPlacementList = ['top', 'bottom', 'left', 'right']
+const node = ref(null)
+const imgNode = ref(null)
+const imgPlacement = ref('')
 
-    onScale() {
-      this.updatePos()
-    },
-
-    onNodeActive(node) {
-      if (node === this.node) {
-        return
-      }
-      this.close()
-    },
-
-    updateImgPlacement(item) {
-      this.imgPlacement = item
-      this.node.setStyle('imgPlacement', item)
-      this.close()
-    },
-  },
+const show = (n, img) => {
+  node.value = n
+  imgPlacement.value = n.getStyle('imgPlacement')
+  imgNode.value = img
+  showImgPlacementToolbar.value = true
+  nextTick(() => {
+    updatePos()
+  })
 }
+
+const close = () => {
+  showImgPlacementToolbar.value = false
+  node.value = null
+  imgPlacement.value = ''
+  imgNode.value = null
+  style.left = 0
+  style.top = 0
+}
+
+const updatePos = () => {
+  if (!imgNode.value) return
+  const {
+    width,
+    height
+  } = nodeImgPlacementToolbar.value.getBoundingClientRect()
+  const { width: imgWidth, x, y } = imgNode.value.rbox()
+  style.left = x + imgWidth / 2 - width / 2 + 'px'
+  style.top = y - height - 5 + 'px'
+}
+
+const onScale = () => {
+  updatePos()
+}
+
+const onNodeActive = (n) => {
+  if (n === node.value) {
+    return
+  }
+  close()
+}
+
+const updateImgPlacement = (item) => {
+  imgPlacement.value = item
+  node.value.setStyle('imgPlacement', item)
+  close()
+}
+
+onMounted(() => {
+  props.mindMap.on('node_img_click', show)
+  props.mindMap.on('draw_click', close)
+  props.mindMap.on('svg_mousedown', close)
+  props.mindMap.on('node_dblclick', close)
+  props.mindMap.on('node_active', onNodeActive)
+  props.mindMap.on('scale', onScale)
+  props.mindMap.on('node_img_adjust_btn_mousedown', close)
+  props.mindMap.on('delete_node_img_from_delete_btn', close)
+  props.mindMap.on('translate', close)
+  document.body.append(nodeImgPlacementToolbar.value)
+})
+
+onBeforeUnmount(() => {
+  props.mindMap.off('node_img_click', show)
+  props.mindMap.off('draw_click', close)
+  props.mindMap.off('svg_mousedown', close)
+  props.mindMap.off('node_dblclick', close)
+  props.mindMap.off('node_active', onNodeActive)
+  props.mindMap.off('scale', onScale)
+  props.mindMap.off('node_img_adjust_btn_mousedown', close)
+  props.mindMap.off('delete_node_img_from_delete_btn', close)
+  props.mindMap.off('translate', close)
+})
 </script>
 
 <style lang="less" scoped>
