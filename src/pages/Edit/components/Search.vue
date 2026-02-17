@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { Search as ElIconSearch, Edit as ElIconEdit } from '@element-plus/icons'
+import { Search as ElIconSearch, Edit as ElIconEdit } from '@element-plus/icons-vue'
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
