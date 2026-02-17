@@ -11,64 +11,60 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
 
-// 字数及节点数量统计
-let countEl = document.createElement('div')
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      textStr: '',
-      words: 0,
-      num: 0,
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  created() {
-    $on(this.$bus, 'data_change', this.onDataChange)
-    if (this.mindMap) {
-      this.onDataChange(this.mindMap.getData())
-    }
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'data_change', this.onDataChange)
-  },
-  methods: {
-    // 监听数据变化
-    onDataChange(data) {
-      this.textStr = ''
-      this.words = 0
-      this.num = 0
-      this.walk(data)
-      countEl.innerHTML = this.textStr
-      this.words = countEl.textContent.length
-    },
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    // 遍历
-    walk(data) {
-      if (!data) return
-      this.num++
-      this.textStr += String(data.data.text) || ''
-      if (data.children && data.children.length > 0) {
-        data.children.forEach((item) => {
-          this.walk(item)
-        })
-      }
-    },
-  },
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const textStr = ref('')
+const words = ref(0)
+const num = ref(0)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+// 字数及节点数量统计
+const countEl = document.createElement('div')
+
+// 监听数据变化
+const onDataChange = (data) => {
+  textStr.value = ''
+  words.value = 0
+  num.value = 0
+  walk(data)
+  countEl.innerHTML = textStr.value
+  words.value = countEl.textContent.length
 }
+
+// 遍历
+const walk = (data) => {
+  if (!data) return
+  num.value++
+  textStr.value += String(data.data.text) || ''
+  if (data.children && data.children.length > 0) {
+    data.children.forEach(item => {
+      walk(item)
+    })
+  }
+}
+
+onMounted(() => {
+  proxy.$bus.$on('data_change', onDataChange)
+  if (props.mindMap) {
+    onDataChange(props.mindMap.getData())
+  }
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('data_change', onDataChange)
+})
 </script>
 
 <style lang="less" scoped>

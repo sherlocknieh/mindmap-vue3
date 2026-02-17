@@ -15,61 +15,59 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { store } from '@/config'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-// 侧边栏容器
-export default {
-  props: {
-    title: {
-      type: String,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      show: false,
-      zIndex: 0,
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  watch: {
-    show(val, oldVal) {
-      if (val && !oldVal) {
-        this.zIndex = store.sidebarZIndex++
-      }
-    },
-  },
-  created() {
-    $on(this.$bus, 'closeSideBar', this.handleCloseSidebar)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'closeSideBar', this.handleCloseSidebar)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
+defineProps({
+  title: {
+    type: String,
+    default: ''
+  }
+})
 
-    handleCloseSidebar() {
-      this.close()
-    },
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
 
-    close() {
-      this.show = false
-      this.setActiveSidebar(null)
-    },
+const show = ref(false)
+const zIndex = ref(0)
+const sidebarContent = ref(null)
 
-    getEl() {
-      return this.$refs.sidebarContent
-    },
-  },
+const isDark = computed(() => appStore.localConfig.isDark)
+
+watch(show, (val, oldVal) => {
+  if (val && !oldVal) {
+    zIndex.value = store.sidebarZIndex++
+  }
+})
+
+const handleCloseSidebar = () => {
+  close()
 }
+
+const close = () => {
+  show.value = false
+  appStore.setActiveSidebar(null)
+}
+
+const getEl = () => {
+  return sidebarContent.value
+}
+
+onMounted(() => {
+  proxy.$bus.$on('closeSideBar', handleCloseSidebar)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('closeSideBar', handleCloseSidebar)
+})
+
+defineExpose({
+  show,
+  close,
+  getEl
+})
 </script>
 
 <style lang="less" scoped>
