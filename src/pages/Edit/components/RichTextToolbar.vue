@@ -48,7 +48,7 @@
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
-            v-for="item in fontFamilyList"
+            v-for="item in fontFamilyList_computed"
             :key="item.value"
             :style="{ fontFamily: item.value }"
             :class="{ active: formatInfo.font === item.value }"
@@ -57,9 +57,11 @@
             {{ item.name }}
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconxingzhuang-wenzi"></span>
-        </div>
+        <template #reference>
+          <div class="btn">
+            <span class="icon iconfont iconxingzhuang-wenzi"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -68,7 +70,7 @@
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
-            v-for="item in fontSizeList"
+            v-for="item in fontSizeList_data"
             :key="item"
             :style="{
               fontSize: item + 'px',
@@ -80,18 +82,22 @@
             {{ item }}px
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconcase fontColor"></span>
-        </div>
+        <template #reference>
+          <div class="btn">
+            <span class="icon iconfont iconcase fontColor"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
     <el-tooltip :content="$t('richTextToolbar.color')" placement="top">
       <el-popover placement="bottom" trigger="hover">
         <Color :color="fontColor" @change="changeFontColor"></Color>
-        <div class="btn" slot="reference" :style="{ color: formatInfo.color }">
-          <span class="icon iconfont iconzitiyanse"></span>
-        </div>
+        <template #reference>
+          <div class="btn" :style="{ color: formatInfo.color }">
+            <span class="icon iconfont iconzitiyanse"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -104,9 +110,11 @@
           :color="fontBackgroundColor"
           @change="changeFontBackgroundColor"
         ></Color>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconbeijingyanse"></span>
-        </div>
+        <template #reference>
+          <div class="btn">
+            <span class="icon iconfont iconbeijingyanse"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -115,7 +123,7 @@
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
-            v-for="item in alignList"
+            v-for="item in alignList_computed"
             :key="item.value"
             :class="{ active: formatInfo.align === item.value }"
             @click="changeTextAlign(item.value)"
@@ -123,9 +131,11 @@
             {{ item.name }}
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconjuzhongduiqi"></span>
-        </div>
+        <template #reference>
+          <div class="btn">
+            <span class="icon iconfont iconjuzhongduiqi"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -137,134 +147,127 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { fontFamilyList, fontSizeList, alignList } from '@/config'
 import Color from './Color.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-export default {
-  components: {
-    Color
-  },
-  props: {
-    mindMap: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      fontSizeList,
-      showRichTextToolbar: false,
-      style: {
-        left: 0,
-        top: 0
-      },
-      fontColor: '',
-      fontBackgroundColor: '',
-      formatInfo: {}
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    }),
+const { proxy } = getCurrentInstance()
 
-    fontFamilyList() {
-      return fontFamilyList[this.$i18n.locale] || fontFamilyList.zh
-    },
-
-    alignList() {
-      return alignList[this.$i18n.locale] || alignList.zh
-    }
-  },
-  created() {
-    this.$bus.$on('rich_text_selection_change', this.onRichTextSelectionChange)
-  },
-  mounted() {
-    document.body.append(this.$refs.richTextToolbar)
-  },
-  beforeDestroy() {
-    this.$bus.$off('rich_text_selection_change', this.onRichTextSelectionChange)
-  },
-  methods: {
-    onRichTextSelectionChange(hasRange, rect, formatInfo) {
-      if (hasRange) {
-        this.style.left = rect.left + rect.width / 2 + 'px'
-        this.style.top = rect.top - 60 + 'px'
-        this.formatInfo = { ...(formatInfo || {}) }
-      }
-      this.showRichTextToolbar = hasRange
-    },
-
-    toggleBold() {
-      this.formatInfo.bold = !this.formatInfo.bold
-      this.mindMap.richText.formatText({
-        bold: this.formatInfo.bold
-      })
-    },
-
-    toggleItalic() {
-      this.formatInfo.italic = !this.formatInfo.italic
-      this.mindMap.richText.formatText({
-        italic: this.formatInfo.italic
-      })
-    },
-
-    toggleUnderline() {
-      this.formatInfo.underline = !this.formatInfo.underline
-      this.mindMap.richText.formatText({
-        underline: this.formatInfo.underline
-      })
-    },
-
-    toggleStrike() {
-      this.formatInfo.strike = !this.formatInfo.strike
-      this.mindMap.richText.formatText({
-        strike: this.formatInfo.strike
-      })
-    },
-
-    changeFontFamily(font) {
-      this.formatInfo.font = font
-      this.mindMap.richText.formatText({
-        font
-      })
-    },
-
-    changeFontSize(size) {
-      this.formatInfo.size = size
-      this.mindMap.richText.formatText({
-        size: size + 'px'
-      })
-    },
-
-    changeFontColor(color) {
-      this.formatInfo.color = color
-      this.mindMap.richText.formatText({
-        color
-      })
-    },
-
-    changeFontBackgroundColor(background) {
-      this.formatInfo.background = background
-      this.mindMap.richText.formatText({
-        background
-      })
-    },
-
-    changeTextAlign(align) {
-      this.formatInfo.align = align
-      this.mindMap.richText.formatText({
-        align
-      })
-    },
-
-    removeFormat() {
-      this.mindMap.richText.removeFormat()
-    }
+const props = defineProps({
+  mindMap: {
+    type: Object
   }
+})
+
+const appStore = useAppStore()
+
+const richTextToolbar = ref(null)
+const fontSizeList_data = fontSizeList
+const showRichTextToolbar = ref(false)
+const style = ref({
+  left: 0,
+  top: 0
+})
+const fontColor = ref('')
+const fontBackgroundColor = ref('')
+const formatInfo = ref({})
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+const fontFamilyList_computed = computed(() => {
+  return fontFamilyList[proxy.$i18n.locale] || fontFamilyList.zh
+})
+
+const alignList_computed = computed(() => {
+  return alignList[proxy.$i18n.locale] || alignList.zh
+})
+
+const onRichTextSelectionChange = (hasRange, rect, formatInfoData) => {
+  if (hasRange) {
+    style.value.left = rect.left + rect.width / 2 + 'px'
+    style.value.top = rect.top - 60 + 'px'
+    formatInfo.value = { ...(formatInfoData || {}) }
+  }
+  showRichTextToolbar.value = hasRange
 }
+
+const toggleBold = () => {
+  formatInfo.value.bold = !formatInfo.value.bold
+  props.mindMap.richText.formatText({
+    bold: formatInfo.value.bold
+  })
+}
+
+const toggleItalic = () => {
+  formatInfo.value.italic = !formatInfo.value.italic
+  props.mindMap.richText.formatText({
+    italic: formatInfo.value.italic
+  })
+}
+
+const toggleUnderline = () => {
+  formatInfo.value.underline = !formatInfo.value.underline
+  props.mindMap.richText.formatText({
+    underline: formatInfo.value.underline
+  })
+}
+
+const toggleStrike = () => {
+  formatInfo.value.strike = !formatInfo.value.strike
+  props.mindMap.richText.formatText({
+    strike: formatInfo.value.strike
+  })
+}
+
+const changeFontFamily = (font) => {
+  formatInfo.value.font = font
+  props.mindMap.richText.formatText({
+    font
+  })
+}
+
+const changeFontSize = (size) => {
+  formatInfo.value.size = size
+  props.mindMap.richText.formatText({
+    size: size + 'px'
+  })
+}
+
+const changeFontColor = (color) => {
+  formatInfo.value.color = color
+  props.mindMap.richText.formatText({
+    color
+  })
+}
+
+const changeFontBackgroundColor = (background) => {
+  formatInfo.value.background = background
+  props.mindMap.richText.formatText({
+    background
+  })
+}
+
+const changeTextAlign = (align) => {
+  formatInfo.value.align = align
+  props.mindMap.richText.formatText({
+    align
+  })
+}
+
+const removeFormat = () => {
+  props.mindMap.richText.removeFormat()
+}
+
+onMounted(() => {
+  document.body.append(richTextToolbar.value)
+  proxy.$bus.$on('rich_text_selection_change', onRichTextSelectionChange)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('rich_text_selection_change', onRichTextSelectionChange)
+})
 </script>
 
 <style lang="less" scoped>

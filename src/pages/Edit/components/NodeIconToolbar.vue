@@ -11,141 +11,137 @@
     </div>
 </template>
   
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { nodeIconList as _nodeIconList } from 'simple-mind-map/src/svg/icons'
 import icon from '@/config/icon'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
+
+const { proxy } = getCurrentInstance()
+
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
+
+const appStore = useAppStore()
 
 const allIconList = [..._nodeIconList, ...icon]
 
-export default {
-    props: {
-        mindMap: {
-            type: Object
-        }
-    },
-    data() {
-        return {
-            showNodeIconToolbar: false,
-            style: {
-                left: 0,
-                top: 0
-            },
-            node: null,
-            iconType: '',
-            iconName: '',
-            nodeIconList: [],
-            iconList: []
-        }
-    },
-    computed: {
-        ...mapState(['activeSidebar']),
-    },
-    created() {
-        this.mindMap.on('node_icon_click', this.show)
-        this.mindMap.on('draw_click', this.close)
-        this.mindMap.on('svg_mousedown', this.close)
-        this.mindMap.on('node_dblclick', this.close)
-        this.mindMap.on('node_active', this.onNodeActive)
-        this.mindMap.on('scale', this.onScale)
-        this.$bus.$on('close_node_icon_toolbar', this.close)
-    },
-    mounted() {
-        document.body.append(this.$refs.nodeIconToolbar)
-    },
-    beforeDestroy() {
-        this.mindMap.off('node_icon_click', this.show)
-        this.mindMap.off('draw_click', this.close)
-        this.mindMap.off('svg_mousedown', this.close)
-        this.mindMap.off('node_dblclick', this.close)
-        this.mindMap.off('node_active', this.onNodeActive)
-        this.mindMap.off('scale', this.onScale)
-        this.$bus.$off('close_node_icon_toolbar', this.close)
-    },
-    methods: {
-        ...mapActions(useAppStore, ['setActiveSidebar']),
+const nodeIconToolbar = ref(null)
+const showNodeIconToolbar = ref(false)
+const style = ref({
+  left: 0,
+  top: 0
+})
+const node = ref(null)
+const iconType = ref('')
+const iconName = ref('')
+const nodeIconList = ref([])
+const iconList = ref([])
 
-        show(node, icon) {
-            this.node = node
-            this.iconType = icon.split('_')[0]
-            this.iconName = icon.split('_')[1]
-            this.nodeIconList = node.getData('icon') || []
-            this.iconList = [...allIconList.find((item) => {
-                return item.type === this.iconType
-            }).list]
-            this.updatePos()
-            this.showNodeIconToolbar = true
-            if (this.activeSidebar === 'nodeIconSidebar') {
-                this.setActiveSidebar(null)
-            }
-        },
+const activeSidebar = computed(() => appStore.activeSidebar)
 
-        close() {
-            this.showNodeIconToolbar = false
-            this.node = null
-            this.iconType = ''
-            this.iconName = ''
-            this.nodeIconList = []
-            this.iconList = []
-            this.style.left = 0
-            this.style.top = 0
-        },
-
-        updatePos() {
-            if (!this.node) return
-            const rect = this.node.getRect()
-            this.style.left = rect.x + 'px'
-            this.style.top = rect.y + rect.height + 'px'
-        },
-
-        onScale() {
-            this.updatePos()
-        },
-
-        onNodeActive(node) {
-            if (node === this.node) {
-                return
-            }
-            this.close()
-        },
-
-        deleteIcon() {
-            this.setIcon(this.iconName)
-            this.close()
-        },
-
-        // 获取图标渲染方式
-        getHtml(icon) {
-            return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
-        },
-
-        // 设置icon
-        setIcon(name) {
-            let key = this.iconType + '_' + name
-            let index = this.nodeIconList.findIndex(item => {
-                return item === key
-            })
-            // 删除icon
-            if (index !== -1) {
-                this.nodeIconList.splice(index, 1)
-            } else {
-                let typeIndex = this.nodeIconList.findIndex(item => {
-                    return item.split('_')[0] === this.iconType
-                })
-                // 替换icon
-                if (typeIndex !== -1) {
-                    this.nodeIconList.splice(typeIndex, 1, key)
-                    this.iconName = name
-                } else {
-                    // 增加icon
-                    this.nodeIconList.push(key)
-                }
-            }
-            this.node.setIcon([...this.nodeIconList])
-        },
-    }
+const show = (nodeInstance, iconKey) => {
+  node.value = nodeInstance
+  iconType.value = iconKey.split('_')[0]
+  iconName.value = iconKey.split('_')[1]
+  nodeIconList.value = nodeInstance.getData('icon') || []
+  iconList.value = [...allIconList.find((item) => {
+    return item.type === iconType.value
+  }).list]
+  updatePos()
+  showNodeIconToolbar.value = true
+  if (activeSidebar.value === 'nodeIconSidebar') {
+    appStore.setActiveSidebar(null)
+  }
 }
+
+const close = () => {
+  showNodeIconToolbar.value = false
+  node.value = null
+  iconType.value = ''
+  iconName.value = ''
+  nodeIconList.value = []
+  iconList.value = []
+  style.value.left = 0
+  style.value.top = 0
+}
+
+const updatePos = () => {
+  if (!node.value) return
+  const rect = node.value.getRect()
+  style.value.left = rect.x + 'px'
+  style.value.top = rect.y + rect.height + 'px'
+}
+
+const onScale = () => {
+  updatePos()
+}
+
+const onNodeActive = (activeNode) => {
+  if (activeNode === node.value) {
+    return
+  }
+  close()
+}
+
+const deleteIcon = () => {
+  setIcon(iconName.value)
+  close()
+}
+
+// 获取图标渲染方式
+const getHtml = (iconData) => {
+  return /^<svg/.test(iconData) ? iconData : `<img src="${iconData}" />`
+}
+
+// 设置icon
+const setIcon = (name) => {
+  let key = iconType.value + '_' + name
+  let index = nodeIconList.value.findIndex(item => {
+    return item === key
+  })
+  // 删除icon
+  if (index !== -1) {
+    nodeIconList.value.splice(index, 1)
+  } else {
+    let typeIndex = nodeIconList.value.findIndex(item => {
+      return item.split('_')[0] === iconType.value
+    })
+    // 替换icon
+    if (typeIndex !== -1) {
+      nodeIconList.value.splice(typeIndex, 1, key)
+      iconName.value = name
+    } else {
+      // 增加icon
+      nodeIconList.value.push(key)
+    }
+  }
+  node.value.setIcon([...nodeIconList.value])
+}
+
+onMounted(() => {
+  document.body.append(nodeIconToolbar.value)
+  props.mindMap.on('node_icon_click', show)
+  props.mindMap.on('draw_click', close)
+  props.mindMap.on('svg_mousedown', close)
+  props.mindMap.on('node_dblclick', close)
+  props.mindMap.on('node_active', onNodeActive)
+  props.mindMap.on('scale', onScale)
+  proxy.$bus.$on('close_node_icon_toolbar', close)
+})
+
+onBeforeUnmount(() => {
+  props.mindMap.off('node_icon_click', show)
+  props.mindMap.off('draw_click', close)
+  props.mindMap.off('svg_mousedown', close)
+  props.mindMap.off('node_dblclick', close)
+  props.mindMap.off('node_active', onNodeActive)
+  props.mindMap.off('scale', onScale)
+  proxy.$bus.$off('close_node_icon_toolbar', close)
+})
 </script>
   
 <style lang="less" scoped>
@@ -176,12 +172,12 @@ export default {
             position: relative;
             float: left;
 
-            /deep/ img {
+            :deep(img) {
                 width: 100%;
                 height: 100%;
             }
 
-            /deep/ svg {
+            :deep(svg) {
                 width: 100%;
                 height: 100%;
             }
