@@ -86,35 +86,35 @@ const rules = {
   api: [
     {
       required: true,
-      message: computed(() => proxy.$t('ai.apiValidateTip')),
+      message: () => proxy.$t('ai.apiValidateTip'),
       trigger: 'blur'
     }
   ],
   key: [
     {
       required: true,
-      message: computed(() => proxy.$t('ai.keyValidateTip')),
+      message: () => proxy.$t('ai.keyValidateTip'),
       trigger: 'blur'
     }
   ],
   model: [
     {
       required: true,
-      message: computed(() => proxy.$t('ai.modelValidateTip')),
+      message: () => proxy.$t('ai.modelValidateTip'),
       trigger: 'blur'
     }
   ],
   port: [
     {
       required: true,
-      message: computed(() => proxy.$t('ai.portValidateTip')),
+      message: () => proxy.$t('ai.portValidateTip'),
       trigger: 'blur'
     }
   ],
   method: [
     {
       required: true,
-      message: computed(() => proxy.$t('ai.methodValidateTip')),
+      message: () => proxy.$t('ai.methodValidateTip'),
       trigger: 'blur'
     }
   ]
