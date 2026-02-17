@@ -43,137 +43,132 @@
             </el-form-item> -->
       </el-form>
     </div>
-    <template v-slot:footer>
-      <div class="dialog-footer">
+    <template #footer>
+      <span class="dialog-footer">
         <el-button @click="cancel">{{ $t('ai.cancel') }}</el-button>
         <el-button type="primary" @click="confirm">{{
           $t('ai.confirm')
         }}</el-button>
-      </div>
+      </span>
     </template>
   </el-dialog>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
+import { ElMessage } from 'element-plus'
 
-export default {
-  model: {
-    prop: 'visible',
-    event: 'change',
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      aiConfigDialogVisible: false,
-      ruleForm: {
-        api: '',
-        key: '',
-        model: '',
-        port: '',
-        method: '',
-      },
-      rules: {
-        api: [
-          {
-            required: true,
-            message: this.$t('ai.apiValidateTip'),
-            trigger: 'blur',
-          },
-        ],
-        key: [
-          {
-            required: true,
-            message: this.$t('ai.keyValidateTip'),
-            trigger: 'blur',
-          },
-        ],
-        model: [
-          {
-            required: true,
-            message: this.$t('ai.modelValidateTip'),
-            trigger: 'blur',
-          },
-        ],
-        port: [
-          {
-            required: true,
-            message: this.$t('ai.portValidateTip'),
-            trigger: 'blur',
-          },
-        ],
-        method: [
-          {
-            required: true,
-            message: this.$t('ai.methodValidateTip'),
-            trigger: 'blur',
-          },
-        ],
-      },
+const { proxy } = getCurrentInstance()
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const appStore = useAppStore()
+
+const aiConfigDialogVisible = ref(false)
+const ruleFormRef = ref(null)
+const ruleForm = ref({
+  api: '',
+  key: '',
+  model: '',
+  port: '',
+  method: ''
+})
+
+const rules = {
+  api: [
+    {
+      required: true,
+      message: computed(() => proxy.$t('ai.apiValidateTip')),
+      trigger: 'blur'
     }
-  },
-  computed: {
-    ...mapState(useAppStore, ['aiConfig']),
-  },
-  watch: {
-    visible(val) {
-      this.aiConfigDialogVisible = val
-    },
-    aiConfigDialogVisible(val, oldVal) {
-      if (!val && oldVal) {
-        this.close()
-      }
-    },
-  },
-  created() {
-    this.initFormData()
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setLocalConfig']),
-
-    close() {
-      $emit(this, 'change', false)
-    },
-
-    initFormData() {
-      Object.keys(this.aiConfig).forEach((key) => {
-        this.ruleForm[key] = this.aiConfig[key]
-      })
-    },
-
-    cancel() {
-      this.close()
-      this.initFormData()
-    },
-
-    confirm() {
-      this.$refs.ruleFormRef.validate((valid) => {
-        if (valid) {
-          this.close()
-          this.setLocalConfig({
-            ...this.ruleForm,
-          })
-          this.$message.success(this.$t('ai.configSaveSuccessTip'))
-        }
-      })
-    },
-  },
-  emits: ['change'],
+  ],
+  key: [
+    {
+      required: true,
+      message: computed(() => proxy.$t('ai.keyValidateTip')),
+      trigger: 'blur'
+    }
+  ],
+  model: [
+    {
+      required: true,
+      message: computed(() => proxy.$t('ai.modelValidateTip')),
+      trigger: 'blur'
+    }
+  ],
+  port: [
+    {
+      required: true,
+      message: computed(() => proxy.$t('ai.portValidateTip')),
+      trigger: 'blur'
+    }
+  ],
+  method: [
+    {
+      required: true,
+      message: computed(() => proxy.$t('ai.methodValidateTip')),
+      trigger: 'blur'
+    }
+  ]
 }
+
+const aiConfig = computed(() => appStore.aiConfig)
+
+watch(() => props.modelValue, (val) => {
+  aiConfigDialogVisible.value = val
+})
+
+watch(aiConfigDialogVisible, (val, oldVal) => {
+  if (!val && oldVal) {
+    close()
+  }
+})
+
+const close = () => {
+  emit('update:modelValue', false)
+}
+
+const initFormData = () => {
+  Object.keys(aiConfig.value).forEach(key => {
+    ruleForm.value[key] = aiConfig.value[key]
+  })
+}
+
+const cancel = () => {
+  close()
+  initFormData()
+}
+
+const confirm = () => {
+  ruleFormRef.value.validate(valid => {
+    if (valid) {
+      close()
+      appStore.setLocalConfig({
+        ...ruleForm.value
+      })
+      ElMessage.success(proxy.$t('ai.configSaveSuccessTip'))
+    }
+  })
+}
+
+onMounted(() => {
+  initFormData()
+})
 </script>
 
 <style lang="less" scoped>
 .aiConfigDialog {
-  :deep(.el-dialog__body) {
-    padding: 12px 20px;
-  }
+    :deep(.el-dialog__body) {
+      padding: 12px 20px;
+    }
 
   .aiConfigBox {
     a {

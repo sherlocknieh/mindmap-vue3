@@ -14,7 +14,7 @@
       <div class="boxContent">
         <!-- 图标 -->
         <div class="iconBox" v-if="activeName === 'icon'">
-          <div class="item" v-for="item in nodeIconList" :key="item.name">
+          <div class="item" v-for="item in nodeIconList_computed" :key="item.name">
             <div class="title">{{ item.name }}</div>
             <div class="list">
               <div
@@ -54,121 +54,113 @@
   </Sidebar>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import Sidebar from './Sidebar.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { nodeIconList } from 'simple-mind-map/src/svg/icons'
 import { mergerIconList } from 'simple-mind-map/src/utils/index'
 import icon from '@/config/icon'
 import image from '@/config/image'
 
-export default {
-  components: {
-    Sidebar,
-  },
-  data() {
-    return {
-      activeName: 'icon',
-      nodeIconList: mergerIconList([...nodeIconList, ...icon]),
-      nodeImageList: [...image],
-      iconList: [],
-      nodeImage: '',
-      activeNodes: [],
+const { proxy } = getCurrentInstance()
+
+const appStore = useAppStore()
+
+const sidebar = ref(null)
+const activeName = ref('icon')
+const nodeIconList_computed = mergerIconList([...nodeIconList, ...icon])
+const nodeImageList = [...image]
+const iconList = ref([])
+const nodeImage = ref('')
+const activeNodes = ref([])
+
+const activeSidebar = computed(() => appStore.activeSidebar)
+const isDark = computed(() => appStore.localConfig.isDark)
+
+watch(activeSidebar, (val) => {
+  if (val === 'nodeIconSidebar') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (activeNodes.value.length > 0) {
+    if (activeNodes.value.length === 1) {
+      let firstNode = activeNodes.value[0]
+      nodeImage.value = firstNode.getData('image') || ''
+      iconList.value = firstNode.getData('icon') || [] // 回显图标
+    } else {
+      nodeImage.value = []
+      iconList.value = []
     }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      activeSidebar: (state) => state.activeSidebar,
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'nodeIconSidebar') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    },
-  },
-  created() {
-    $on(this.$bus, 'node_active', this.handleNodeActive)
-    $on(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'node_active', this.handleNodeActive)
-    $off(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
-  },
-  methods: {
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (this.activeNodes.length > 0) {
-        if (this.activeNodes.length === 1) {
-          let firstNode = this.activeNodes[0]
-          this.nodeImage = firstNode.getData('image') || ''
-          this.iconList = firstNode.getData('icon') || [] // 回显图标
-        } else {
-          this.nodeImage = []
-          this.iconList = []
-        }
-      } else {
-        this.iconList = []
-        this.nodeImage = ''
-      }
-    },
-
-    handleShowNodeIcon() {
-      this.dialogVisible = true
-    },
-
-    // 获取图标渲染方式
-    getHtml(icon) {
-      return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
-    },
-
-    // 设置icon
-    setIcon(type, name) {
-      this.activeNodes.forEach((node) => {
-        const iconList = [...(node.getData('icon') || [])]
-        let key = type + '_' + name
-        let index = iconList.findIndex((item) => {
-          return item === key
-        })
-        // 删除icon
-        if (index !== -1) {
-          iconList.splice(index, 1)
-        } else {
-          let typeIndex = iconList.findIndex((item) => {
-            return item.split('_')[0] === type
-          })
-          // 替换icon
-          if (typeIndex !== -1) {
-            iconList.splice(typeIndex, 1, key)
-          } else {
-            // 增加icon
-            iconList.push(key)
-          }
-        }
-        node.setIcon(iconList)
-        if (this.activeNodes.length === 1) {
-          this.iconList = iconList
-        }
-      })
-    },
-
-    // 设置贴纸
-    setImage(image) {
-      this.activeNodes.forEach((node) => {
-        this.nodeImage = image.url
-        node.setImage({
-          ...image,
-        })
-      })
-    },
-  },
+  } else {
+    iconList.value = []
+    nodeImage.value = ''
+  }
 }
+
+const handleShowNodeIcon = () => {
+  // dialogVisible is not used in this component
+}
+
+// 获取图标渲染方式
+const getHtml = (icon) => {
+  return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
+}
+
+// 设置icon
+const setIcon = (type, name) => {
+  activeNodes.value.forEach(node => {
+    const iconListData = [...(node.getData('icon') || [])]
+    let key = type + '_' + name
+    let index = iconListData.findIndex(item => {
+      return item === key
+    })
+    // 删除icon
+    if (index !== -1) {
+      iconListData.splice(index, 1)
+    } else {
+      let typeIndex = iconListData.findIndex(item => {
+        return item.split('_')[0] === type
+      })
+      // 替换icon
+      if (typeIndex !== -1) {
+        iconListData.splice(typeIndex, 1, key)
+      } else {
+        // 增加icon
+        iconListData.push(key)
+      }
+    }
+    node.setIcon(iconListData)
+    if (activeNodes.value.length === 1) {
+      iconList.value = iconListData
+    }
+  })
+}
+
+// 设置贴纸
+const setImage = (image) => {
+  activeNodes.value.forEach(node => {
+    nodeImage.value = image.url
+    node.setImage({
+      ...image
+    })
+  })
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeIcon', handleShowNodeIcon)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeIcon', handleShowNodeIcon)
+})
 </script>
 
 <style lang="less" scoped>

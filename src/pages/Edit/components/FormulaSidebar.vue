@@ -30,89 +30,80 @@
   </Sidebar>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import Sidebar from './Sidebar.vue'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { formulaList } from '@/config/constant'
+import { ElMessage } from 'element-plus'
 
-export default {
-  components: {
-    Sidebar,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
+const { proxy } = getCurrentInstance()
+
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
+
+const appStore = useAppStore()
+
+const sidebar = ref(null)
+const formulaText = ref('')
+const list = ref([])
+const activeNodes = ref([])
+
+const activeSidebar = computed(() => appStore.activeSidebar)
+const isDark = computed(() => appStore.localConfig.isDark)
+const localConfig = computed(() => appStore.localConfig)
+
+watch(activeSidebar, (val) => {
+  if (val === 'formulaSidebar') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const init = () => {
+  if (!window.katex) return
+  list.value = formulaList.map(item => {
     return {
-      formulaText: '',
-      list: [],
+      overview: window.katex.renderToString(
+        item,
+        props.mindMap.formula.getKatexConfig()
+      ),
+      text: item
     }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      activeSidebar: (state) => state.activeSidebar,
-      isDark: (state) => state.localConfig.isDark,
-      localConfig: (state) => state.localConfig,
-    }),
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'formulaSidebar') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    },
-  },
-  created() {
-    $on(this.$bus, 'node_active', this.handleNodeActive)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'node_active', this.handleNodeActive)
-  },
-  mounted() {
-    this.init()
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setActiveSidebar']),
-
-    init() {
-      if (!window.katex) return
-      this.list = formulaList.map((item) => {
-        return {
-          overview: window.katex.renderToString(
-            item,
-            this.mindMap.formula.getKatexConfig()
-          ),
-          text: item,
-        }
-      })
-    },
-
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (
-        this.activeNodes.length <= 0 &&
-        this.activeSidebar === 'formulaSidebar'
-      ) {
-        this.setActiveSidebar(null)
-      }
-    },
-
-    confirm() {
-      if (!this.localConfig.openNodeRichText) {
-        return this.$message.warning(this.$t('formulaSidebar.tip'))
-      }
-      let str = this.formulaText.trim()
-      if (!str) return
-      this.mindMap.execCommand('INSERT_FORMULA', str)
-    },
-  },
+  })
 }
+
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (
+    activeNodes.value.length <= 0 &&
+    activeSidebar.value === 'formulaSidebar'
+  ) {
+    appStore.setActiveSidebar(null)
+  }
+}
+
+const confirm = () => {
+  if (!localConfig.value.openNodeRichText) {
+    return ElMessage.warning(proxy.$t('formulaSidebar.tip'))
+  }
+  let str = formulaText.value.trim()
+  if (!str) return
+  props.mindMap.execCommand('INSERT_FORMULA', str)
+}
+
+onMounted(() => {
+  init()
+  proxy.$bus.$on('node_active', handleNodeActive)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+})
 </script>
 
 <style lang="less" scoped>

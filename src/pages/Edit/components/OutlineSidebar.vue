@@ -35,61 +35,53 @@
   </Sidebar>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch } from 'vue'
 import Sidebar from './Sidebar.vue'
-import { mapState, mapActions } from 'pinia'
-import { useAppStore } from '@/store'
 import Outline from './Outline.vue'
+import { useAppStore } from '@/store'
 import { printOutline } from '@/utils'
 
 // 大纲侧边栏
-export default {
-  components: {
-    Sidebar,
-    Outline,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-      activeSidebar: (state) => state.activeSidebar,
-    }),
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'outline') {
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    },
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setIsOutlineEdit', 'setActiveSidebar']),
+defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    onChangeToOutlineEdit() {
-      this.setActiveSidebar(null)
-      this.setIsOutlineEdit(true)
-    },
+const appStore = useAppStore()
 
-    onScrollTo(y) {
-      let container = this.$refs.sidebar.getEl()
-      let height = container.offsetHeight
-      let top = container.scrollTop
-      if (y > top + height) {
-        container.scrollTo(0, y - height / 2)
-      }
-    },
+const sidebar = ref(null)
+const outlineRef = ref(null)
 
-    // 打印
-    onPrint() {
-      printOutline(this.$refs.outlineRef.$el)
-    },
-  },
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+
+watch(activeSidebar, (val) => {
+  if (val === 'outline') {
+    sidebar.value.show = true
+  } else {
+    sidebar.value.show = false
+  }
+})
+
+const onChangeToOutlineEdit = () => {
+  appStore.setActiveSidebar(null)
+  appStore.setIsOutlineEdit(true)
+}
+
+const onScrollTo = (y) => {
+  let container = sidebar.value.getEl()
+  let height = container.offsetHeight
+  let top = container.scrollTop
+  if (y > top + height) {
+    container.scrollTo(0, y - height / 2)
+  }
+}
+
+// 打印
+const onPrint = () => {
+  printOutline(outlineRef.value.$el)
 }
 </script>
 
