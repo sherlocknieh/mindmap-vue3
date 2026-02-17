@@ -29,90 +29,88 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
 
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      timer: null,
-      resizeTimer: null,
-      verticalScrollbarStyle: {},
-      horizontalScrollbarStyle: {},
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  mounted() {
-    this.setScrollBarWrapSize()
-    $on(this.$bus, 'scrollbar_change', this.updateScrollbar)
-    window.addEventListener('resize', this.onResize)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'scrollbar_change', this.updateScrollbar)
-    window.removeEventListener('resize', this.onResize)
-  },
-  methods: {
-    // 向插件传递滚动条宽高数据
-    setScrollBarWrapSize() {
-      if (!this.mindMap.scrollbar) return
-      const { width } =
-        this.$refs.horizontalScrollbarRef.getBoundingClientRect()
-      const { height } = this.$refs.verticalScrollbarRef.getBoundingClientRect()
-      this.mindMap.scrollbar.setScrollBarWrapSize(width, height)
-    },
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    // 窗口尺寸变化
-    onResize() {
-      clearTimeout(this.resizeTimer)
-      this.resizeTimer = setTimeout(() => {
-        this.setScrollBarWrapSize()
-      }, 300)
-    },
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
 
-    // 调用插件方法更新滚动条位置和大小
-    updateScrollbar({ vertical, horizontal }) {
-      this.verticalScrollbarStyle = {
-        top: vertical.top + '%',
-        height: vertical.height + '%',
-      }
-      this.horizontalScrollbarStyle = {
-        left: horizontal.left + '%',
-        width: horizontal.width + '%',
-      }
-    },
+const timer = ref(null)
+const resizeTimer = ref(null)
+const verticalScrollbarStyle = ref({})
+const horizontalScrollbarStyle = ref({})
+const verticalScrollbarRef = ref(null)
+const horizontalScrollbarRef = ref(null)
 
-    // 垂直滚动条按下事件调用插件方法
-    onVerticalScrollbarMousedown(e) {
-      this.mindMap.scrollbar.onMousedown(e, 'vertical')
-    },
+const isDark = computed(() => appStore.localConfig.isDark)
 
-    // 垂直滚动条点击事件调用插件方法
-    onVerticalScrollbarClick(e) {
-      this.mindMap.scrollbar.onClick(e, 'vertical')
-    },
-
-    // 水平滚动条按下事件调用插件方法
-    onHorizontalScrollbarMousedown(e) {
-      this.mindMap.scrollbar.onMousedown(e, 'horizontal')
-    },
-
-    // 水平滚动条点击事件调用插件方法
-    onHorizontalScrollbarClick(e) {
-      this.mindMap.scrollbar.onClick(e, 'horizontal')
-    },
-  },
+// 向插件传递滚动条宽高数据
+const setScrollBarWrapSize = () => {
+  if (!props.mindMap.scrollbar) return
+  const {
+    width
+  } = horizontalScrollbarRef.value.getBoundingClientRect()
+  const { height } = verticalScrollbarRef.value.getBoundingClientRect()
+  props.mindMap.scrollbar.setScrollBarWrapSize(width, height)
 }
+
+// 窗口尺寸变化
+const onResize = () => {
+  clearTimeout(resizeTimer.value)
+  resizeTimer.value = setTimeout(() => {
+    setScrollBarWrapSize()
+  }, 300)
+}
+
+// 调用插件方法更新滚动条位置和大小
+const updateScrollbar = ({ vertical, horizontal }) => {
+  verticalScrollbarStyle.value = {
+    top: vertical.top + '%',
+    height: vertical.height + '%'
+  }
+  horizontalScrollbarStyle.value = {
+    left: horizontal.left + '%',
+    width: horizontal.width + '%'
+  }
+}
+
+// 垂直滚动条按下事件调用插件方法
+const onVerticalScrollbarMousedown = (e) => {
+  props.mindMap.scrollbar.onMousedown(e, 'vertical')
+}
+
+// 垂直滚动条点击事件调用插件方法
+const onVerticalScrollbarClick = (e) => {
+  props.mindMap.scrollbar.onClick(e, 'vertical')
+}
+
+// 水平滚动条按下事件调用插件方法
+const onHorizontalScrollbarMousedown = (e) => {
+  props.mindMap.scrollbar.onMousedown(e, 'horizontal')
+}
+
+// 水平滚动条点击事件调用插件方法
+const onHorizontalScrollbarClick = (e) => {
+  props.mindMap.scrollbar.onClick(e, 'horizontal')
+}
+
+onMounted(() => {
+  setScrollBarWrapSize()
+  proxy.$bus.$on('scrollbar_change', updateScrollbar)
+  window.addEventListener('resize', onResize)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('scrollbar_change', updateScrollbar)
+  window.removeEventListener('resize', onResize)
+})
 </script>
 
 <style lang="less" scoped>

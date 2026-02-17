@@ -95,7 +95,7 @@
     <div class="item">
       <el-dropdown @command="handleCommand">
         <div class="btn el-icon-more"></div>
-        <template v-slot:dropdown>
+        <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="shortcutKey">
               <span class="iconfont iconjianpan"></span>
@@ -129,136 +129,114 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, onMounted, getCurrentInstance } from 'vue'
 import Scale from './Scale.vue'
 import Fullscreen from './Fullscreen.vue'
 import MouseAction from './MouseAction.vue'
 import { langList } from '@/config'
 import i18n from '@/i18n'
 import { storeLang, getLang } from '@/api'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import pkg from 'simple-mind-map/package.json'
 import Demonstrate from './Demonstrate.vue'
 
-export default {
-  components: {
-    Scale,
-    Fullscreen,
-    MouseAction,
-    Demonstrate,
-  },
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      version: pkg.version,
-      langList,
-      lang: '',
-      openMiniMap: false,
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isReadonly: (state) => state.isReadonly,
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  created() {
-    this.lang = getLang()
-  },
-  methods: {
-    ...mapActions(useAppStore, [
-      'setLocalConfig',
-      'setIsReadonly',
-      'setIsSourceCodeEdit',
-      'setActiveSidebar',
-    ]),
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
 
-    readonlyChange() {
-      this.setIsReadonly(!this.isReadonly)
-      this.mindMap.setMode(this.isReadonly ? 'readonly' : 'edit')
-    },
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
 
-    toggleMiniMap() {
-      this.openMiniMap = !this.openMiniMap
-      $emit(this.$bus, 'toggle_mini_map', this.openMiniMap)
-    },
+const version = ref(pkg.version)
+const lang = ref('')
+const openMiniMap = ref(false)
 
-    onLangChange(lang) {
-      i18n.locale = lang
-      storeLang(lang)
-      $emit(this.$bus, 'lang_change')
-    },
+const isReadonly = computed(() => appStore.isReadonly)
+const isDark = computed(() => appStore.localConfig.isDark)
 
-    showSearch() {
-      $emit(this.$bus, 'show_search')
-    },
-
-    toggleDark() {
-      this.setLocalConfig({
-        isDark: !this.isDark,
-      })
-    },
-
-    handleCommand(command) {
-      if (command === 'shortcutKey') {
-        this.setActiveSidebar('shortcutKey')
-        return
-      } else if (command === 'aiChat') {
-        this.setActiveSidebar('ai')
-        return
-      } else if (command === 'client') {
-        $emit(
-          this.$bus,
-          'showDownloadTip',
-          this.$t('navigatorToolbar.downloadClient'),
-          this.$t('navigatorToolbar.downloadDesc')
-        )
-        return
-      }
-      let url = ''
-      switch (command) {
-        case 'github':
-          url = 'https://github.com/wanglin2/mind-map'
-          break
-        case 'helpDoc':
-          url = 'https://wanglin2.github.io/mind-map-docs/help/help1.html'
-          break
-        case 'devDoc':
-          url =
-            'https://wanglin2.github.io/mind-map-docs/start/introduction.html'
-          break
-        case 'site':
-          url = 'https://wanglin2.github.io/mind-map-docs/'
-          break
-        case 'issue':
-          url = 'https://github.com/wanglin2/mind-map/issues/new'
-          break
-
-        default:
-          break
-      }
-      const a = document.createElement('a')
-      a.href = url
-      a.target = '_blank'
-      a.click()
-    },
-
-    backToRoot() {
-      this.mindMap.renderer.setRootNodeCenter()
-    },
-
-    openSourceCodeEdit() {
-      this.setIsSourceCodeEdit(true)
-    },
-  },
-  emits: ['toggle_mini_map', 'showDownloadTip', 'lang_change', 'show_search'],
+const readonlyChange = () => {
+  appStore.setIsReadonly(!isReadonly.value)
+  props.mindMap.setMode(isReadonly.value ? 'readonly' : 'edit')
 }
+
+const toggleMiniMap = () => {
+  openMiniMap.value = !openMiniMap.value
+  proxy.$bus.$emit('toggle_mini_map', openMiniMap.value)
+}
+
+const onLangChange = (langValue) => {
+  i18n.locale = langValue
+  storeLang(langValue)
+  proxy.$bus.$emit('lang_change')
+}
+
+const showSearch = () => {
+  proxy.$bus.$emit('show_search')
+}
+
+const toggleDark = () => {
+  appStore.setLocalConfig({
+    isDark: !isDark.value
+  })
+}
+
+const handleCommand = (command) => {
+  if (command === 'shortcutKey') {
+    appStore.setActiveSidebar('shortcutKey')
+    return
+  } else if (command === 'aiChat') {
+    appStore.setActiveSidebar('ai')
+    return
+  } else if (command === 'client') {
+    proxy.$bus.$emit(
+      'showDownloadTip',
+      proxy.$t('navigatorToolbar.downloadClient'),
+      proxy.$t('navigatorToolbar.downloadDesc')
+    )
+    return
+  }
+  let url = ''
+  switch (command) {
+    case 'github':
+      url = 'https://github.com/wanglin2/mind-map'
+      break
+    case 'helpDoc':
+      url = 'https://wanglin2.github.io/mind-map-docs/help/help1.html'
+      break
+    case 'devDoc':
+      url =
+        'https://wanglin2.github.io/mind-map-docs/start/introduction.html'
+      break
+    case 'site':
+      url = 'https://wanglin2.github.io/mind-map-docs/'
+      break
+    case 'issue':
+      url = 'https://github.com/wanglin2/mind-map/issues/new'
+      break
+
+    default:
+      break
+  }
+  const a = document.createElement('a')
+  a.href = url
+  a.target = '_blank'
+  a.click()
+}
+
+const backToRoot = () => {
+  props.mindMap.renderer.setRootNodeCenter()
+}
+
+const openSourceCodeEdit = () => {
+  appStore.setIsSourceCodeEdit(true)
+}
+
+onMounted(() => {
+  lang.value = getLang()
+})
 </script>
 
 <style lang="less" scoped>

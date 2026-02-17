@@ -50,73 +50,78 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-    isDark: {
-      type: Boolean,
-    },
+<script setup>
+import { ref, onMounted, onBeforeUnmount, nextTick, getCurrentInstance } from 'vue'
+
+const props = defineProps({
+  mindMap: {
+    type: Object
   },
-  data() {
-    return {
-      isEnterDemonstrate: false,
-      curStepIndex: 0,
-      totalStep: 0,
-      inputStep: '',
-    }
-  },
-  created() {
-    $on(this.$bus, 'demonstrate_jump', this.onJump)
-    $on(this.$bus, 'exit_demonstrate', this.onExit)
-  },
-  methods: {
-    enterDemoMode() {
-      this.isEnterDemonstrate = true
-      this.$nextTick(() => {
-        const el = document.querySelector('#mindMapContainer')
-        el.appendChild(this.$refs.exitDemonstrateBtnRef)
-        el.appendChild(this.$refs.stepBoxRef)
-      })
-      this.mindMap.demonstrate.enter()
-    },
+  isDark: {
+    type: Boolean
+  }
+})
 
-    exit() {
-      this.mindMap.demonstrate.exit()
-    },
+const { proxy } = getCurrentInstance()
 
-    onExit() {
-      this.isEnterDemonstrate = false
-      this.curStepIndex = 0
-      this.totalStep = 0
-    },
+const isEnterDemonstrate = ref(false)
+const curStepIndex = ref(0)
+const totalStep = ref(0)
+const inputStep = ref('')
+const exitDemonstrateBtnRef = ref(null)
+const stepBoxRef = ref(null)
 
-    onJump(index, total) {
-      this.curStepIndex = index
-      this.totalStep = total
-    },
-
-    prev() {
-      this.mindMap.demonstrate.prev()
-    },
-
-    next() {
-      this.mindMap.demonstrate.next()
-    },
-
-    onEnter() {
-      const num = Number(this.inputStep)
-      if (Number.isNaN(num)) {
-        this.inputStep = ''
-      } else if (num >= 1 && num <= this.totalStep) {
-        this.mindMap.demonstrate.jump(num - 1)
-      }
-    },
-  },
+const enterDemoMode = () => {
+  isEnterDemonstrate.value = true
+  nextTick(() => {
+    const el = document.querySelector('#mindMapContainer')
+    el.appendChild(exitDemonstrateBtnRef.value)
+    el.appendChild(stepBoxRef.value)
+  })
+  props.mindMap.demonstrate.enter()
 }
+
+const exit = () => {
+  props.mindMap.demonstrate.exit()
+}
+
+const onExit = () => {
+  isEnterDemonstrate.value = false
+  curStepIndex.value = 0
+  totalStep.value = 0
+}
+
+const onJump = (index, total) => {
+  curStepIndex.value = index
+  totalStep.value = total
+}
+
+const prev = () => {
+  props.mindMap.demonstrate.prev()
+}
+
+const next = () => {
+  props.mindMap.demonstrate.next()
+}
+
+const onEnter = () => {
+  const num = Number(inputStep.value)
+  if (Number.isNaN(num)) {
+    inputStep.value = ''
+  } else if (num >= 1 && num <= totalStep.value) {
+    props.mindMap.demonstrate.jump(num - 1)
+  }
+}
+
+onMounted(() => {
+  proxy.$bus.$on('demonstrate_jump', onJump)
+  proxy.$bus.$on('exit_demonstrate', onExit)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('demonstrate_jump', onJump)
+  proxy.$bus.$off('exit_demonstrate', onExit)
+})
 </script>
 
 <style lang="less" scoped>
