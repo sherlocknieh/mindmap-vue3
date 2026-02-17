@@ -16,7 +16,7 @@ export const useAppStore = defineStore('app', {
       // 是否是暗黑模式
       isDark: false,
       // 是否开启AI功能
-      enableAi: true
+      enableAi: true,
     },
     activeSidebar: '', // 当前显示的侧边栏
     isOutlineEdit: false, // 是否是大纲编辑模式
@@ -29,14 +29,14 @@ export const useAppStore = defineStore('app', {
       key: '',
       model: '',
       port: 3456,
-      method: 'POST'
+      method: 'POST',
     },
     // 扩展主题列表
     extendThemeGroupList: [],
     // 内置背景图片
-    bgList: []
+    bgList: [],
   }),
-  
+
   actions: {
     // 设置操作本地文件标志位
     setIsHandleLocalFile(data) {
@@ -46,7 +46,7 @@ export const useAppStore = defineStore('app', {
     // 设置本地配置
     setLocalConfig(data) {
       const aiConfigKeys = Object.keys(this.aiConfig)
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         if (aiConfigKeys.includes(key)) {
           this.aiConfig[key] = data[key]
         } else {
@@ -55,7 +55,7 @@ export const useAppStore = defineStore('app', {
       })
       storeLocalConfig({
         ...this.localConfig,
-        ...this.aiConfig
+        ...this.aiConfig,
       })
     },
 
@@ -97,6 +97,6 @@ export const useAppStore = defineStore('app', {
     // 设置背景图片列表
     setBgList(data) {
       this.bgList = data
-    }
-  }
+    },
+  },
 })

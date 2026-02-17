@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import MindMap from 'simple-mind-map'
 import MiniMap from 'simple-mind-map/src/plugins/MiniMap.js'
 import Watermark from 'simple-mind-map/src/plugins/Watermark.js'
@@ -185,7 +186,7 @@ export default {
     NodeImgPlacementToolbar,
     NodeNoteSidebar,
     AiCreate,
-    AiChat
+    AiChat,
   },
   data() {
     return {
@@ -195,21 +196,21 @@ export default {
       mindMapConfig: {},
       prevImg: '',
       storeConfigTimer: null,
-      showDragMask: false
+      showDragMask: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isZenMode: state => state.localConfig.isZenMode,
-      openNodeRichText: state => state.localConfig.openNodeRichText,
-      isShowScrollbar: state => state.localConfig.isShowScrollbar,
-      enableDragImport: state => state.localConfig.enableDragImport,
-      useLeftKeySelectionRightKeyDrag: state =>
+      isZenMode: (state) => state.localConfig.isZenMode,
+      openNodeRichText: (state) => state.localConfig.openNodeRichText,
+      isShowScrollbar: (state) => state.localConfig.isShowScrollbar,
+      enableDragImport: (state) => state.localConfig.enableDragImport,
+      useLeftKeySelectionRightKeyDrag: (state) =>
         state.localConfig.useLeftKeySelectionRightKeyDrag,
-      extraTextOnExport: state => state.extraTextOnExport,
-      isDragOutlineTreeNode: state => state.isDragOutlineTreeNode,
-      enableAi: state => state.localConfig.enableAi
-    })
+      extraTextOnExport: (state) => state.extraTextOnExport,
+      isDragOutlineTreeNode: (state) => state.isDragOutlineTreeNode,
+      enableAi: (state) => state.localConfig.enableAi,
+    }),
   },
   watch: {
     openNodeRichText() {
@@ -225,41 +226,45 @@ export default {
       } else {
         this.removeScrollbarPlugin()
       }
-    }
+    },
   },
   mounted() {
     showLoading()
     this.getData()
     this.init()
-    this.$bus.$on('execCommand', this.execCommand)
-    this.$bus.$on('paddingChange', this.onPaddingChange)
-    this.$bus.$on('export', this.export)
-    this.$bus.$on('setData', this.setData)
-    this.$bus.$on('startTextEdit', this.handleStartTextEdit)
-    this.$bus.$on('endTextEdit', this.handleEndTextEdit)
-    this.$bus.$on('createAssociativeLine', this.handleCreateLineFromActiveNode)
-    this.$bus.$on('startPainter', this.handleStartPainter)
-    this.$bus.$on('node_tree_render_end', this.handleHideLoading)
-    this.$bus.$on('showLoading', this.handleShowLoading)
-    this.$bus.$on('localStorageExceeded', this.onLocalStorageExceeded)
+    $on(this.$bus, 'execCommand', this.execCommand)
+    $on(this.$bus, 'paddingChange', this.onPaddingChange)
+    $on(this.$bus, 'export', this.export)
+    $on(this.$bus, 'setData', this.setData)
+    $on(this.$bus, 'startTextEdit', this.handleStartTextEdit)
+    $on(this.$bus, 'endTextEdit', this.handleEndTextEdit)
+    $on(this.$bus, 'createAssociativeLine', this.handleCreateLineFromActiveNode)
+    $on(this.$bus, 'startPainter', this.handleStartPainter)
+    $on(this.$bus, 'node_tree_render_end', this.handleHideLoading)
+    $on(this.$bus, 'showLoading', this.handleShowLoading)
+    $on(this.$bus, 'localStorageExceeded', this.onLocalStorageExceeded)
     window.addEventListener('resize', this.handleResize)
-    this.$bus.$on('showDownloadTip', this.showDownloadTip)
+    $on(this.$bus, 'showDownloadTip', this.showDownloadTip)
     this.webTip()
   },
-  beforeDestroy() {
-    this.$bus.$off('execCommand', this.execCommand)
-    this.$bus.$off('paddingChange', this.onPaddingChange)
-    this.$bus.$off('export', this.export)
-    this.$bus.$off('setData', this.setData)
-    this.$bus.$off('startTextEdit', this.handleStartTextEdit)
-    this.$bus.$off('endTextEdit', this.handleEndTextEdit)
-    this.$bus.$off('createAssociativeLine', this.handleCreateLineFromActiveNode)
-    this.$bus.$off('startPainter', this.handleStartPainter)
-    this.$bus.$off('node_tree_render_end', this.handleHideLoading)
-    this.$bus.$off('showLoading', this.handleShowLoading)
-    this.$bus.$off('localStorageExceeded', this.onLocalStorageExceeded)
+  beforeUnmount() {
+    $off(this.$bus, 'execCommand', this.execCommand)
+    $off(this.$bus, 'paddingChange', this.onPaddingChange)
+    $off(this.$bus, 'export', this.export)
+    $off(this.$bus, 'setData', this.setData)
+    $off(this.$bus, 'startTextEdit', this.handleStartTextEdit)
+    $off(this.$bus, 'endTextEdit', this.handleEndTextEdit)
+    $off(
+      this.$bus,
+      'createAssociativeLine',
+      this.handleCreateLineFromActiveNode
+    )
+    $off(this.$bus, 'startPainter', this.handleStartPainter)
+    $off(this.$bus, 'node_tree_render_end', this.handleHideLoading)
+    $off(this.$bus, 'showLoading', this.handleShowLoading)
+    $off(this.$bus, 'localStorageExceeded', this.onLocalStorageExceeded)
     window.removeEventListener('resize', this.handleResize)
-    this.$bus.$off('showDownloadTip', this.showDownloadTip)
+    $off(this.$bus, 'showDownloadTip', this.showDownloadTip)
     this.mindMap.destroy()
   },
   methods: {
@@ -268,7 +273,7 @@ export default {
         type: 'warning',
         title: this.$t('edit.tip'),
         message: this.$t('edit.localStorageExceededTip'),
-        duration: 0
+        duration: 0,
       })
     },
 
@@ -314,14 +319,14 @@ export default {
 
     // 存储数据当数据有变时
     bindSaveEvent() {
-      this.$bus.$on('data_change', data => {
+      $on(this.$bus, 'data_change', (data) => {
         storeData({ root: data })
       })
-      this.$bus.$on('view_data_change', data => {
+      $on(this.$bus, 'view_data_change', (data) => {
         clearTimeout(this.storeConfigTimer)
         this.storeConfigTimer = setTimeout(() => {
           storeData({
-            view: data
+            view: data,
           })
         }, 300)
       })
@@ -341,9 +346,9 @@ export default {
       if (hasFileURL) {
         root = {
           data: {
-            text: this.$t('edit.root')
+            text: this.$t('edit.root'),
           },
-          children: []
+          children: [],
         }
         layout = exampleData.layout
         theme = exampleData.theme
@@ -361,16 +366,16 @@ export default {
         nodeNoteTooltipZIndex: 1000,
         customNoteContentShow: {
           show: (content, left, top, node) => {
-            this.$bus.$emit('showNoteContent', content, left, top, node)
+            $emit(this.$bus, 'showNoteContent', content, left, top, node)
           },
           hide: () => {
             // this.$bus.$emit('hideNoteContent')
-          }
+          },
         },
         openRealtimeRenderOnNodeTextEdit: true,
         enableAutoEnterTextEditWhenKeydown: true,
         demonstrateConfig: {
-          openBlankMode: false
+          openBlankMode: false,
         },
         ...(config || {}),
         iconList: [...icon],
@@ -386,7 +391,7 @@ export default {
             {
               confirmButtonText: this.$t('edit.yes'),
               cancelButtonText: this.$t('edit.no'),
-              type: 'warning'
+              type: 'warning',
             }
           )
         },
@@ -407,34 +412,34 @@ export default {
           el.className = 'footer'
           el.innerHTML = text
           const cssText = `
-            .footer {
-              width: 100%;
-              height: 30px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 12px;
-              color: #979797;
-            }
-          `
+          .footer {
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #979797;
+          }
+        `
           return {
             el,
             cssText,
-            height: 30
+            height: 30,
           }
         },
-        expandBtnNumHandler: num => {
+        expandBtnNumHandler: (num) => {
           return num >= 100 ? '…' : num
         },
-        beforeDeleteNodeImg: node => {
-          return new Promise(resolve => {
+        beforeDeleteNodeImg: (node) => {
+          return new Promise((resolve) => {
             this.$confirm(
               this.$t('edit.deleteNodeImgTip'),
               this.$t('edit.tip'),
               {
                 confirmButtonText: this.$t('edit.yes'),
                 cancelButtonText: this.$t('edit.no'),
-                type: 'warning'
+                type: 'warning',
               }
             )
               .then(() => {
@@ -444,7 +449,7 @@ export default {
                 resolve(true)
               })
           })
-        }
+        },
       })
       this.loadPlugins()
       this.mindMap.keyCommand.addShortcut('Control+s', () => {
@@ -477,20 +482,20 @@ export default {
         'demonstrate_jump',
         'exit_demonstrate',
         'node_note_dblclick',
-        'node_mousedown'
-      ].forEach(event => {
+        'node_mousedown',
+      ].forEach((event) => {
         this.mindMap.on(event, (...args) => {
-          this.$bus.$emit(event, ...args)
+          $emit(this.$bus, event, ...args)
         })
       })
       this.bindSaveEvent()
       // 如果应用被接管，那么抛出事件传递思维导图实例
       if (window.takeOverApp) {
-        this.$bus.$emit('app_inited', this.mindMap)
+        $emit(this.$bus, 'app_inited', this.mindMap)
       }
       // 解析url中的文件
       if (hasFileURL) {
-        this.$bus.$emit('handle_file_url')
+        $emit(this.$bus, 'handle_file_url')
       }
       // api/index.js文件使用
       // 当正在编辑本地文件时通过该方法获取最新数据
@@ -530,10 +535,10 @@ export default {
       this.manualSave()
       // 如果导入的是富文本内容，那么自动开启富文本模式
       if (rootNodeData.data.richText && !this.openNodeRichText) {
-        this.$bus.$emit('toggleOpenNodeRichText', true)
+        $emit(this.$bus, 'toggleOpenNodeRichText', true)
         this.$notify.info({
           title: this.$t('edit.tip'),
-          message: this.$t('edit.autoOpenNodeRichTextTip')
+          message: this.$t('edit.autoOpenNodeRichTextTip'),
         })
       }
     },
@@ -592,7 +597,7 @@ export default {
       if (this.mindMap.cooperate && this.$route.query.userName) {
         this.mindMap.cooperate.setProvider(null, {
           roomName: 'demo-room',
-          signalingList: ['ws://localhost:4444']
+          signalingList: ['ws://localhost:4444'],
         })
         this.mindMap.cooperate.setUserInfo({
           id: Math.random(),
@@ -603,7 +608,7 @@ export default {
           avatar:
             Math.random() > 0.5
               ? 'https://img0.baidu.com/it/u=4270674549,2416627993&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1696006800&t=4d32871d14a7224a4591d0c3c7a97311'
-              : ''
+              : '',
         })
       }
     },
@@ -624,7 +629,7 @@ export default {
       const dt = e.dataTransfer
       const file = dt.files && dt.files[0]
       if (!file) return
-      this.$bus.$emit('importFile', file)
+      $emit(this.$bus, 'importFile', file)
     },
 
     // 网页版试用提示
@@ -650,8 +655,8 @@ export default {
             'p',
             {
               style: {
-                marginBottom: '12px'
-              }
+                marginBottom: '12px',
+              },
             },
             desc
           ),
@@ -660,14 +665,13 @@ export default {
               'a',
               {
                 attrs: {
-                  href:
-                    'https://pan.baidu.com/s/1huasEbKsGNH2Af68dvWiOg?pwd=3bp3',
-                  target: '_blank'
+                  href: 'https://pan.baidu.com/s/1huasEbKsGNH2Af68dvWiOg?pwd=3bp3',
+                  target: '_blank',
                 },
                 style: {
                   color: '#409eff',
-                  marginRight: '12px'
-                }
+                  marginRight: '12px',
+                },
               },
               this.$t('edit.downBaidu')
             ),
@@ -676,21 +680,29 @@ export default {
               {
                 attrs: {
                   href: 'https://github.com/wanglin2/mind-map/releases',
-                  target: '_blank'
+                  target: '_blank',
                 },
                 style: {
-                  color: '#409eff'
-                }
+                  color: '#409eff',
+                },
               },
               this.$t('edit.downGithub')
-            )
-          ])
+            ),
+          ]),
         ]),
         showCancelButton: false,
-        showConfirmButton: false
+        showConfirmButton: false,
       })
-    }
-  }
+    },
+  },
+  emits: [
+    'showNoteContent',
+    ,
+    'app_inited',
+    'toggleOpenNodeRichText',
+    'importFile',
+    'handle_file_url',
+  ],
 }
 </script>
 
@@ -701,7 +713,6 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
-
   .dragMask {
     position: absolute;
     left: 0;

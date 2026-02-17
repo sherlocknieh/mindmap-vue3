@@ -8,12 +8,12 @@
   >
     <div class="row">
       <el-input
-        v-model="text"
+        v-model:value="text"
         :placeholder="$t('nodeTagStyle.placeholder')"
         size="mini"
         @blur="updateTagText"
-        @keydown.native.stop
-        @keyup.native.enter.stop="updateTagText"
+        @keydown.stop
+        @keyup.enter.stop="updateTagText"
       ></el-input>
       <div class="deleteBtn" @click.stop="deleteTag">
         <span class="iconfont iconshanchu"></span>
@@ -33,30 +33,30 @@ import { useAppStore } from '@/store'
 
 export default {
   components: {
-    Color
+    Color,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       show: false,
       position: {
         left: 0,
-        top: 0
+        top: 0,
       },
       node: null,
       index: 0,
       text: '',
-      fill: ''
+      fill: '',
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   created() {
     this.mindMap.on('node_tag_click', this.onNodeTagClick)
@@ -65,7 +65,7 @@ export default {
     this.mindMap.on('svg_mousedown', this.hide)
     this.mindMap.on('expand_btn_click', this.hide)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('node_tag_click', this.onNodeTagClick)
     this.mindMap.off('scale', this.hide)
     this.mindMap.off('translate', this.hide)
@@ -112,15 +112,15 @@ export default {
         return
       }
       this.updateTagInfo({
-        text
+        text,
       })
     },
 
     updateTagFill(color) {
       this.updateTagInfo({
         style: {
-          fill: color
-        }
+          fill: color,
+        },
       })
       this.fill = color
     },
@@ -132,7 +132,7 @@ export default {
       if (typeof tagData[this.index] === 'string') {
         item = {
           text: tagData[this.index],
-          style: {}
+          style: {},
         }
       } else {
         item = tagData[this.index]
@@ -144,7 +144,7 @@ export default {
         item.text = text
       }
       if (style) {
-        Object.keys(style).forEach(key => {
+        Object.keys(style).forEach((key) => {
           item.style[key] = style[key]
         })
       }
@@ -167,8 +167,8 @@ export default {
       this.index = 0
       this.text = ''
       this.fill = ''
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -181,7 +181,6 @@ export default {
   border-radius: 5px;
   box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.06);
-
   &.isDark {
     background-color: #262a2e;
     border-left-color: hsla(0, 0%, 100%, 0.1);

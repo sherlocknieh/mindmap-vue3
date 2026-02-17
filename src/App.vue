@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
@@ -20,7 +20,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
 }
-
 .customScrollbar {
   &::-webkit-scrollbar {
     width: 7px;
@@ -39,8 +38,7 @@ export default {
     display: none;
   }
 }
-
-.el-dialog{
+.el-dialog {
   border-radius: 10px;
 }
 </style>

@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { store } from '@/config'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -25,32 +26,32 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
       show: false,
-      zIndex: 0
+      zIndex: 0,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   watch: {
     show(val, oldVal) {
       if (val && !oldVal) {
         this.zIndex = store.sidebarZIndex++
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('closeSideBar', this.handleCloseSidebar)
+    $on(this.$bus, 'closeSideBar', this.handleCloseSidebar)
   },
-  beforeDestroy() {
-    this.$bus.$off('closeSideBar', this.handleCloseSidebar)
+  beforeUnmount() {
+    $off(this.$bus, 'closeSideBar', this.handleCloseSidebar)
   },
   methods: {
     ...mapActions(useAppStore, ['setActiveSidebar']),
@@ -66,8 +67,8 @@ export default {
 
     getEl() {
       return this.$refs.sidebarContent
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -83,7 +84,6 @@ export default {
   display: flex;
   flex-direction: column;
   transition: all 0.3s;
-
   &.isDark {
     background-color: #262a2e;
     border-left-color: hsla(0, 0%, 100%, 0.1);

@@ -6,7 +6,7 @@
         <ToolbarNodeBtnList :list="horizontalList"></ToolbarNodeBtnList>
         <!-- 更多 -->
         <el-popover
-          v-model="popoverShow"
+          v-model:value="popoverShow"
           placement="bottom-end"
           width="120"
           trigger="hover"
@@ -16,12 +16,14 @@
           <ToolbarNodeBtnList
             dir="v"
             :list="verticalList"
-            @click.native="popoverShow = false"
+            @click="popoverShow = false"
           ></ToolbarNodeBtnList>
-          <div slot="reference" class="toolbarBtn">
-            <span class="icon iconfont icongongshi"></span>
-            <span class="text">{{ $t('toolbar.more') }}</span>
-          </div>
+          <template v-slot:reference>
+            <div class="toolbarBtn">
+              <span class="icon iconfont icongongshi"></span>
+              <span class="text">{{ $t('toolbar.more') }}</span>
+            </div>
+          </template>
         </el-popover>
       </div>
       <!-- 导出 -->
@@ -63,7 +65,7 @@
         <div
           class="toolbarBtn"
           @click="$bus.$emit('showExport')"
-          style="margin-right: 0;"
+          style="margin-right: 0"
         >
           <span class="icon iconfont iconexport"></span>
           <span class="text">{{ $t('toolbar.export') }}</span>
@@ -82,7 +84,7 @@
               <div
                 class="btn"
                 :class="[
-                  fileTreeExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+                  fileTreeExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down',
                 ]"
                 @click="fileTreeExpand = !fileTreeExpand"
               ></div>
@@ -100,33 +102,35 @@
               node-key="id"
               lazy
             >
-              <span class="customTreeNode" slot-scope="{ node, data }">
-                <div class="treeNodeInfo">
-                  <span
-                    class="treeNodeIcon iconfont"
-                    :class="[
-                      data.type === 'file' ? 'iconwenjian' : 'icondakai'
-                    ]"
-                  ></span>
-                  <span class="treeNodeName">{{ node.label }}</span>
-                </div>
-                <div class="treeNodeBtnList" v-if="data.type === 'file'">
-                  <el-button
-                    type="text"
-                    size="mini"
-                    v-if="data.enableEdit"
-                    @click="editLocalFile(data)"
-                    >编辑</el-button
-                  >
-                  <el-button
-                    type="text"
-                    size="mini"
-                    v-else
-                    @click="importLocalFile(data)"
-                    >导入</el-button
-                  >
-                </div>
-              </span>
+              <template v-slot="{ node, data }">
+                <span class="customTreeNode">
+                  <div class="treeNodeInfo">
+                    <span
+                      class="treeNodeIcon iconfont"
+                      :class="[
+                        data.type === 'file' ? 'iconwenjian' : 'icondakai',
+                      ]"
+                    ></span>
+                    <span class="treeNodeName">{{ node.label }}</span>
+                  </div>
+                  <div class="treeNodeBtnList" v-if="data.type === 'file'">
+                    <el-button
+                      type="text"
+                      size="mini"
+                      v-if="data.enableEdit"
+                      @click="editLocalFile(data)"
+                      >编辑</el-button
+                    >
+                    <el-button
+                      type="text"
+                      size="mini"
+                      v-else
+                      @click="importLocalFile(data)"
+                      >导入</el-button
+                    >
+                  </div>
+                </span>
+              </template>
             </el-tree>
           </div>
         </div>
@@ -143,6 +147,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import NodeImage from './NodeImage.vue'
 import NodeHyperlink from './NodeHyperlink.vue'
 import NodeIcon from './NodeIcon.vue'
@@ -178,7 +183,7 @@ const defaultBtnList = [
   // 'attachment',
   'outerFrame',
   'annotation',
-  'ai'
+  'ai',
 ]
 
 export default {
@@ -190,7 +195,7 @@ export default {
     NodeTag,
     Export,
     Import,
-    ToolbarNodeBtnList
+    ToolbarNodeBtnList,
   },
   data() {
     return {
@@ -202,36 +207,36 @@ export default {
       fileTreeProps: {
         label: 'name',
         children: 'children',
-        isLeaf: 'leaf'
+        isLeaf: 'leaf',
       },
       fileTreeVisible: false,
       rootDirName: '',
       fileTreeExpand: true,
-      waitingWriteToLocalFile: false
+      waitingWriteToLocalFile: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      isHandleLocalFile: state => state.isHandleLocalFile,
-      openNodeRichText: state => state.localConfig.openNodeRichText,
-      enableAi: state => state.localConfig.enableAi
+      isDark: (state) => state.localConfig.isDark,
+      isHandleLocalFile: (state) => state.isHandleLocalFile,
+      openNodeRichText: (state) => state.localConfig.openNodeRichText,
+      enableAi: (state) => state.localConfig.enableAi,
     }),
 
     btnLit() {
       let res = [...defaultBtnList]
       if (!this.openNodeRichText) {
-        res = res.filter(item => {
+        res = res.filter((item) => {
           return item !== 'formula'
         })
       }
       if (!this.enableAi) {
-        res = res.filter(item => {
+        res = res.filter((item) => {
           return item !== 'ai'
         })
       }
       return res
-    }
+    },
   },
   watch: {
     isHandleLocalFile(val) {
@@ -243,26 +248,26 @@ export default {
       deep: true,
       handler() {
         this.computeToolbarShow()
-      }
-    }
+      },
+    },
   },
   created() {
-    this.$bus.$on('write_local_file', this.onWriteLocalFile)
+    $on(this.$bus, 'write_local_file', this.onWriteLocalFile)
   },
   mounted() {
     this.computeToolbarShow()
     this.computeToolbarShowThrottle = throttle(this.computeToolbarShow, 300)
     window.addEventListener('resize', this.computeToolbarShowThrottle)
-    this.$bus.$on('lang_change', this.computeToolbarShowThrottle)
+    $on(this.$bus, 'lang_change', this.computeToolbarShowThrottle)
     window.addEventListener('beforeunload', this.onUnload)
-    this.$bus.$on('node_note_dblclick', this.onNodeNoteDblclick)
+    $on(this.$bus, 'node_note_dblclick', this.onNodeNoteDblclick)
   },
-  beforeDestroy() {
-    this.$bus.$off('write_local_file', this.onWriteLocalFile)
+  beforeUnmount() {
+    $off(this.$bus, 'write_local_file', this.onWriteLocalFile)
     window.removeEventListener('resize', this.computeToolbarShowThrottle)
-    this.$bus.$off('lang_change', this.computeToolbarShowThrottle)
+    $off(this.$bus, 'lang_change', this.computeToolbarShowThrottle)
     window.removeEventListener('beforeunload', this.onUnload)
-    this.$bus.$off('node_note_dblclick', this.onNodeNoteDblclick)
+    $off(this.$bus, 'node_note_dblclick', this.onNodeNoteDblclick)
   },
   methods: {
     // 计算工具按钮如何显示
@@ -336,7 +341,7 @@ export default {
             type: value.kind,
             handle: value,
             leaf: isFile,
-            enableEdit
+            enableEdit,
           }
           if (isFile) {
             fileList.push(data)
@@ -380,7 +385,7 @@ export default {
         const file = await data.handle.getFile()
         this.$refs.ImportRef.onChange({
           raw: file,
-          name: file.name
+          name: file.name,
         })
         this.$refs.ImportRef.confirm()
       } catch (error) {
@@ -396,12 +401,12 @@ export default {
             {
               description: '',
               accept: {
-                'application/json': ['.smm']
-              }
-            }
+                'application/json': ['.smm'],
+              },
+            },
           ],
           excludeAcceptAllOption: true,
-          multiple: false
+          multiple: false,
         })
         if (!_fileHandle) {
           return
@@ -435,7 +440,7 @@ export default {
             file.name
           }${this.$t('toolbar.editingLocalFileTipEnd')}`,
           duration: 0,
-          showClose: true
+          showClose: true,
         })
       }
       fileReader.readAsText(file)
@@ -454,10 +459,10 @@ export default {
           this.isFullDataFile = false
           data = {
             ...exampleData,
-            root: data
+            root: data,
           }
         }
-        this.$bus.$emit('setData', data)
+        $emit(this.$bus, 'setData', data)
       } catch (error) {
         console.log(error)
         this.$message.error(this.$t('toolbar.fileOpenFailed'))
@@ -498,10 +503,10 @@ export default {
           types: [
             {
               description: '',
-              accept: { 'application/json': ['.smm'] }
-            }
+              accept: { 'application/json': ['.smm'] },
+            },
           ],
-          suggestedName: this.$t('toolbar.defaultFileName')
+          suggestedName: this.$t('toolbar.defaultFileName'),
         })
         if (!_fileHandle) {
           return
@@ -510,7 +515,7 @@ export default {
           lock: true,
           text: this.$t('toolbar.creatingTip'),
           spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
+          background: 'rgba(0, 0, 0, 0.7)',
         })
         fileHandle = _fileHandle
         this.$store.commit('setIsHandleLocalFile', true)
@@ -529,9 +534,10 @@ export default {
 
     onNodeNoteDblclick(node, e) {
       e.stopPropagation()
-      this.$bus.$emit('showNodeNote', node)
-    }
-  }
+      $emit(this.$bus, 'showNodeNote', node)
+    },
+  },
+  emits: ['showImport', 'showExport', 'setData', 'showNodeNote'],
 }
 </script>
 

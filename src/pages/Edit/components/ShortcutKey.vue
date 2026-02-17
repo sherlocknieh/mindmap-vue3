@@ -28,20 +28,20 @@ import { useAppStore } from '@/store'
 // 快捷键
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   data() {
     return {}
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
     }),
 
     shortcutKeyList() {
       return shortcutKeyList[this.$i18n.locale] || shortcutKeyList.zh
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -50,15 +50,14 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="less" scoped>
 .box {
   padding: 0 20px;
-
   &.isDark {
     .title {
       color: #fff;

@@ -3,16 +3,16 @@
     <div class="box" :class="{ isDark: isDark }">
       <div class="formulaInputBox">
         <el-input
-          v-model="formulaText"
+          v-model:value="formulaText"
           :rows="4"
           resize="none"
           type="textarea"
           :placeholder="$t('formulaSidebar.placeholder')"
-          @keydown.native.stop
+          @keydown.stop
         />
         <el-button
           size="small"
-          style="width: 100%; margin-top: 20px;"
+          style="width: 100%; margin-top: 20px"
           @click="confirm"
           >{{ $t('formulaSidebar.confirm') }}</el-button
         >
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -38,25 +39,25 @@ import { formulaList } from '@/config/constant'
 
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       formulaText: '',
-      list: []
+      list: [],
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar, 
-      isDark: state => state.localConfig.isDark, 
-      localConfig: state => state.localConfig
-    })
+      activeSidebar: (state) => state.activeSidebar,
+      isDark: (state) => state.localConfig.isDark,
+      localConfig: (state) => state.localConfig,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -65,13 +66,13 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
   },
   mounted() {
     this.init()
@@ -81,13 +82,13 @@ export default {
 
     init() {
       if (!window.katex) return
-      this.list = formulaList.map(item => {
+      this.list = formulaList.map((item) => {
         return {
           overview: window.katex.renderToString(
             item,
             this.mindMap.formula.getKatexConfig()
           ),
-          text: item
+          text: item,
         }
       })
     },
@@ -109,8 +110,8 @@ export default {
       let str = this.formulaText.trim()
       if (!str) return
       this.mindMap.execCommand('INSERT_FORMULA', str)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -122,7 +123,6 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-
   &.isDark {
     .title {
       color: #fff;

@@ -27,20 +27,20 @@ import { useAppStore } from '@/store'
 export default {
   props: {
     mindMap: {
-      type: Object
+      type: Object,
     },
     isDark: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {}
   },
   computed: {
     ...mapState(useAppStore, {
-      useLeftKeySelectionRightKeyDrag: state =>
-        state.localConfig.useLeftKeySelectionRightKeyDrag
-    })
+      useLeftKeySelectionRightKeyDrag: (state) =>
+        state.localConfig.useLeftKeySelectionRightKeyDrag,
+    }),
   },
   methods: {
     ...mapActions(useAppStore, ['setLocalConfig']),
@@ -48,13 +48,13 @@ export default {
     toggleAction() {
       let val = !this.useLeftKeySelectionRightKeyDrag
       this.mindMap.updateConfig({
-        useLeftKeySelectionRightKeyDrag: val
+        useLeftKeySelectionRightKeyDrag: val,
       })
       this.setLocalConfig({
-        useLeftKeySelectionRightKeyDrag: val
+        useLeftKeySelectionRightKeyDrag: val,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -62,10 +62,9 @@ export default {
 .mouseActionContainer {
   display: flex;
   align-items: center;
-
-  &.isDark{
+  &.isDark {
     .btn {
-      color: hsla(0,0%,100%,.6);
+      color: hsla(0, 0%, 100%, 0.6);
     }
   }
 

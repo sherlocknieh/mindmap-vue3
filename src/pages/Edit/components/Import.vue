@@ -3,7 +3,7 @@
     <el-dialog
       class="nodeImportDialog"
       :title="$t('import.title')"
-      :visible.sync="dialogVisible"
+      v-model:visible="dialogVisible"
       width="350px"
     >
       <el-upload
@@ -18,28 +18,35 @@
         :limit="1"
         :on-exceed="onExceed"
       >
-        <el-button slot="trigger" size="small" type="primary">{{
-          $t('import.selectFile')
-        }}</el-button>
-        <div slot="tip" class="el-upload__tip">
-          {{ $t('import.support') }}{{ supportFileStr }}{{ $t('import.file') }}
-        </div>
+        <template v-slot:trigger>
+          <el-button size="small" type="primary">{{
+            $t('import.selectFile')
+          }}</el-button>
+        </template>
+        <template v-slot:tip>
+          <div class="el-upload__tip">
+            {{ $t('import.support') }}{{ supportFileStr
+            }}{{ $t('import.file') }}
+          </div>
+        </template>
       </el-upload>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
-        <el-button type="primary" @click="confirm">{{
-          $t('dialog.confirm')
-        }}</el-button>
-      </span>
+      <template v-slot:footer>
+        <span class="dialog-footer">
+          <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
+          <el-button type="primary" @click="confirm">{{
+            $t('dialog.confirm')
+          }}</el-button>
+        </span>
+      </template>
     </el-dialog>
     <el-dialog
       class="xmindCanvasSelectDialog"
       :title="$t('import.xmindCanvasSelectDialogTitle')"
-      :visible.sync="xmindCanvasSelectDialogVisible"
+      v-model:visible="xmindCanvasSelectDialogVisible"
       width="300px"
       :show-close="false"
     >
-      <el-radio-group v-model="selectCanvas" class="canvasList">
+      <el-radio-group v-model:value="selectCanvas" class="canvasList">
         <el-radio
           v-for="(item, index) in canvasList"
           :key="index"
@@ -47,23 +54,24 @@
           >{{ item.title }}</el-radio
         >
       </el-radio-group>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmSelect">{{
-          $t('dialog.confirm')
-        }}</el-button>
-      </span>
+      <template v-slot:footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="confirmSelect">{{
+            $t('dialog.confirm')
+          }}</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import xmind from 'simple-mind-map/src/parse/xmind.js'
 import markdown from 'simple-mind-map/src/parse/markdown.js'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
-import Vue from 'vue'
-
-// 导入
+import * as Vue from 'vue'
 export default {
   data() {
     return {
@@ -73,30 +81,30 @@ export default {
       xmindCanvasSelectDialogVisible: false,
       selectCanvas: '',
       canvasList: [],
-      mdStr: ''
+      mdStr: '',
     }
   },
   computed: {
     supportFileStr() {
       return '.smm,.json,.xmind,.md'
-    }
+    },
   },
   watch: {
     dialogVisible(val, oldVal) {
       if (!val && oldVal) {
         this.fileList = []
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('showImport', this.handleShowImport)
-    this.$bus.$on('handle_file_url', this.handleFileURL)
-    this.$bus.$on('importFile', this.handleImportFile)
+    $on(this.$bus, 'showImport', this.handleShowImport)
+    $on(this.$bus, 'handle_file_url', this.handleFileURL)
+    $on(this.$bus, 'importFile', this.handleImportFile)
   },
-  beforeDestroy() {
-    this.$bus.$off('showImport', this.handleShowImport)
-    this.$bus.$off('handle_file_url', this.handleFileURL)
-    this.$bus.$off('importFile', this.handleImportFile)
+  beforeUnmount() {
+    $off(this.$bus, 'showImport', this.handleShowImport)
+    $off(this.$bus, 'handle_file_url', this.handleFileURL)
+    $off(this.$bus, 'importFile', this.handleImportFile)
   },
   methods: {
     ...mapActions(useAppStore, ['setActiveSidebar']),
@@ -122,7 +130,7 @@ export default {
         const res = await fetch(fileURL)
         const file = await res.blob()
         const data = {
-          raw: file
+          raw: file,
         }
         if (type === 'smm' || type === 'json') {
           this.handleSmm(data)
@@ -187,13 +195,13 @@ export default {
     handleSmm(file) {
       let fileReader = new FileReader()
       fileReader.readAsText(file.raw)
-      fileReader.onload = evt => {
+      fileReader.onload = (evt) => {
         try {
           let data = JSON.parse(evt.target.result)
           if (typeof data !== 'object') {
             throw new Error(this.$t('import.fileContentError'))
           }
-          this.$bus.$emit('setData', data)
+          $emit(this.$bus, 'setData', data)
           this.$message.success(this.$t('import.importSuccess'))
         } catch (error) {
           console.log(error)
@@ -205,13 +213,13 @@ export default {
     // 处理.xmind文件
     async handleXmind(file) {
       try {
-        let data = await xmind.parseXmindFile(file.raw, content => {
+        let data = await xmind.parseXmindFile(file.raw, (content) => {
           this.showSelectXmindCanvasDialog(content)
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             this.selectPromiseResolve = resolve
           })
         })
-        this.$bus.$emit('setData', data)
+        $emit(this.$bus, 'setData', data)
         this.$message.success(this.$t('import.importSuccess'))
       } catch (error) {
         console.log(error)
@@ -238,10 +246,10 @@ export default {
     async handleMd(file) {
       let fileReader = new FileReader()
       fileReader.readAsText(file.raw)
-      fileReader.onload = async evt => {
+      fileReader.onload = async (evt) => {
         try {
           let data = markdown.transformMarkdownTo(evt.target.result)
-          this.$bus.$emit('setData', data)
+          $emit(this.$bus, 'setData', data)
           this.$message.success(this.$t('import.importSuccess'))
         } catch (error) {
           console.log(error)
@@ -254,23 +262,22 @@ export default {
     handleImportFile(file) {
       this.onChange({
         raw: file,
-        name: file.name
+        name: file.name,
       })
       if (this.fileList.length <= 0) return
       this.confirm()
-    }
-  }
+    },
+  },
+  emits: ['setData'],
 }
 </script>
 
 <style lang="less" scoped>
 .nodeImportDialog {
 }
-
 .canvasList {
   display: flex;
   flex-direction: column;
-
   /deep/ .el-radio {
     margin-bottom: 12px;
 

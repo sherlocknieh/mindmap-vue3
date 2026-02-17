@@ -15,7 +15,7 @@
       <el-color-picker
         size="mini"
         show-alpha
-        v-model="selectColor"
+        v-model:value="selectColor"
         @change="changeColor"
       ></el-color-picker>
     </div>
@@ -23,33 +23,33 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { colorList } from '@/config'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-// 颜色选择器
 export default {
   props: {
     color: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
       colorList,
-      selectColor: ''
+      selectColor: '',
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   watch: {
     color() {
       this.selectColor = this.color
-    }
+    },
   },
   created() {
     this.selectColor = this.color
@@ -57,14 +57,15 @@ export default {
   methods: {
     // 点击预设颜色
     clickColorItem(color) {
-      this.$emit('change', color)
+      $emit(this, 'change', color)
     },
 
     // 修改颜色
     changeColor() {
-      this.$emit('change', this.selectColor)
-    }
-  }
+      $emit(this, 'change', this.selectColor)
+    },
+  },
+  emits: ['change'],
 }
 </script>
 
@@ -76,12 +77,10 @@ export default {
     }
   }
 }
-
 .colorList {
   width: 240px;
   display: flex;
   flex-wrap: wrap;
-
   .colorItem {
     display: flex;
     justify-content: center;
@@ -93,11 +92,9 @@ export default {
     cursor: pointer;
   }
 }
-
 .moreColor {
   display: flex;
   align-items: center;
-
   span {
     margin-right: 5px;
   }

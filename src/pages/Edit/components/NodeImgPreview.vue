@@ -11,18 +11,18 @@ export default {
       type: Object,
       default() {
         return null
-      }
-    }
+      },
+    },
   },
   data() {
     return {
-      images: []
+      images: [],
     }
   },
   mounted() {
     this.mindMap.on('node_img_dblclick', this.onNodeTmgDblclick)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('node_img_dblclick', this.onNodeTmgDblclick)
   },
   methods: {
@@ -31,11 +31,9 @@ export default {
       e.preventDefault()
       this.images = [node.getImageUrl()]
       this.$viewerApi({
-        images: this.images
+        images: this.images,
       })
-    }
-  }
+    },
+  },
 }
 </script>
-
-<style></style>

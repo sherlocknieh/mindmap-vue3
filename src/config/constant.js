@@ -13,7 +13,7 @@ export const layoutImgMap = {
   rightFishbone2: require('../assets/img/structures/rightFishbone2.jpg'),
   verticalTimeline: require('../assets/img/structures/verticalTimeline.jpg'),
   verticalTimeline2: require('../assets/img/structures/verticalTimeline2.jpg'),
-  verticalTimeline3: require('../assets/img/structures/verticalTimeline3.jpg')
+  verticalTimeline3: require('../assets/img/structures/verticalTimeline3.jpg'),
 }
 
 // 公式列表
@@ -37,7 +37,7 @@ export const formulaList = [
   '\\frac{1}{2}=0.5',
   '\\binom{n}{k}',
   '\\begin{matrix}x & y \\\\z & v\\end{matrix}',
-  '\\begin{cases}3x + 5y +  z \\\\7x - 2y + 4z \\\\-6x + 3y + 2z\\end{cases}'
+  '\\begin{cases}3x + 5y +  z \\\\7x - 2y + 4z \\\\-6x + 3y + 2z\\end{cases}',
 ]
 
 // 支持某种连线类型的结构
@@ -47,15 +47,15 @@ export const supportLineStyleLayoutsMap = {
     'logicalStructureLeft',
     'mindMap',
     'verticalTimeline',
-    'organizationStructure'
+    'organizationStructure',
   ],
   direct: [
     'logicalStructure',
     'logicalStructureLeft',
     'mindMap',
     'organizationStructure',
-    'verticalTimeline'
-  ]
+    'verticalTimeline',
+  ],
 }
 
 // 直线模式支持设置圆角的结构
@@ -63,7 +63,7 @@ export const supportLineRadiusLayouts = [
   'logicalStructure',
   'logicalStructureLeft',
   'mindMap',
-  'verticalTimeline'
+  'verticalTimeline',
 ]
 
 // 支持只显示底边直线风格的结构
@@ -72,7 +72,7 @@ export const supportNodeUseLineStyleLayouts = [
   'logicalStructureLeft',
   'mindMap',
   'catalogOrganization',
-  'organizationStructure'
+  'organizationStructure',
 ]
 
 // 支持曲线模式下，根节点样式和其他节点样式保持一致的结构
@@ -80,13 +80,13 @@ export const supportRootLineKeepSameInCurveLayouts = [
   'logicalStructure',
   'logicalStructureLeft',
   'mindMap',
-  'organizationStructure'
+  'organizationStructure',
 ]
 
 // 彩虹线条配置
 export const rainbowLinesOptions = [
   {
-    value: 'close'
+    value: 'close',
   },
   {
     value: 'colors1',
@@ -97,8 +97,8 @@ export const rainbowLinesOptions = [
       'rgb(151, 171, 255)',
       'rgb(129, 220, 242)',
       'rgb(255, 163, 125)',
-      'rgb(152, 132, 234)'
-    ]
+      'rgb(152, 132, 234)',
+    ],
   },
   {
     value: 'colors2',
@@ -109,8 +109,8 @@ export const rainbowLinesOptions = [
       'rgb(73, 205, 140)',
       'rgb(64, 192, 255)',
       'rgb(84, 110, 214)',
-      'rgb(164, 93, 220)'
-    ]
+      'rgb(164, 93, 220)',
+    ],
   },
   {
     value: 'colors3',
@@ -121,8 +121,8 @@ export const rainbowLinesOptions = [
       'rgb(49, 128, 205)',
       'rgb(188, 226, 132)',
       'rgb(113, 215, 123)',
-      'rgb(120, 191, 109)'
-    ]
+      'rgb(120, 191, 109)',
+    ],
   },
   {
     value: 'colors4',
@@ -133,8 +133,8 @@ export const rainbowLinesOptions = [
       'rgb(251, 218, 171)',
       'rgb(138, 163, 181)',
       'rgb(131, 127, 161)',
-      'rgb(84, 83, 140)'
-    ]
+      'rgb(84, 83, 140)',
+    ],
   },
   {
     value: 'colors5',
@@ -145,8 +145,8 @@ export const rainbowLinesOptions = [
       'rgb(232, 82, 80)',
       'rgb(182, 66, 98)',
       'rgb(99, 54, 99)',
-      'rgb(65, 40, 82)'
-    ]
+      'rgb(65, 40, 82)',
+    ],
   },
   {
     value: 'colors6',
@@ -157,7 +157,7 @@ export const rainbowLinesOptions = [
       'rgb(18, 135, 131)',
       'rgb(74, 139, 166)',
       'rgb(75, 105, 150)',
-      'rgb(57, 75, 133)'
-    ]
-  }
+      'rgb(57, 75, 133)',
+    ],
+  },
 ]

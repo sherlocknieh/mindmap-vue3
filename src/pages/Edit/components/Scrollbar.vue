@@ -30,44 +30,44 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       timer: null,
       resizeTimer: null,
       verticalScrollbarStyle: {},
-      horizontalScrollbarStyle: {}
+      horizontalScrollbarStyle: {},
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   mounted() {
     this.setScrollBarWrapSize()
-    this.$bus.$on('scrollbar_change', this.updateScrollbar)
+    $on(this.$bus, 'scrollbar_change', this.updateScrollbar)
     window.addEventListener('resize', this.onResize)
   },
-  beforeDestroy() {
-    this.$bus.$off('scrollbar_change', this.updateScrollbar)
+  beforeUnmount() {
+    $off(this.$bus, 'scrollbar_change', this.updateScrollbar)
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
     // 向插件传递滚动条宽高数据
     setScrollBarWrapSize() {
       if (!this.mindMap.scrollbar) return
-      const {
-        width
-      } = this.$refs.horizontalScrollbarRef.getBoundingClientRect()
+      const { width } =
+        this.$refs.horizontalScrollbarRef.getBoundingClientRect()
       const { height } = this.$refs.verticalScrollbarRef.getBoundingClientRect()
       this.mindMap.scrollbar.setScrollBarWrapSize(width, height)
     },
@@ -84,11 +84,11 @@ export default {
     updateScrollbar({ vertical, horizontal }) {
       this.verticalScrollbarStyle = {
         top: vertical.top + '%',
-        height: vertical.height + '%'
+        height: vertical.height + '%',
       }
       this.horizontalScrollbarStyle = {
         left: horizontal.left + '%',
-        width: horizontal.width + '%'
+        width: horizontal.width + '%',
       }
     },
 
@@ -110,8 +110,8 @@ export default {
     // 水平滚动条点击事件调用插件方法
     onHorizontalScrollbarClick(e) {
       this.mindMap.scrollbar.onClick(e, 'horizontal')
-    }
-  }
+    },
+  },
 }
 </script>
 

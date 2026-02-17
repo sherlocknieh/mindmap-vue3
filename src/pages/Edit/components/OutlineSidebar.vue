@@ -46,18 +46,18 @@ import { printOutline } from '@/utils'
 export default {
   components: {
     Sidebar,
-    Outline
+    Outline,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
-    })
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -66,7 +66,7 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   methods: {
     ...mapActions(useAppStore, ['setIsOutlineEdit', 'setActiveSidebar']),
@@ -88,8 +88,8 @@ export default {
     // 打印
     onPrint() {
       printOutline(this.$refs.outlineRef.$el)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -100,7 +100,6 @@ export default {
   top: 12px;
   display: flex;
   align-items: center;
-
   .btn {
     cursor: pointer;
     margin-left: 12px;

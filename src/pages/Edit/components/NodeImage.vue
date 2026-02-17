@@ -2,48 +2,51 @@
   <el-dialog
     class="nodeImageDialog"
     :title="$t('nodeImage.title')"
-    :visible.sync="dialogVisible"
+    v-model:visible="dialogVisible"
     :width="isMobile ? '90%' : '600px'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <div class="title">方式一</div>
     <ImgUpload
       ref="ImgUpload"
-      v-model="img"
-      style="margin-bottom: 12px;"
+      v-model:value="img"
+      style="margin-bottom: 12px"
     ></ImgUpload>
     <div class="title">方式二</div>
     <div class="inputBox">
       <span class="label">请输入图片地址</span>
       <el-input
-        v-model="imgUrl"
+        v-model:value="imgUrl"
         size="mini"
         placeholder="http://xxx.com/xx.jpg"
-        @keydown.native.stop
+        @keydown.stop
       ></el-input>
     </div>
     <div class="title">可选</div>
     <div class="inputBox">
       <span class="label">{{ $t('nodeImage.imgTitle') }}</span>
-      <el-input v-model="imgTitle" size="mini" @keydown.native.stop></el-input>
+      <el-input v-model:value="imgTitle" size="mini" @keydown.stop></el-input>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
-      <el-button type="primary" @click="confirm">{{
-        $t('dialog.confirm')
-      }}</el-button>
-    </span>
+    <template v-slot:footer>
+      <span class="dialog-footer">
+        <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
+        <el-button type="primary" @click="confirm">{{
+          $t('dialog.confirm')
+        }}</el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import ImgUpload from '@/components/ImgUpload/index.vue'
 import { getImageSize, isMobile } from 'simple-mind-map/src/utils/index'
 
 // 节点图片内容设置
 export default {
   components: {
-    ImgUpload
+    ImgUpload,
   },
   data() {
     return {
@@ -52,16 +55,16 @@ export default {
       imgUrl: '',
       imgTitle: '',
       activeNodes: null,
-      isMobile: isMobile()
+      isMobile: isMobile(),
     }
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeImage', this.handleShowNodeImage)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
+    $on(this.$bus, 'showNodeImage', this.handleShowNodeImage)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeImage', this.handleShowNodeImage)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
+    $off(this.$bus, 'showNodeImage', this.handleShowNodeImage)
   },
   methods: {
     handleNodeActive(...args) {
@@ -101,7 +104,7 @@ export default {
         // 删除图片
         if (!this.img && !this.imgUrl) {
           this.cancel()
-          this.activeNodes.forEach(node => {
+          this.activeNodes.forEach((node) => {
             node.setImage(null)
           })
           return
@@ -115,20 +118,20 @@ export default {
           img = this.imgUrl
           res = await getImageSize(img)
         }
-        this.activeNodes.forEach(node => {
+        this.activeNodes.forEach((node) => {
           node.setImage({
             url: img || 'none',
             title: this.imgTitle,
             width: res.width || 100,
-            height: res.height || 100
+            height: res.height || 100,
           })
         })
         this.cancel()
       } catch (error) {
         console.log(error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -14,7 +14,7 @@
       :style="{
         transform: `scale(${svgBoxScale})`,
         left: svgBoxLeft + 'px',
-        top: svgBoxTop + 'px'
+        top: svgBoxTop + 'px',
       }"
     >
       <img :src="mindMapImg" @mousedown.prevent />
@@ -30,14 +30,15 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -52,38 +53,38 @@ export default {
         left: 0,
         top: 0,
         bottom: 0,
-        right: 0
+        right: 0,
       },
       mindMapImg: '',
       width: 0,
       setSizeTimer: null,
-      withTransition: true
+      withTransition: true,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   mounted() {
     this.setSize()
     window.addEventListener('resize', this.setSize)
-    this.$bus.$on('toggle_mini_map', this.toggle_mini_map)
-    this.$bus.$on('data_change', this.data_change)
-    this.$bus.$on('view_data_change', this.data_change)
-    this.$bus.$on('node_tree_render_end', this.data_change)
+    $on(this.$bus, 'toggle_mini_map', this.toggle_mini_map)
+    $on(this.$bus, 'data_change', this.data_change)
+    $on(this.$bus, 'view_data_change', this.data_change)
+    $on(this.$bus, 'node_tree_render_end', this.data_change)
     window.addEventListener('mouseup', this.onMouseup)
     this.mindMap.on(
       'mini_map_view_box_position_change',
       this.onViewBoxPositionChange
     )
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener('resize', this.setSize)
-    this.$bus.$off('toggle_mini_map', this.toggle_mini_map)
-    this.$bus.$off('data_change', this.data_change)
-    this.$bus.$off('view_data_change', this.data_change)
-    this.$bus.$off('node_tree_render_end', this.data_change)
+    $off(this.$bus, 'toggle_mini_map', this.toggle_mini_map)
+    $off(this.$bus, 'data_change', this.data_change)
+    $off(this.$bus, 'view_data_change', this.data_change)
+    $off(this.$bus, 'node_tree_render_end', this.data_change)
     window.removeEventListener('mouseup', this.onMouseup)
     this.mindMap.off(
       'mini_map_view_box_position_change',
@@ -143,10 +144,10 @@ export default {
         viewBoxStyle,
         miniMapBoxScale,
         miniMapBoxLeft,
-        miniMapBoxTop
+        miniMapBoxTop,
       } = this.mindMap.miniMap.calculationMiniMap(this.boxWidth, this.boxHeight)
       // 渲染到小地图
-      getImgUrl(img => {
+      getImgUrl((img) => {
         this.mindMapImg = img
       })
       this.viewBoxStyle = viewBoxStyle
@@ -190,8 +191,8 @@ export default {
       this.viewBoxStyle.right = right
       this.viewBoxStyle.top = top
       this.viewBoxStyle.bottom = bottom
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -207,7 +208,6 @@ export default {
   border: 1px solid #eee;
   cursor: pointer;
   user-select: none;
-
   &.isDark {
     background-color: #262a2e;
   }

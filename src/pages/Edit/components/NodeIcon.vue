@@ -2,7 +2,7 @@
   <el-dialog
     class="nodeIconDialog"
     :title="$t('nodeIcon.title')"
-    :visible.sync="dialogVisible"
+    v-model:visible="dialogVisible"
     width="500"
   >
     <div class="item" v-for="item in nodeIconList" :key="item.name">
@@ -14,7 +14,7 @@
           :key="icon.name"
           v-html="getHtml(icon.icon)"
           :class="{
-            selected: iconList.includes(item.type + '_' + icon.name)
+            selected: iconList.includes(item.type + '_' + icon.name),
           }"
           @click="setIcon(item.type, icon.name)"
         ></div>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { nodeIconList } from 'simple-mind-map/src/svg/icons'
 import icon from '@/config/icon'
 
@@ -34,16 +35,16 @@ export default {
       nodeIconList: [...nodeIconList, ...icon],
       dialogVisible: false,
       iconList: [],
-      activeNodes: []
+      activeNodes: [],
     }
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeIcon', this.handleShowNodeIcon)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
+    $on(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeIcon', this.handleShowNodeIcon)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
+    $off(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
   },
   methods: {
     handleNodeActive(...args) {
@@ -66,14 +67,14 @@ export default {
 
     setIcon(type, name) {
       let key = type + '_' + name
-      let index = this.iconList.findIndex(item => {
+      let index = this.iconList.findIndex((item) => {
         return item === key
       })
       // 删除icon
       if (index !== -1) {
         this.iconList.splice(index, 1)
       } else {
-        let typeIndex = this.iconList.findIndex(item => {
+        let typeIndex = this.iconList.findIndex((item) => {
           return item.split('_')[0] === type
         })
         // 替换icon
@@ -84,11 +85,11 @@ export default {
           this.iconList.push(key)
         }
       }
-      this.activeNodes.forEach(node => {
+      this.activeNodes.forEach((node) => {
         node.setIcon([...this.iconList])
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -41,22 +41,20 @@
           @node-drop="onNodeDrop"
           @current-change="onCurrentChange"
         >
-          <span
-            class="customNode"
-            slot-scope="{ node, data }"
-            :data-id="data.uid"
-          >
-            <span
-              class="nodeEdit"
-              :contenteditable="!isReadonly"
-              :key="getKey()"
-              @blur="onBlur($event, node)"
-              @keydown.stop="onNodeInputKeydown($event, node)"
-              @keyup.stop
-              @paste="onPaste($event, node)"
-              v-html="node.label"
-            ></span>
-          </span>
+          <template v-slot="{ node, data }">
+            <span class="customNode" :data-id="data.uid">
+              <span
+                class="nodeEdit"
+                :contenteditable="!isReadonly"
+                :key="getKey()"
+                @blur="onBlur($event, node)"
+                @keydown.stop="onNodeInputKeydown($event, node)"
+                @keyup.stop
+                @paste="onPaste($event, node)"
+                v-html="node.label"
+              ></span>
+            </span>
+          </template>
         </el-tree>
       </div>
     </div>
@@ -64,6 +62,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import {
@@ -72,33 +71,32 @@ import {
   createUid,
   simpleDeepClone,
   htmlEscape,
-  handleInputPasteText
+  handleInputPasteText,
 } from 'simple-mind-map/src/utils'
 import { storeData } from '@/api'
 import { printOutline } from '@/utils'
 
-// 大纲侧边栏
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       data: [],
       defaultProps: {
-        label: 'label'
+        label: 'label',
       },
-      currentData: null
+      currentData: null,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark,
-      isOutlineEdit: state => state.isOutlineEdit
-    })
+      isReadonly: (state) => state.isReadonly,
+      isDark: (state) => state.localConfig.isDark,
+      isOutlineEdit: (state) => state.isOutlineEdit,
+    }),
   },
   watch: {
     isOutlineEdit(val) {
@@ -108,12 +106,12 @@ export default {
           document.body.appendChild(this.$refs.outlineEditContainer)
         })
       }
-    }
+    },
   },
   created() {
     window.addEventListener('keydown', this.onKeyDown)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
@@ -123,7 +121,7 @@ export default {
     refresh() {
       let data = this.mindMap.getData()
       data.root = true // 标记根节点
-      let walk = root => {
+      let walk = (root) => {
         let text = root.data.richText
           ? nodeRichTextToTextWithWrap(root.data.text)
           : root.data.text
@@ -133,7 +131,7 @@ export default {
         root.label = text
         root.uid = root.data.uid
         if (root.children && root.children.length > 0) {
-          root.children.forEach(item => {
+          root.children.forEach((item) => {
             walk(item)
           })
         }
@@ -182,9 +180,9 @@ export default {
         data: {
           text: richText ? textToNodeRichTextWithWrap(text) : text,
           uid,
-          richText
+          richText,
         },
-        children: []
+        children: [],
       }
       if (e.keyCode === 13 && !e.shiftKey) {
         e.preventDefault()
@@ -250,7 +248,7 @@ export default {
     // 关闭
     onClose() {
       this.setIsOutlineEdit(false)
-      this.$bus.$emit('setData', this.getData())
+      $emit(this.$bus, 'setData', this.getData())
     },
 
     // 滚动
@@ -271,7 +269,7 @@ export default {
       let walk = (root, newRoot) => {
         newRoot.data = root.data
         newRoot.children = []
-        ;(root.children || []).forEach(child => {
+        ;(root.children || []).forEach((child) => {
           const newChild = {}
           newRoot.children.push(newChild)
           walk(child, newChild)
@@ -284,10 +282,11 @@ export default {
     // 保存
     save() {
       storeData({
-        root: this.getData()
+        root: this.getData(),
       })
-    }
-  }
+    },
+  },
+  emits: ['setData'],
 }
 </script>
 
@@ -301,7 +300,6 @@ export default {
   z-index: 1999;
   background-color: #fff;
   overflow: hidden;
-
   &.isDark {
     background-color: #262a2e;
 
@@ -351,12 +349,10 @@ export default {
     }
   }
 }
-
 .customNode {
   width: 100%;
   color: rgba(0, 0, 0, 0.85);
   font-weight: bold;
-
   .nodeEdit {
     outline: none;
     white-space: normal;
@@ -364,6 +360,7 @@ export default {
   }
 }
 </style>
+
 <style lang="less" scoped>
 @import url('../../../style/outlineTree.less');
 </style>

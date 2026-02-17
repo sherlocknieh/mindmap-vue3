@@ -57,9 +57,11 @@
             {{ item.name }}
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconxingzhuang-wenzi"></span>
-        </div>
+        <template v-slot:reference>
+          <div class="btn">
+            <span class="icon iconfont iconxingzhuang-wenzi"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -72,7 +74,7 @@
             :key="item"
             :style="{
               fontSize: item + 'px',
-              height: (item < 30 ? 30 : item + 10) + 'px'
+              height: (item < 30 ? 30 : item + 10) + 'px',
             }"
             :class="{ active: formatInfo.size === item + 'px' }"
             @click="changeFontSize(item)"
@@ -80,18 +82,22 @@
             {{ item }}px
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconcase fontColor"></span>
-        </div>
+        <template v-slot:reference>
+          <div class="btn">
+            <span class="icon iconfont iconcase fontColor"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
     <el-tooltip :content="$t('richTextToolbar.color')" placement="top">
       <el-popover placement="bottom" trigger="hover">
         <Color :color="fontColor" @change="changeFontColor"></Color>
-        <div class="btn" slot="reference" :style="{ color: formatInfo.color }">
-          <span class="icon iconfont iconzitiyanse"></span>
-        </div>
+        <template v-slot:reference>
+          <div class="btn" :style="{ color: formatInfo.color }">
+            <span class="icon iconfont iconzitiyanse"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -104,9 +110,11 @@
           :color="fontBackgroundColor"
           @change="changeFontBackgroundColor"
         ></Color>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconbeijingyanse"></span>
-        </div>
+        <template v-slot:reference>
+          <div class="btn">
+            <span class="icon iconfont iconbeijingyanse"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -123,9 +131,11 @@
             {{ item.name }}
           </div>
         </div>
-        <div class="btn" slot="reference">
-          <span class="icon iconfont iconjuzhongduiqi"></span>
-        </div>
+        <template v-slot:reference>
+          <div class="btn">
+            <span class="icon iconfont iconjuzhongduiqi"></span>
+          </div>
+        </template>
       </el-popover>
     </el-tooltip>
 
@@ -138,6 +148,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { fontFamilyList, fontSizeList, alignList } from '@/config'
 import Color from './Color.vue'
 import { mapState, mapActions } from 'pinia'
@@ -145,12 +156,12 @@ import { useAppStore } from '@/store'
 
 export default {
   components: {
-    Color
+    Color,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -158,16 +169,16 @@ export default {
       showRichTextToolbar: false,
       style: {
         left: 0,
-        top: 0
+        top: 0,
       },
       fontColor: '',
       fontBackgroundColor: '',
-      formatInfo: {}
+      formatInfo: {},
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
+      isDark: (state) => state.localConfig.isDark,
     }),
 
     fontFamilyList() {
@@ -176,16 +187,20 @@ export default {
 
     alignList() {
       return alignList[this.$i18n.locale] || alignList.zh
-    }
+    },
   },
   created() {
-    this.$bus.$on('rich_text_selection_change', this.onRichTextSelectionChange)
+    $on(this.$bus, 'rich_text_selection_change', this.onRichTextSelectionChange)
   },
   mounted() {
     document.body.append(this.$refs.richTextToolbar)
   },
-  beforeDestroy() {
-    this.$bus.$off('rich_text_selection_change', this.onRichTextSelectionChange)
+  beforeUnmount() {
+    $off(
+      this.$bus,
+      'rich_text_selection_change',
+      this.onRichTextSelectionChange
+    )
   },
   methods: {
     onRichTextSelectionChange(hasRange, rect, formatInfo) {
@@ -200,70 +215,70 @@ export default {
     toggleBold() {
       this.formatInfo.bold = !this.formatInfo.bold
       this.mindMap.richText.formatText({
-        bold: this.formatInfo.bold
+        bold: this.formatInfo.bold,
       })
     },
 
     toggleItalic() {
       this.formatInfo.italic = !this.formatInfo.italic
       this.mindMap.richText.formatText({
-        italic: this.formatInfo.italic
+        italic: this.formatInfo.italic,
       })
     },
 
     toggleUnderline() {
       this.formatInfo.underline = !this.formatInfo.underline
       this.mindMap.richText.formatText({
-        underline: this.formatInfo.underline
+        underline: this.formatInfo.underline,
       })
     },
 
     toggleStrike() {
       this.formatInfo.strike = !this.formatInfo.strike
       this.mindMap.richText.formatText({
-        strike: this.formatInfo.strike
+        strike: this.formatInfo.strike,
       })
     },
 
     changeFontFamily(font) {
       this.formatInfo.font = font
       this.mindMap.richText.formatText({
-        font
+        font,
       })
     },
 
     changeFontSize(size) {
       this.formatInfo.size = size
       this.mindMap.richText.formatText({
-        size: size + 'px'
+        size: size + 'px',
       })
     },
 
     changeFontColor(color) {
       this.formatInfo.color = color
       this.mindMap.richText.formatText({
-        color
+        color,
       })
     },
 
     changeFontBackgroundColor(background) {
       this.formatInfo.background = background
       this.mindMap.richText.formatText({
-        background
+        background,
       })
     },
 
     changeTextAlign(align) {
       this.formatInfo.align = align
       this.mindMap.richText.formatText({
-        align
+        align,
       })
     },
 
     removeFormat() {
       this.mindMap.richText.removeFormat()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -279,7 +294,6 @@ export default {
   display: flex;
   align-items: center;
   transform: translateX(-50%);
-
   &.isDark {
     background: #363b3f;
 
@@ -317,10 +331,8 @@ export default {
     }
   }
 }
-
 .fontOptionsList {
   width: 150px;
-
   &.isDark {
     .fontOptionItem {
       color: #fff;

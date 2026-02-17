@@ -14,7 +14,7 @@
             <el-select
               size="mini"
               style="width: 100px"
-              v-model="style.fontFamily"
+              v-model:value="style.fontFamily"
               placeholder=""
               @change="update('fontFamily')"
             >
@@ -33,7 +33,7 @@
             <el-select
               size="mini"
               style="width: 60px"
-              v-model="style.fontSize"
+              v-model:value="style.fontSize"
               placeholder=""
               @change="update('fontSize')"
             >
@@ -51,7 +51,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.textAlign"
+              v-model:value="style.textAlign"
               placeholder=""
               @change="update('textAlign')"
             >
@@ -80,7 +80,7 @@
               <div
                 class="styleBtn"
                 :class="{
-                  actived: style.fontWeight === 'bold'
+                  actived: style.fontWeight === 'bold',
                 }"
                 @click="toggleFontWeight"
               >
@@ -91,7 +91,7 @@
               <div
                 class="styleBtn i"
                 :class="{
-                  actived: style.fontStyle === 'italic'
+                  actived: style.fontStyle === 'italic',
                 }"
                 @click="toggleFontStyle"
               >
@@ -117,7 +117,7 @@
           <el-popover ref="popover2" placement="bottom" trigger="hover">
             <el-radio-group
               size="mini"
-              v-model="style.textDecoration"
+              v-model:value="style.textDecoration"
               @change="update('textDecoration')"
             >
               <el-radio-button label="none">{{
@@ -157,7 +157,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.borderDasharray"
+              v-model:value="style.borderDasharray"
               placeholder=""
               @change="update('borderDasharray')"
             >
@@ -194,7 +194,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.borderWidth"
+              v-model:value="style.borderWidth"
               placeholder=""
               @change="update('borderWidth')"
             >
@@ -218,7 +218,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.borderRadius"
+              v-model:value="style.borderRadius"
               placeholder=""
               @change="update('borderRadius')"
             >
@@ -245,11 +245,11 @@
             <el-popover ref="popover4" placement="bottom" trigger="hover">
               <Color :color="style.fillColor" @change="changeFillColor"></Color>
             </el-popover>
-            <span class="name" style="margin-left: 20px;">{{
+            <span class="name" style="margin-left: 20px">{{
               $t('style.gradientStyle')
             }}</span>
             <el-checkbox
-              v-model="style.gradientStyle"
+              v-model:value="style.gradientStyle"
               @change="update('gradientStyle')"
             ></el-checkbox>
           </div>
@@ -285,7 +285,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.linearGradientDir"
+              v-model:value="style.linearGradientDir"
               placeholder=""
               @change="update('linearGradientDir')"
             >
@@ -307,7 +307,7 @@
             <el-select
               size="mini"
               style="width: 120px"
-              v-model="style.shape"
+              v-model:value="style.shape"
               placeholder=""
               @change="update('shape')"
             >
@@ -316,7 +316,11 @@
                 :key="item.value"
                 :label="item.name"
                 :value="item.value"
-                style="display: flex; justify-content: center; align-items: center;"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
               >
                 <svg
                   :width="item.width || 60"
@@ -359,7 +363,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.lineDasharray"
+              v-model:value="style.lineDasharray"
               placeholder=""
               @change="update('lineDasharray')"
             >
@@ -396,7 +400,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.lineWidth"
+              v-model:value="style.lineWidth"
               placeholder=""
               @change="update('lineWidth')"
             >
@@ -420,7 +424,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="style.lineMarkerDir"
+              v-model:value="style.lineMarkerDir"
               placeholder=""
               @change="update('lineMarkerDir')"
             >
@@ -444,7 +448,7 @@
             <span class="name">{{ $t('style.horizontal') }}</span>
             <el-slider
               style="width: 200px"
-              v-model="style.paddingX"
+              v-model:value="style.paddingX"
               @change="update('paddingX')"
             ></el-slider>
           </div>
@@ -454,7 +458,7 @@
             <span class="name">{{ $t('style.vertical') }}</span>
             <el-slider
               style="width: 200px"
-              v-model="style.paddingY"
+              v-model:value="style.paddingY"
               @change="update('paddingY')"
             ></el-slider>
           </div>
@@ -465,7 +469,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
-              v-model="style.imgPlacement"
+              v-model:value="style.imgPlacement"
               size="mini"
               @change="update('imgPlacement')"
             >
@@ -490,7 +494,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
-              v-model="style.tagPlacement"
+              v-model:value="style.tagPlacement"
               size="mini"
               @change="update('tagPlacement')"
             >
@@ -513,6 +517,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import Color from './Color.vue'
 import {
@@ -524,7 +529,7 @@ import {
   shapeList,
   shapeListMap,
   linearGradientDirList,
-  alignList
+  alignList,
 } from '@/config'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -533,12 +538,12 @@ import { useAppStore } from '@/store'
 export default {
   components: {
     Sidebar,
-    Color
+    Color,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -574,14 +579,14 @@ export default {
         lineFlowDuration: 1,
         textAlign: '',
         imgPlacement: '',
-        tagPlacement: ''
-      }
+        tagPlacement: '',
+      },
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
     }),
     fontFamilyList() {
       return fontFamilyList[this.$i18n.locale] || fontFamilyList.zh
@@ -593,26 +598,26 @@ export default {
       return [
         ...(shapeList[this.$i18n.locale] || shapeList.zh),
         ...this.mindMap.extendShapeList
-          .filter(item => {
+          .filter((item) => {
             return !['fishHead'].includes(item.name)
           })
-          .map(item => {
+          .map((item) => {
             return {
               width: '40px',
               name: item.nameShow,
-              value: item.name
+              value: item.name,
             }
-          })
+          }),
       ]
     },
     shapeListMap() {
       const map2 = {}
-      this.mindMap.extendShapeList.forEach(item => {
+      this.mindMap.extendShapeList.forEach((item) => {
         map2[item.name] = item.path
       })
       return {
         ...shapeListMap,
-        ...map2
+        ...map2,
       }
     },
     linearGradientDirList() {
@@ -622,7 +627,7 @@ export default {
     },
     alignList() {
       return alignList[this.$i18n.locale] || alignList.zh
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -631,13 +636,13 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_active', this.onNodeActive)
+    $on(this.$bus, 'node_active', this.onNodeActive)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.onNodeActive)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.onNodeActive)
   },
   methods: {
     // 监听节点激活事件
@@ -653,7 +658,7 @@ export default {
       if (this.activeNodes.length <= 0) {
         return
       }
-      Object.keys(this.style).forEach(item => {
+      Object.keys(this.style).forEach((item) => {
         this.style[item] = this.activeNodes[0].getStyle(item, false)
       })
       this.initLinearGradientDir()
@@ -663,7 +668,7 @@ export default {
     initLinearGradientDir() {
       const startDir = this.activeNodes[0].getStyle('startDir', false)
       const endDir = this.activeNodes[0].getStyle('endDir', false)
-      const target = this.linearGradientDirList.find(item => {
+      const target = this.linearGradientDirList.find((item) => {
         return (
           item.start[0] === startDir[0] &&
           item.start[1] === startDir[1] &&
@@ -679,17 +684,17 @@ export default {
     // 修改样式
     update(prop) {
       if (prop === 'linearGradientDir') {
-        const target = this.linearGradientDirList.find(item => {
+        const target = this.linearGradientDirList.find((item) => {
           return item.value === this.style.linearGradientDir
         })
-        this.activeNodes.forEach(node => {
+        this.activeNodes.forEach((node) => {
           node.setStyles({
             startDir: [...target.start],
-            endDir: [...target.end]
+            endDir: [...target.end],
           })
         })
       } else {
-        this.activeNodes.forEach(node => {
+        this.activeNodes.forEach((node) => {
           node.setStyle(prop, this.style[prop])
         })
       }
@@ -749,8 +754,8 @@ export default {
     changeEndColor(color) {
       this.style.endColor = color
       this.update('endColor')
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -760,7 +765,6 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-
   &.isDark {
     .sidebarContent {
       .title {
@@ -789,7 +793,6 @@ export default {
     padding: 0 20px;
   }
 }
-
 .tipBox {
   width: 100%;
   height: 100%;
@@ -798,16 +801,13 @@ export default {
   justify-content: center;
   align-items: center;
   color: #666;
-
   .tipIcon {
     font-size: 100px;
   }
 }
-
 .sidebarContent {
   padding: 20px;
   padding-top: 10px;
-
   .title {
     font-size: 16px;
     font-family: PingFangSC-Medium, PingFang SC;
@@ -903,17 +903,16 @@ export default {
     }
   }
 }
-
 .borderLine {
   display: inline-block;
   width: 100%;
   background-color: #000;
-
   &.isDark {
     background-color: #fff;
   }
 }
 </style>
+
 <style lang="less">
 .el-select-dropdown__item.selected {
   .borderLine {

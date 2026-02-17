@@ -51,26 +51,27 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 export default {
   props: {
     mindMap: {
-      type: Object
+      type: Object,
     },
     isDark: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {
       isEnterDemonstrate: false,
       curStepIndex: 0,
       totalStep: 0,
-      inputStep: ''
+      inputStep: '',
     }
   },
   created() {
-    this.$bus.$on('demonstrate_jump', this.onJump)
-    this.$bus.$on('exit_demonstrate', this.onExit)
+    $on(this.$bus, 'demonstrate_jump', this.onJump)
+    $on(this.$bus, 'exit_demonstrate', this.onExit)
   },
   methods: {
     enterDemoMode() {
@@ -113,8 +114,8 @@ export default {
       } else if (num >= 1 && num <= this.totalStep) {
         this.mindMap.demonstrate.jump(num - 1)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -122,7 +123,6 @@ export default {
 .demonstrateContainer {
   display: flex;
   align-items: center;
-
   &.isDark {
     .btn {
       color: hsla(0, 0%, 100%, 0.6);
@@ -142,7 +142,6 @@ export default {
     font-size: 24px;
   }
 }
-
 .exitDemonstrateBtn {
   position: absolute;
   right: 40px;
@@ -150,23 +149,19 @@ export default {
   cursor: pointer;
   z-index: 10001;
   pointer-events: all;
-
   .icon {
     font-size: 28px;
     color: #fff;
   }
 }
-
 .stepBox {
   position: absolute;
   right: 40px;
   bottom: 20px;
   pointer-events: all;
-
   z-index: 10001;
   display: flex;
   align-items: center;
-
   .step {
     color: #fff;
     margin: 0 12px;

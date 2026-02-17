@@ -2,46 +2,51 @@
   <el-dialog
     class="nodeHyperlinkDialog"
     :title="$t('nodeHyperlink.title')"
-    :visible.sync="dialogVisible"
+    v-model:visible="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <div class="item">
       <span class="name">{{ $t('nodeHyperlink.link') }}</span>
       <el-input
-        v-model="link"
+        v-model:value="link"
         size="mini"
         placeholder="http://xxxx.com/"
-        @keyup.native.stop
-        @keydown.native.stop
+        @keyup.stop
+        @keydown.stop
         @blur="handleUrl()"
       >
-        <el-select v-model="protocol" slot="prepend" style="width: 80px;">
-          <el-option label="https" value="https"></el-option>
-          <el-option label="http" value="http"></el-option>
-          <el-option label="无" value="none"></el-option>
-        </el-select>
+        <template v-slot:prepend>
+          <el-select v-model:value="protocol" style="width: 80px">
+            <el-option label="https" value="https"></el-option>
+            <el-option label="http" value="http"></el-option>
+            <el-option label="无" value="none"></el-option>
+          </el-select>
+        </template>
       </el-input>
     </div>
     <div class="item">
       <span class="name">{{ $t('nodeHyperlink.name') }}</span>
       <el-input
-        v-model="linkTitle"
+        v-model:value="linkTitle"
         size="mini"
-        @keyup.native.stop
-        @keydown.native.stop
+        @keyup.stop
+        @keydown.stop
       ></el-input>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
-      <el-button type="primary" @click="confirm">{{
-        $t('dialog.confirm')
-      }}</el-button>
-    </span>
+    <template v-slot:footer>
+      <span class="dialog-footer">
+        <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
+        <el-button type="primary" @click="confirm">{{
+          $t('dialog.confirm')
+        }}</el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { isMobile } from 'simple-mind-map/src/utils/index'
 
 // 节点超链接内容设置
@@ -53,16 +58,16 @@ export default {
       linkTitle: '',
       activeNodes: [],
       protocol: 'https',
-      isMobile: isMobile()
+      isMobile: isMobile(),
     }
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeLink', this.handleShowNodeLink)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
+    $on(this.$bus, 'showNodeLink', this.handleShowNodeLink)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeLink', this.handleShowNodeLink)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
+    $off(this.$bus, 'showNodeLink', this.handleShowNodeLink)
   },
   methods: {
     handleNodeActive(...args) {
@@ -103,15 +108,15 @@ export default {
     },
 
     confirm() {
-      this.activeNodes.forEach(node => {
+      this.activeNodes.forEach((node) => {
         node.setHyperlink(
           (this.protocol === 'none' ? '' : this.protocol + '://') + this.link,
           this.linkTitle
         )
         this.cancel()
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

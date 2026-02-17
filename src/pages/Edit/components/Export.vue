@@ -3,7 +3,7 @@
     class="nodeExportDialog"
     :class="{ isMobile: isMobile, isDark: isDark }"
     :title="$t('export.title')"
-    :visible.sync="dialogVisible"
+    v-model:visible="dialogVisible"
     v-loading.fullscreen.lock="loading"
     :element-loading-text="loadingText"
     element-loading-spinner="el-icon-loading"
@@ -21,7 +21,7 @@
             v-for="item in downTypeList"
             :key="item.type"
             :class="{
-              active: exportType === item.type
+              active: exportType === item.type,
             }"
             @click="exportType = item.type"
           >
@@ -38,9 +38,9 @@
               <span class="name">{{ $t('export.filename') }}</span>
               <el-input
                 style="max-width: 250px"
-                v-model="fileName"
+                v-model:value="fileName"
                 size="mini"
-                @keydown.native.stop
+                @keydown.stop
               ></el-input>
             </div>
             <span class="closeBtn el-icon-close" @click="cancel"></span>
@@ -67,7 +67,7 @@
                   class="valueItem"
                   v-show="['smm', 'json'].includes(exportType)"
                 >
-                  <el-checkbox v-model="widthConfig">{{
+                  <el-checkbox v-model:value="widthConfig">{{
                     $t('export.include')
                   }}</el-checkbox>
                 </div>
@@ -77,7 +77,7 @@
                 >
                   <div class="valueSubItem" v-if="['png'].includes(exportType)">
                     <span class="name">{{ $t('export.format') }}</span>
-                    <el-radio-group v-model="imageFormat">
+                    <el-radio-group v-model:value="imageFormat">
                       <el-radio label="png">PNG</el-radio>
                     </el-radio-group>
                   </div>
@@ -85,20 +85,20 @@
                     <span class="name">{{ $t('export.paddingX') }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model="paddingX"
+                      v-model:value="paddingX"
                       size="mini"
                       @change="onPaddingChange"
-                      @keydown.native.stop
+                      @keydown.stop
                     ></el-input>
                   </div>
                   <div class="valueSubItem">
                     <span class="name">{{ $t('export.paddingY') }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model="paddingY"
+                      v-model:value="paddingY"
                       size="mini"
                       @change="onPaddingChange"
-                      @keydown.native.stop
+                      @keydown.stop
                     ></el-input>
                   </div>
                   <div class="valueSubItem">
@@ -107,23 +107,25 @@
                     }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model="extraText"
+                      v-model:value="extraText"
                       size="mini"
                       :placeholder="$t('export.addFooterTextPlaceholder')"
-                      @keydown.native.stop
+                      @keydown.stop
                     ></el-input>
                   </div>
                   <div class="valueSubItem">
                     <el-checkbox
                       v-show="['png', 'pdf'].includes(exportType)"
-                      v-model="isTransparent"
+                      v-model:value="isTransparent"
                       >{{ $t('export.isTransparent') }}</el-checkbox
                     >
                   </div>
                   <div class="valueSubItem">
-                    <el-checkbox v-show="showFitBgOption" v-model="isFitBg">{{
-                      $t('export.isFitBg')
-                    }}</el-checkbox>
+                    <el-checkbox
+                      v-show="showFitBgOption"
+                      v-model:value="isFitBg"
+                      >{{ $t('export.isFitBg') }}</el-checkbox
+                    >
                   </div>
                 </div>
               </div>
@@ -145,6 +147,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { downTypeList } from '@/config'
@@ -168,18 +171,18 @@ export default {
       extraText: '',
       isMobile: isMobile(),
       isFitBg: true,
-      imageFormat: 'png'
+      imageFormat: 'png',
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      openNodeRichText: state => state.localConfig.openNodeRichText,
-      isDark: state => state.localConfig.isDark,
+      openNodeRichText: (state) => state.localConfig.openNodeRichText,
+      isDark: (state) => state.localConfig.isDark,
     }),
 
     downTypeList() {
       const list = downTypeList[this.$i18n.locale] || downTypeList.zh
-      return list.filter(item => {
+      return list.filter((item) => {
         if (item.type === 'mm') {
           return false
         }
@@ -192,7 +195,7 @@ export default {
     },
 
     currentTypeData() {
-      const cur = this.downTypeList.find(item => {
+      const cur = this.downTypeList.find((item) => {
         return item.type === this.exportType
       })
       return cur
@@ -204,13 +207,13 @@ export default {
 
     noOptions() {
       return ['md', 'xmind', 'txt', 'xlsx', 'mm'].includes(this.exportType)
-    }
+    },
   },
   created() {
-    this.$bus.$on('showExport', this.handleShowExport)
+    $on(this.$bus, 'showExport', this.handleShowExport)
   },
-  beforeDestroy() {
-    this.$bus.$off('showExport', this.handleShowExport)
+  beforeUnmount() {
+    $off(this.$bus, 'showExport', this.handleShowExport)
   },
   methods: {
     ...mapActions(useAppStore, ['setExtraTextOnExport']),
@@ -220,9 +223,9 @@ export default {
     },
 
     onPaddingChange() {
-      this.$bus.$emit('paddingChange', {
+      $emit(this.$bus, 'paddingChange', {
         exportPaddingX: Number(this.paddingX),
-        exportPaddingY: Number(this.paddingY)
+        exportPaddingY: Number(this.paddingY),
       })
     },
 
@@ -233,19 +236,21 @@ export default {
     confirm() {
       this.setExtraTextOnExport(this.extraText)
       if (this.exportType === 'svg') {
-        this.$bus.$emit(
+        $emit(
+          this.$bus,
           'export',
           this.exportType,
           true,
           this.fileName,
           `* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }`
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }`
         )
       } else if (['smm', 'json'].includes(this.exportType)) {
-        this.$bus.$emit(
+        $emit(
+          this.$bus,
           'export',
           this.exportType,
           true,
@@ -253,7 +258,8 @@ export default {
           this.widthConfig
         )
       } else if (this.exportType === 'png') {
-        this.$bus.$emit(
+        $emit(
+          this.$bus,
           'export',
           this.imageFormat,
           true,
@@ -263,7 +269,8 @@ export default {
           this.isFitBg
         )
       } else if (this.exportType === 'pdf') {
-        this.$bus.$emit(
+        $emit(
+          this.$bus,
           'export',
           this.exportType,
           true,
@@ -272,15 +279,16 @@ export default {
           this.isFitBg
         )
       } else {
-        this.$bus.$emit('export', this.exportType, true, this.fileName)
+        $emit(this.$bus, 'export', this.exportType, true, this.fileName)
       }
       this.$notify.info({
         title: this.$t('export.notifyTitle'),
-        message: this.$t('export.notifyMessage')
+        message: this.$t('export.notifyMessage'),
       })
       this.cancel()
-    }
-  }
+    },
+  },
+  emits: ['paddingChange', 'export'],
 }
 </script>
 
@@ -344,7 +352,6 @@ export default {
     }
   }
 }
-
 .nodeExportDialog {
   &.isDark {
     /deep/ .el-dialog__body {

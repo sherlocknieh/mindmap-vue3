@@ -5,7 +5,7 @@
     :style="{
       left: this.left + 'px',
       top: this.top + 'px',
-      visibility: show ? 'visible' : 'hidden'
+      visibility: show ? 'visible' : 'hidden',
     }"
     @click.stop
     @mousedown.stop
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer'
 import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 
@@ -28,8 +29,8 @@ export default {
       type: Object,
       default() {
         return null
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -37,32 +38,32 @@ export default {
       show: false,
       left: 0,
       top: 0,
-      node: null
+      node: null,
     }
   },
   created() {
-    this.$bus.$on('showNoteContent', this.onShowNoteContent)
-    this.$bus.$on('hideNoteContent', this.hideNoteContent)
+    $on(this.$bus, 'showNoteContent', this.onShowNoteContent)
+    $on(this.$bus, 'hideNoteContent', this.hideNoteContent)
     document.body.addEventListener('click', this.hideNoteContent)
-    this.$bus.$on('node_active', this.onNodeActive)
-    this.$bus.$on('scale', this.onScale)
-    this.$bus.$on('translate', this.onScale)
-    this.$bus.$on('svg_mousedown', this.hideNoteContent)
-    this.$bus.$on('expand_btn_click', this.hideNoteContent)
+    $on(this.$bus, 'node_active', this.onNodeActive)
+    $on(this.$bus, 'scale', this.onScale)
+    $on(this.$bus, 'translate', this.onScale)
+    $on(this.$bus, 'svg_mousedown', this.hideNoteContent)
+    $on(this.$bus, 'expand_btn_click', this.hideNoteContent)
   },
   mounted() {
     this.mindMap.el.appendChild(this.$refs.noteContentViewer)
     this.initEditor()
   },
-  beforeDestroy() {
-    this.$bus.$off('showNoteContent', this.onShowNoteContent)
-    this.$bus.$off('hideNoteContent', this.hideNoteContent)
+  beforeUnmount() {
+    $off(this.$bus, 'showNoteContent', this.onShowNoteContent)
+    $off(this.$bus, 'hideNoteContent', this.hideNoteContent)
     document.body.removeEventListener('click', this.hideNoteContent)
-    this.$bus.$off('node_active', this.onNodeActive)
-    this.$bus.$off('scale', this.onScale)
-    this.$bus.$off('translate', this.onScale)
-    this.$bus.$off('svg_mousedown', this.hideNoteContent)
-    this.$bus.$off('expand_btn_click', this.hideNoteContent)
+    $off(this.$bus, 'node_active', this.onNodeActive)
+    $off(this.$bus, 'scale', this.onScale)
+    $off(this.$bus, 'translate', this.onScale)
+    $off(this.$bus, 'svg_mousedown', this.hideNoteContent)
+    $off(this.$bus, 'expand_btn_click', this.hideNoteContent)
   },
   methods: {
     onNodeActive(...args) {
@@ -88,14 +89,15 @@ export default {
     // 超链接新窗口打开
     handleALink() {
       const list = this.$refs.noteContentViewer.querySelectorAll('a')
-      Array.from(list).forEach(a => {
+      Array.from(list).forEach((a) => {
         a.setAttribute('target', '_blank')
       })
     },
 
     // 更新位置
     updateNoteContentPosition(left, top) {
-      const { width, height } = this.$refs.noteContentViewer.getBoundingClientRect()
+      const { width, height } =
+        this.$refs.noteContentViewer.getBoundingClientRect()
       const { right, bottom } = this.mindMap.elRect
       this.left = left + width > right ? right - width : left
       this.top = top + height > bottom ? bottom - height : top
@@ -117,11 +119,11 @@ export default {
     initEditor() {
       if (!this.editor) {
         this.editor = new Viewer({
-          el: this.$refs.noteContentWrap
+          el: this.$refs.noteContentWrap,
         })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -134,7 +136,6 @@ export default {
   box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 2;
-
   .noteContentWrap {
     max-width: 250px;
     max-height: 300px;

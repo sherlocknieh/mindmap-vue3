@@ -12,9 +12,9 @@
       :key="item"
       :class="[
         {
-          selected: imgPlacement === item
+          selected: imgPlacement === item,
         },
-        'icon_' + item
+        'icon_' + item,
       ]"
       @click="updateImgPlacement(item)"
     ></div>
@@ -25,20 +25,20 @@
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       showImgPlacementToolbar: false,
       style: {
         left: 0,
-        top: 0
+        top: 0,
       },
       imgPlacementList: ['top', 'bottom', 'left', 'right'],
       node: null,
       imgNode: null,
-      imgPlacement: ''
+      imgPlacement: '',
     }
   },
   created() {
@@ -55,7 +55,7 @@ export default {
   mounted() {
     document.body.append(this.$refs.nodeImgPlacementToolbar)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('node_img_click', this.show)
     this.mindMap.off('draw_click', this.close)
     this.mindMap.off('svg_mousedown', this.close)
@@ -88,10 +88,8 @@ export default {
 
     updatePos() {
       if (!this.imgNode) return
-      const {
-        width,
-        height
-      } = this.$refs.nodeImgPlacementToolbar.getBoundingClientRect()
+      const { width, height } =
+        this.$refs.nodeImgPlacementToolbar.getBoundingClientRect()
       const { width: imgWidth, x, y } = this.imgNode.rbox()
       this.style.left = x + imgWidth / 2 - width / 2 + 'px'
       this.style.top = y - height - 5 + 'px'
@@ -112,8 +110,8 @@ export default {
       this.imgPlacement = item
       this.node.setStyle('imgPlacement', item)
       this.close()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -129,7 +127,6 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 10px;
-
   .imgPlacementItem {
     width: 30px;
     height: 30px;

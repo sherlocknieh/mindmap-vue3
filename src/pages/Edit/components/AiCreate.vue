@@ -4,7 +4,7 @@
     <el-dialog
       class="clientTipDialog"
       :title="$t('ai.connectFailedTitle')"
-      :visible.sync="clientTipDialogVisible"
+      v-model:visible="clientTipDialogVisible"
       width="400px"
       append-to-body
     >
@@ -26,17 +26,19 @@
           }}</el-button>
         </p>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="clientTipDialogVisible = false">{{
-          $t('ai.close')
-        }}</el-button>
-      </div>
+      <template v-slot:footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="clientTipDialogVisible = false">{{
+            $t('ai.close')
+          }}</el-button>
+        </div>
+      </template>
     </el-dialog>
     <!-- ai内容输入弹窗 -->
     <el-dialog
       class="createDialog"
       :title="$t('ai.createMindMapTitle')"
-      :visible.sync="createDialogVisible"
+      v-model:visible="createDialogVisible"
       width="450px"
       append-to-body
     >
@@ -45,7 +47,7 @@
           type="textarea"
           :rows="5"
           :placeholder="$t('ai.createTip')"
-          v-model="aiInput"
+          v-model:value="aiInput"
         >
         </el-input>
         <div class="tip warning">
@@ -58,14 +60,16 @@
           }}</el-button>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeAiCreateDialog">{{
-          $t('ai.cancel')
-        }}</el-button>
-        <el-button type="primary" @click="doAiCreate">{{
-          $t('ai.confirm')
-        }}</el-button>
-      </div>
+      <template v-slot:footer>
+        <div class="dialog-footer">
+          <el-button @click="closeAiCreateDialog">{{
+            $t('ai.cancel')
+          }}</el-button>
+          <el-button type="primary" @click="doAiCreate">{{
+            $t('ai.confirm')
+          }}</el-button>
+        </div>
+      </template>
     </el-dialog>
     <!-- ai生成中添加一个透明层，防止期间用户进行操作 -->
     <div
@@ -77,38 +81,42 @@
         $t('ai.stopGenerating')
       }}</el-button>
     </div>
-    <AiConfigDialog v-model="aiConfigDialogVisible"></AiConfigDialog>
+    <AiConfigDialog v-model:value="aiConfigDialogVisible"></AiConfigDialog>
     <!-- AI续写 -->
     <el-dialog
       class="createDialog"
       :title="$t('ai.aiCreatePart')"
-      :visible.sync="createPartDialogVisible"
+      v-model:visible="createPartDialogVisible"
       width="450px"
       append-to-body
     >
       <div class="inputBox">
-        <el-input type="textarea" :rows="5" v-model="aiPartInput"> </el-input>
+        <el-input type="textarea" :rows="5" v-model:value="aiPartInput">
+        </el-input>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeAiCreatePartDialog">{{
-          $t('ai.cancel')
-        }}</el-button>
-        <el-button type="primary" @click="confirmAiCreatePart">{{
-          $t('ai.confirm')
-        }}</el-button>
-      </div>
+      <template v-slot:footer>
+        <div class="dialog-footer">
+          <el-button @click="closeAiCreatePartDialog">{{
+            $t('ai.cancel')
+          }}</el-button>
+          <el-button type="primary" @click="confirmAiCreatePart">{{
+            $t('ai.confirm')
+          }}</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Ai from '@/utils/ai'
 import { transformMarkdownTo } from 'simple-mind-map/src/parse/markdownTo'
 import {
   createUid,
   isUndef,
   checkNodeOuter,
-  getStrWithBrFromHtml
+  getStrWithBrFromHtml,
 } from 'simple-mind-map/src/utils'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -116,12 +124,12 @@ import AiConfigDialog from './AiConfigDialog.vue'
 
 export default {
   components: {
-    AiConfigDialog
+    AiConfigDialog,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -144,28 +152,28 @@ export default {
 
       createPartDialogVisible: false,
       aiPartInput: '',
-      beingCreatePartNode: null
+      beingCreatePartNode: null,
     }
   },
   computed: {
-    ...mapState(['aiConfig'])
+    ...mapState(['aiConfig']),
   },
   created() {
-    this.$bus.$on('ai_create_all', this.aiCrateAll)
-    this.$bus.$on('ai_create_part', this.showAiCreatePartDialog)
-    this.$bus.$on('ai_chat', this.aiChat)
-    this.$bus.$on('ai_chat_stop', this.aiChatStop)
-    this.$bus.$on('showAiConfigDialog', this.showAiConfigDialog)
+    $on(this.$bus, 'ai_create_all', this.aiCrateAll)
+    $on(this.$bus, 'ai_create_part', this.showAiCreatePartDialog)
+    $on(this.$bus, 'ai_chat', this.aiChat)
+    $on(this.$bus, 'ai_chat_stop', this.aiChatStop)
+    $on(this.$bus, 'showAiConfigDialog', this.showAiConfigDialog)
   },
   mounted() {
     document.body.appendChild(this.$refs.aiCreatingMaskRef)
   },
-  beforeDestroy() {
-    this.$bus.$off('ai_create_all', this.aiCrateAll)
-    this.$bus.$off('ai_create_part', this.showAiCreatePartDialog)
-    this.$bus.$off('ai_chat', this.aiChat)
-    this.$bus.$off('ai_chat_stop', this.aiChatStop)
-    this.$bus.$off('showAiConfigDialog', this.showAiConfigDialog)
+  beforeUnmount() {
+    $off(this.$bus, 'ai_create_all', this.aiCrateAll)
+    $off(this.$bus, 'ai_create_part', this.showAiCreatePartDialog)
+    $off(this.$bus, 'ai_chat', this.aiChat)
+    $off(this.$bus, 'ai_chat_stop', this.aiChatStop)
+    $off(this.$bus, 'showAiConfigDialog', this.showAiConfigDialog)
   },
   methods: {
     // 显示AI配置修改弹窗
@@ -177,7 +185,7 @@ export default {
     async testConnect() {
       try {
         await fetch(`http://localhost:${this.aiConfig.port}/ai/test`, {
-          method: 'GET'
+          method: 'GET',
         })
         this.$message.success(this.$t('ai.connectSuccessful'))
         this.clientTipDialogVisible = false
@@ -206,7 +214,7 @@ export default {
       let isConnect = false
       try {
         await fetch(`http://localhost:${this.aiConfig.port}/ai/test`, {
-          method: 'GET'
+          method: 'GET',
         })
         isConnect = true
       } catch (error) {
@@ -246,7 +254,7 @@ export default {
       // 发起请求
       this.isAiCreating = true
       this.aiInstance = new Ai({
-        port: this.aiConfig.port
+        port: this.aiConfig.port,
       })
       this.aiInstance.init('huoshan', this.aiConfig)
       this.mindMap.renderer.setRootNodeCenter()
@@ -258,18 +266,18 @@ export default {
               role: 'user',
               content: `${this.$t(
                 'ai.aiCreateMsgPrefix'
-              )}${aiInputText}${this.$t('ai.aiCreateMsgPostfix')}`
-            }
-          ]
+              )}${aiInputText}${this.$t('ai.aiCreateMsgPostfix')}`,
+            },
+          ],
         },
-        content => {
+        (content) => {
           if (content) {
             const arr = content.split(/\n+/)
             this.aiCreatingContent = arr.splice(0, arr.length - 1).join('\n')
           }
           this.loopRenderOnAiCreating()
         },
-        content => {
+        (content) => {
           this.aiCreatingContent = content
           this.resetOnAiCreatingStop()
         },
@@ -389,7 +397,7 @@ export default {
           checkRepeatUidMap[node.data.uid] = true
         }
         if (node.children && node.children.length > 0) {
-          node.children.forEach(child => {
+          node.children.forEach((child) => {
             walk(child, node.data.uid)
           })
         }
@@ -444,7 +452,7 @@ export default {
         // 发起请求
         this.isAiCreating = true
         this.aiInstance = new Ai({
-          port: this.aiConfig.port
+          port: this.aiConfig.port,
         })
         this.aiInstance.init('huoshan', this.aiConfig)
         this.aiInstance.request(
@@ -453,11 +461,11 @@ export default {
               {
                 role: 'user',
                 content:
-                  this.aiPartInput.trim() + this.$t('ai.aiCreatePartMsgHelp')
-              }
-            ]
+                  this.aiPartInput.trim() + this.$t('ai.aiCreatePartMsgHelp'),
+              },
+            ],
           },
-          content => {
+          (content) => {
             if (content) {
               const arr = content.split(/\n+/)
               this.aiCreatingContent = arr.splice(0, arr.length - 1).join('\n')
@@ -465,7 +473,7 @@ export default {
 
             this.loopRenderOnAiCreatingPart()
           },
-          content => {
+          (content) => {
             this.aiCreatingContent = content
             this.resetOnAiCreatingStop()
             this.resetAiCreatePartDialog()
@@ -485,7 +493,7 @@ export default {
     // 将生成的数据添加到指定节点上
     addToTargetNode(newChildren = []) {
       const initData = JSON.parse(this.mindMapDataCache)
-      const walk = node => {
+      const walk = (node) => {
         if (node.data.uid === this.beingAiCreateNodeUid) {
           if (!node.children) {
             node.children = []
@@ -494,7 +502,7 @@ export default {
           return
         }
         if (node.children && node.children.length > 0) {
-          node.children.forEach(child => {
+          node.children.forEach((child) => {
             walk(child)
           })
         }
@@ -562,25 +570,25 @@ export default {
         // 发起请求
         this.isAiCreating = true
         this.aiInstance = new Ai({
-          port: this.aiConfig.port
+          port: this.aiConfig.port,
         })
         this.aiInstance.init('huoshan', this.aiConfig)
         this.aiInstance.request(
           {
-            messages: messageList.map(msg => {
+            messages: messageList.map((msg) => {
               return {
                 role: 'user',
-                content: msg
+                content: msg,
               }
-            })
+            }),
           },
-          content => {
+          (content) => {
             progress(content)
           },
-          content => {
+          (content) => {
             end(content)
           },
-          error => {
+          (error) => {
             err(error)
           }
         )
@@ -596,8 +604,8 @@ export default {
         this.isAiCreating = false
         this.aiInstance = null
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -608,7 +616,6 @@ export default {
     padding: 12px 20px;
   }
 }
-
 .tipBox {
   p {
     margin-bottom: 12px;
@@ -618,7 +625,6 @@ export default {
     }
   }
 }
-
 .inputBox {
   .tip {
     margin-top: 12px;
@@ -628,7 +634,6 @@ export default {
     }
   }
 }
-
 .aiCreatingMask {
   position: fixed;
   left: 0;
@@ -637,7 +642,6 @@ export default {
   height: 100%;
   z-index: 99999;
   background-color: transparent;
-
   .btn {
     position: absolute;
     left: 50%;

@@ -42,7 +42,7 @@ export default {
     notUseRainbowLines: '不使用彩虹線條',
     outerFramePadding: '外框內距',
     associativeLineStyle: '關聯線樣式',
-    builtInBackgroundImage: '內置背景圖片'
+    builtInBackgroundImage: '內置背景圖片',
   },
   setting: {
     title: '設置',
@@ -88,10 +88,10 @@ export default {
     enableAutoEnterTextEditWhenKeydown: '鍵盤輸入時自動進入文本編輯',
     enableInheritAncestorLineStyle: '節點連線樣式繼承祖先節點的樣式',
     alwaysShowExpandBtn: '是否壹直顯示展開收起按鈕',
-    enableAi: '是否開啓AI功能'
+    enableAi: '是否開啓AI功能',
   },
   color: {
-    moreColor: '更多顏色'
+    moreColor: '更多顏色',
   },
   contextmenu: {
     insertSiblingNode: '插入同層節點',
@@ -140,15 +140,15 @@ export default {
     aiCreate: 'AI續寫',
     modifyNodeLink: '修改節點鏈接',
     linkToNode: '鏈接到指定節點',
-    removeNodeLink: '刪除節點鏈接'
+    removeNodeLink: '刪除節點鏈接',
   },
   count: {
     words: '字數',
-    nodes: '節點數'
+    nodes: '節點數',
   },
   dialog: {
     cancel: '取消',
-    confirm: '確定'
+    confirm: '確定',
   },
   export: {
     title: '匯出',
@@ -174,14 +174,14 @@ export default {
     options: '選項',
     isFitBg: '是否顯示完整背景圖片（使用了背景圖片時生效）',
     format: '格式',
-    confirm: '匯出'
+    confirm: '匯出',
   },
   fullscreen: {
     fullscreenShow: '全螢幕檢視',
-    fullscreenEdit: '全螢幕編輯'
+    fullscreenEdit: '全螢幕編輯',
   },
   demonstrate: {
-    demonstrate: '進入展示模式'
+    demonstrate: '進入展示模式',
   },
   import: {
     title: '匯入',
@@ -197,7 +197,7 @@ export default {
     xmindCanvasSelectDialogTitle: '選擇要匯入的畫布',
     mdImportDialogTitle: '粘貼Markdown內容導入',
     mdPlaceholder: '請輸入Markdown格式的內容',
-    mdEmptyTip: '內容不能爲空'
+    mdEmptyTip: '內容不能爲空',
   },
   navigatorToolbar: {
     openMiniMap: '開啟小地圖',
@@ -211,42 +211,42 @@ export default {
     downloadClient: '下載客戶端',
     site: '官方網站',
     current: '當前：',
-    downloadDesc: '可從如下地址下載：'
+    downloadDesc: '可從如下地址下載：',
   },
   nodeHyperlink: {
     title: '超連結',
     link: '連結',
-    name: '名稱'
+    name: '名稱',
   },
   nodeIcon: {
-    title: '圖示'
+    title: '圖示',
   },
   nodeImage: {
     title: '圖片',
-    imgTitle: '圖片標題'
+    imgTitle: '圖片標題',
   },
   nodeNote: {
-    title: '備註'
+    title: '備註',
   },
   nodeTag: {
     title: '標籤',
-    addTip: '請按 Enter 鍵新增'
+    addTip: '請按 Enter 鍵新增',
   },
   outline: {
     title: '大綱',
     nodeDefaultText: '分支節點',
     print: '打印',
-    fullscreen: '全屏'
+    fullscreen: '全屏',
   },
   scale: {
     zoomIn: '放大',
-    zoomOut: '縮小'
+    zoomOut: '縮小',
   },
   shortcutKey: {
-    title: '快速鍵'
+    title: '快速鍵',
   },
   strusture: {
-    title: '結構'
+    title: '結構',
   },
   style: {
     title: '節點樣式',
@@ -291,7 +291,7 @@ export default {
     left: '左',
     right: '右',
     tag: '標簽',
-    direction: '方向'
+    direction: '方向',
   },
   theme: {
     title: '主題',
@@ -301,7 +301,7 @@ export default {
     coverTip: '您目前已自訂過基本樣式，是否要覆蓋？',
     tip: '提示',
     cover: '覆蓋',
-    reserve: '保留'
+    reserve: '保留',
   },
   toolbar: {
     undo: '復原',
@@ -343,7 +343,7 @@ export default {
     directory: '目錄',
     newFileTip: '新增檔案前，請先匯出目前編輯的檔案，以免內容遺失',
     openFileTip: '開啟檔案前，請先匯出目前編輯的檔案，以免內容遺失',
-    ai: 'AI'
+    ai: 'AI',
   },
   edit: {
     newFeatureNoticeTitle: '新功能提醒',
@@ -363,11 +363,11 @@ export default {
     tryTipTitle: '功能試用提示',
     tryTipDesc: '該功能在網頁版中為試用功能，請下載用戶端使用：',
     downBaidu: '去百度網盤下載',
-    downGithub: '去Github下載'
+    downGithub: '去Github下載',
   },
   mouseAction: {
     tip1: '目前：左鍵拖曳畫布，右鍵框選節點',
-    tip2: '目前：左鍵框選節點，右鍵拖曳畫布'
+    tip2: '目前：左鍵框選節點，右鍵拖曳畫布',
   },
   search: {
     searchPlaceholder: '輸入查找內容後按回車鍵',
@@ -375,19 +375,19 @@ export default {
     replace: '取代',
     replaceAll: '全部取代',
     cancel: '取消',
-    noResult: '查無結果'
+    noResult: '查無結果',
   },
   nodeIconSidebar: {
     title: '圖示／貼圖',
     icon: '圖示',
-    sticker: '貼圖'
+    sticker: '貼圖',
   },
   formulaSidebar: {
     title: '公式',
     placeholder: '請輸入 LaTeX 語法',
     confirm: '完成',
     common: '常用公式',
-    tip: '僅在豐富文字模式下支援插入公式'
+    tip: '僅在豐富文字模式下支援插入公式',
   },
   richTextToolbar: {
     bold: '粗體',
@@ -399,10 +399,10 @@ export default {
     color: '字型顏色',
     backgroundColor: '背景顏色',
     removeFormat: '清除樣式',
-    textAlign: '對齊方式'
+    textAlign: '對齊方式',
   },
   other: {
-    loading: '載入中，請稍候...'
+    loading: '載入中，請稍候...',
   },
   sourceCodeEdit: {
     sourceCodeTip:
@@ -413,11 +413,11 @@ export default {
     close: '關閉',
     formatErrorTip: 'JSON 格式錯誤，請檢查後重試',
     copyTip: '已複製到剪貼簿',
-    formatTip: '格式化完成'
+    formatTip: '格式化完成',
   },
   attachment: {
     deleteAttachment: '刪除附件',
-    tip: '附件功能僅在用戶端可用'
+    tip: '附件功能僅在用戶端可用',
   },
   annotation: {
     mark: '標記',
@@ -426,7 +426,7 @@ export default {
     color: '顏色',
     lineWidth: '線寬',
     padding: '內距',
-    animate: '動畫'
+    animate: '動畫',
   },
   nodeOuterFrame: {
     outerFrameSetting: '外框',
@@ -451,11 +451,11 @@ export default {
     center: '中',
     right: '右',
     paddingX: '水平內邊距',
-    paddingY: '垂直內邊距'
+    paddingY: '垂直內邊距',
   },
   nodeTagStyle: {
     placeholder: '請輸入標籤內容',
-    delete: '刪除此標籤'
+    delete: '刪除此標籤',
   },
   ai: {
     chatTitle: 'AI對話',
@@ -510,10 +510,10 @@ export default {
     aiCreatePartMsgPostfix: '】的節點的下級內容',
     aiCreatePartMsgHelp:
       '。需要以Markdown格式返回，並且只能使用Markdown的標題和無序列表兩種語法，可以支持多層嵌套。只需返回內容即可。',
-    aiCreatePart: 'AI續寫'
+    aiCreatePart: 'AI續寫',
   },
   note: {
-    title: '備註'
+    title: '備註',
   },
   nodeLink: {
     linkToNode: '鏈接到指定節點',
@@ -522,6 +522,6 @@ export default {
     tip2: '不能鏈接自己',
     tip3: '鏈接成功',
     tip4: '刪除成功',
-    tip5: '鏈接節點不存在，是否刪除該鏈接？'
-  }
+    tip5: '鏈接節點不存在，是否刪除該鏈接？',
+  },
 }

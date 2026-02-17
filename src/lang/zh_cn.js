@@ -41,7 +41,7 @@ export default {
     notUseRainbowLines: '不使用彩虹线条',
     outerFramePadding: '外框内边距',
     associativeLineStyle: '关联线样式',
-    builtInBackgroundImage: '内置背景图片'
+    builtInBackgroundImage: '内置背景图片',
   },
   setting: {
     title: '设置',
@@ -87,10 +87,10 @@ export default {
     enableDragImport: '是否允许直接拖拽文件到页面进行导入',
     imgTextMargin: '节点图片和文本间隔',
     textContentMargin: '节点各种内容间隔',
-    enableAi: '是否开启AI功能'
+    enableAi: '是否开启AI功能',
   },
   color: {
-    moreColor: '更多颜色'
+    moreColor: '更多颜色',
   },
   contextmenu: {
     insertSiblingNode: '插入同级节点',
@@ -139,15 +139,15 @@ export default {
     aiCreate: 'AI续写',
     modifyNodeLink: '修改节点链接',
     linkToNode: '链接到指定节点',
-    removeNodeLink: '删除节点链接'
+    removeNodeLink: '删除节点链接',
   },
   count: {
     words: '字数',
-    nodes: '节点'
+    nodes: '节点',
   },
   dialog: {
     cancel: '取消',
-    confirm: '确定'
+    confirm: '确定',
   },
   export: {
     title: '导出',
@@ -173,14 +173,14 @@ export default {
     options: '选项',
     isFitBg: '是否显示完整背景图片（使用了背景图片时生效）',
     format: '格式',
-    confirm: '导出'
+    confirm: '导出',
   },
   fullscreen: {
     fullscreenShow: '全屏查看',
-    fullscreenEdit: '全屏编辑'
+    fullscreenEdit: '全屏编辑',
   },
   demonstrate: {
-    demonstrate: '进入演示模式'
+    demonstrate: '进入演示模式',
   },
   import: {
     title: '导入',
@@ -196,7 +196,7 @@ export default {
     xmindCanvasSelectDialogTitle: '选择要导入的画布',
     mdImportDialogTitle: '粘贴Markdown内容导入',
     mdPlaceholder: '请输入Markdown格式的内容',
-    mdEmptyTip: '内容不能为空'
+    mdEmptyTip: '内容不能为空',
   },
   navigatorToolbar: {
     openMiniMap: '开启小地图',
@@ -210,42 +210,42 @@ export default {
     downloadClient: '下载客户端',
     site: '官方网站',
     current: '当前：',
-    downloadDesc: '可从如下地址下载：'
+    downloadDesc: '可从如下地址下载：',
   },
   nodeHyperlink: {
     title: '超链接',
     link: '链接',
-    name: '名称'
+    name: '名称',
   },
   nodeIcon: {
-    title: '图标'
+    title: '图标',
   },
   nodeImage: {
     title: '图片',
-    imgTitle: '图片标题'
+    imgTitle: '图片标题',
   },
   nodeNote: {
-    title: '备注'
+    title: '备注',
   },
   nodeTag: {
     title: '标签',
-    addTip: '请按回车键添加'
+    addTip: '请按回车键添加',
   },
   outline: {
     title: '大纲',
     nodeDefaultText: '分支节点',
     print: '打印',
-    fullscreen: '全屏'
+    fullscreen: '全屏',
   },
   scale: {
     zoomIn: '放大',
-    zoomOut: '缩小'
+    zoomOut: '缩小',
   },
   shortcutKey: {
-    title: '快捷键'
+    title: '快捷键',
   },
   strusture: {
-    title: '结构'
+    title: '结构',
   },
   style: {
     title: '节点样式',
@@ -290,7 +290,7 @@ export default {
     bottom: '下',
     left: '左',
     right: '右',
-    tag: '标签'
+    tag: '标签',
   },
   theme: {
     title: '主题',
@@ -300,7 +300,7 @@ export default {
     coverTip: '你当前自定义过基础样式，是否覆盖？',
     tip: '提示',
     cover: '覆盖',
-    reserve: '保留'
+    reserve: '保留',
   },
   toolbar: {
     undo: '回退',
@@ -342,7 +342,7 @@ export default {
     directory: '目录',
     newFileTip: '新建文件前请先导出当前编辑的文件，谨防内容丢失',
     openFileTip: '打开文件前请先导出当前编辑的文件，谨防内容丢失',
-    ai: 'AI'
+    ai: 'AI',
   },
   edit: {
     newFeatureNoticeTitle: '新特性提醒',
@@ -363,11 +363,11 @@ export default {
     tryTipTitle: '功能试用提示',
     tryTipDesc: '该功能在网页版中为试用功能，请下载客户端使用：',
     downBaidu: '去百度网盘下载',
-    downGithub: '去Github下载'
+    downGithub: '去Github下载',
   },
   mouseAction: {
     tip1: '当前：左键拖动画布，右键框选节点',
-    tip2: '当前：左键框选节点，右键拖动画布'
+    tip2: '当前：左键框选节点，右键拖动画布',
   },
   search: {
     searchPlaceholder: '输入查找内容后按回车键',
@@ -375,19 +375,19 @@ export default {
     replace: '替换',
     replaceAll: '全部替换',
     cancel: '取消',
-    noResult: '暂无结果'
+    noResult: '暂无结果',
   },
   nodeIconSidebar: {
     title: '图标/贴纸',
     icon: '图标',
-    sticker: '贴纸'
+    sticker: '贴纸',
   },
   formulaSidebar: {
     title: '公式',
     placeholder: '请输入 LaTeX 语法',
     confirm: '完成',
     common: '常用公式',
-    tip: '非富文本模式下不支持插入公式'
+    tip: '非富文本模式下不支持插入公式',
   },
   richTextToolbar: {
     bold: '加粗',
@@ -399,10 +399,10 @@ export default {
     color: '字体颜色',
     backgroundColor: '背景颜色',
     removeFormat: '清除样式',
-    textAlign: '对齐方式'
+    textAlign: '对齐方式',
   },
   other: {
-    loading: '正在加载，请稍后...'
+    loading: '正在加载，请稍后...',
   },
   sourceCodeEdit: {
     sourceCodeTip:
@@ -413,11 +413,11 @@ export default {
     close: '关闭',
     formatErrorTip: 'JSON格式有误，请检查后再试',
     copyTip: '已复制到剪贴板',
-    formatTip: '格式化完成'
+    formatTip: '格式化完成',
   },
   attachment: {
     deleteAttachment: '删除附件',
-    tip: '附件功能仅在客户端可用'
+    tip: '附件功能仅在客户端可用',
   },
   annotation: {
     mark: '标记',
@@ -426,7 +426,7 @@ export default {
     color: '颜色',
     lineWidth: '线宽',
     padding: '内边距',
-    animate: '开启动画'
+    animate: '开启动画',
   },
   nodeOuterFrame: {
     nodeOuterFrameStyle: '外框样式',
@@ -451,11 +451,11 @@ export default {
     center: '中',
     right: '右',
     paddingX: '水平内边距',
-    paddingY: '垂直内边距'
+    paddingY: '垂直内边距',
   },
   nodeTagStyle: {
     placeholder: '请输入标签内容',
-    delete: '删除此标签'
+    delete: '删除此标签',
   },
   ai: {
     chatTitle: 'AI对话',
@@ -510,10 +510,10 @@ export default {
     aiCreatePartMsgPostfix: '】的节点的下级内容',
     aiCreatePartMsgHelp:
       '。需要以Markdown格式返回，并且只能使用Markdown的标题和无序列表两种语法，可以支持多层嵌套。只需返回内容即可。',
-    aiCreatePart: 'AI续写'
+    aiCreatePart: 'AI续写',
   },
   note: {
-    title: '备注'
+    title: '备注',
   },
   nodeLink: {
     linkToNode: '链接到指定节点',
@@ -522,6 +522,6 @@ export default {
     tip2: '不能链接自己',
     tip3: '链接成功',
     tip4: '删除成功',
-    tip5: '链接节点不存在，是否删除该链接？'
-  }
+    tip5: '链接节点不存在，是否删除该链接？',
+  },
 }

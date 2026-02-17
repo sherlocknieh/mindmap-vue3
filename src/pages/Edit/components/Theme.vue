@@ -1,7 +1,7 @@
 <template>
   <Sidebar ref="sidebar" :title="$t('theme.title')">
     <div class="themeGroupList" :class="{ isDark: isDark }">
-      <el-tabs v-model="activeName" class="tabBox">
+      <el-tabs v-model:value="activeName" class="tabBox">
         <el-tab-pane
           v-for="group in groupList"
           :key="group.name"
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { storeData } from '@/api'
 import { mapState, mapActions } from 'pinia'
@@ -35,19 +36,18 @@ import { useAppStore } from '@/store'
 import themeImgMap from 'simple-mind-map-plugin-themes/themeImgMap'
 import themeList from 'simple-mind-map-plugin-themes/themeList'
 
-// 主题
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   props: {
     data: {
       type: [Object, null],
-      default: null
+      default: null,
     },
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -55,21 +55,21 @@ export default {
         {
           name: '默认主题',
           value: 'default',
-          dark: false
+          dark: false,
         },
-        ...themeList
+        ...themeList,
       ].reverse(),
       themeImgMap,
       theme: '',
       activeName: '',
-      defaultGroupList: []
+      defaultGroupList: [],
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar,
-      extendThemeGroupList: state => state.extendThemeGroupList
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+      extendThemeGroupList: (state) => state.extendThemeGroupList,
     }),
 
     groupList() {
@@ -77,10 +77,10 @@ export default {
     },
 
     currentList() {
-      return this.groupList.find(item => {
+      return this.groupList.find((item) => {
         return item.name === this.activeName
       }).list
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -90,14 +90,14 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
     this.initGroup()
     this.theme = this.mindMap.getTheme()
     this.mindMap.on('view_theme_change', this.handleViewThemeChange)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('view_theme_change', this.handleViewThemeChange)
   },
   methods: {
@@ -123,11 +123,11 @@ export default {
         'freshRed',
         'romanticPurple',
         'pinkGrape',
-        'mint'
+        'mint',
       ]
       const baiduList = []
       const classicsList = []
-      this.themeList.forEach(item => {
+      this.themeList.forEach((item) => {
         if (baiduThemes.includes(item.value)) {
           baiduList.push(item)
         } else if (!item.dark) {
@@ -137,18 +137,18 @@ export default {
       this.defaultGroupList = [
         {
           name: this.$t('theme.classics'),
-          list: classicsList
+          list: classicsList,
         },
         {
           name: this.$t('theme.dark'),
-          list: this.themeList.filter(item => {
+          list: this.themeList.filter((item) => {
             return item.dark
-          })
+          }),
         },
         {
           name: this.$t('theme.simple'),
-          list: baiduList
-        }
+          list: baiduList,
+        },
       ]
       this.activeName = this.defaultGroupList[0].name
     },
@@ -165,7 +165,7 @@ export default {
           cancelButtonText: this.$t('theme.reserve'),
           type: 'warning',
           distinguishCancelAndClose: true,
-          callback: action => {
+          callback: (action) => {
             if (action === 'confirm') {
               this.mindMap.setThemeConfig({}, true)
               this.data.theme.config = {}
@@ -173,7 +173,7 @@ export default {
             } else if (action === 'cancel') {
               this.changeTheme(theme, customThemeConfig)
             }
-          }
+          },
         })
       } else {
         this.changeTheme(theme, customThemeConfig)
@@ -181,29 +181,30 @@ export default {
     },
 
     changeTheme(theme, config) {
-      this.$bus.$emit('showLoading')
+      $emit(this.$bus, 'showLoading')
       this.mindMap.setTheme(theme.value)
       storeData({
         theme: {
           template: theme.value,
-          config
-        }
+          config,
+        },
       })
     },
 
     handleDark() {
       const extendThemeList = []
-      this.extendThemeGroupList.forEach(group => {
+      this.extendThemeGroupList.forEach((group) => {
         extendThemeList.push(...group.list)
       })
-      let target = [...this.themeList, ...extendThemeList].find(item => {
+      let target = [...this.themeList, ...extendThemeList].find((item) => {
         return item.value === this.theme
       })
       this.setLocalConfig({
-        isDark: target.dark
+        isDark: target.dark,
       })
-    }
-  }
+    },
+  },
+  emits: ['showLoading'],
 }
 </script>
 
@@ -213,7 +214,6 @@ export default {
   flex-direction: column;
   overflow: hidden;
   height: 100%;
-
   &.isDark {
     .name {
       color: #fff;

@@ -14,7 +14,7 @@ const getOnfullscreEnevt = () => {
 export const fullscrrenEvent = getOnfullscreEnevt()
 
 // 全屏
-export const fullScreen = element => {
+export const fullScreen = (element) => {
   if (element.requestFullScreen) {
     element.requestFullScreen()
   } else if (element.webkitRequestFullScreen) {
@@ -25,8 +25,8 @@ export const fullScreen = element => {
 }
 
 // 文件转buffer
-export const fileToBuffer = file => {
-  return new Promise(r => {
+export const fileToBuffer = (file) => {
+  return new Promise((r) => {
     const reader = new FileReader()
     reader.onload = () => {
       r(reader.result)
@@ -36,7 +36,7 @@ export const fileToBuffer = file => {
 }
 
 // 复制文本到剪贴板
-export const copy = text => {
+export const copy = (text) => {
   // 使用textarea可以保留换行
   const input = document.createElement('textarea')
   // input.setAttribute('value', text)
@@ -48,14 +48,14 @@ export const copy = text => {
 }
 
 // 复制文本到剪贴板
-export const setDataToClipboard = data => {
+export const setDataToClipboard = (data) => {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(data)
   }
 }
 
 // 复制图片到剪贴板
-export const setImgToClipboard = img => {
+export const setImgToClipboard = (img) => {
   if (navigator.clipboard && navigator.clipboard.write) {
     const data = [new ClipboardItem({ ['image/png']: img })]
     navigator.clipboard.write(data)
@@ -63,7 +63,7 @@ export const setImgToClipboard = img => {
 }
 
 // 打印大纲
-export const printOutline = el => {
+export const printOutline = (el) => {
   const printContent = el.outerHTML
   const iframe = document.createElement('iframe')
   iframe.setAttribute('style', 'position: absolute; width: 0; height: 0;')
@@ -71,14 +71,14 @@ export const printOutline = el => {
   const iframeDoc = iframe.contentWindow.document
   // 将当前页面的所有样式添加到iframe中
   const styleList = document.querySelectorAll('style')
-  Array.from(styleList).forEach(el => {
+  Array.from(styleList).forEach((el) => {
     iframeDoc.write(el.outerHTML)
   })
   // 设置打印展示方式 - 纵向展示
   iframeDoc.write('<style media="print">@page {size: portrait;}</style>')
   // 写入内容
   iframeDoc.write('<div>' + printContent + '</div>')
-  setTimeout(function() {
+  setTimeout(function () {
     iframe.contentWindow?.print()
     document.body.removeChild(iframe)
   }, 500)

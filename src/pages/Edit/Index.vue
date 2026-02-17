@@ -1,7 +1,10 @@
 <template>
   <div
     class="container"
-    :class="{ isDark: appStore.localConfig.isDark, activeSidebar: appStore.activeSidebar }"
+    :class="{
+      isDark: appStore.localConfig.isDark,
+      activeSidebar: appStore.activeSidebar,
+    }"
   >
     <template v-if="show">
       <Toolbar v-if="!appStore.localConfig.isZenMode"></Toolbar>
@@ -29,7 +32,7 @@ const initLocalConfig = () => {
   if (config) {
     appStore.setLocalConfig({
       ...appStore.localConfig,
-      ...config
+      ...config,
     })
   }
 }
@@ -42,15 +45,18 @@ const setBodyDark = () => {
 }
 
 // 监听暗黑模式变化
-watch(() => appStore.localConfig.isDark, () => {
-  setBodyDark()
-})
+watch(
+  () => appStore.localConfig.isDark,
+  () => {
+    setBodyDark()
+  }
+)
 
 onMounted(async () => {
   initLocalConfig()
   const loading = ElLoading.service({
     lock: true,
-    text: t('other.loading')
+    text: t('other.loading'),
   })
   show.value = true
   loading.close()
@@ -61,7 +67,6 @@ onMounted(async () => {
 <style lang="less">
 .container {
 }
-
 body {
   &.isDark {
     /* el-button */

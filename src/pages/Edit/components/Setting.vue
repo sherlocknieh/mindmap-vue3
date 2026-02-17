@@ -10,7 +10,7 @@
         <!-- 是否显示水印 -->
         <div class="rowItem">
           <el-checkbox
-            v-model="watermarkConfig.show"
+            v-model:value="watermarkConfig.show"
             @change="watermarkShowChange"
             >{{ $t('setting.showWatermark') }}</el-checkbox
           >
@@ -21,7 +21,7 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model="watermarkConfig.onlyExport"
+              v-model:value="watermarkConfig.onlyExport"
               @change="updateWatermarkConfig"
               >{{ $t('setting.onlyExport') }}</el-checkbox
             >
@@ -31,7 +31,7 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model="watermarkConfig.belowNode"
+              v-model:value="watermarkConfig.belowNode"
               @change="updateWatermarkConfig"
               >{{ $t('setting.belowNode') }}</el-checkbox
             >
@@ -42,10 +42,10 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkText') }}</span>
             <el-input
-              v-model="watermarkConfig.text"
+              v-model:value="watermarkConfig.text"
               size="small"
               @change="updateWatermarkConfig"
-              @keydown.native.stop
+              @keydown.stop
             ></el-input>
           </div>
         </div>
@@ -62,7 +62,7 @@
               <Color
                 :color="watermarkConfig.textStyle.color"
                 @change="
-                  value => {
+                  (value) => {
                     watermarkConfig.textStyle.color = value
                     updateWatermarkConfig()
                   }
@@ -76,7 +76,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextOpacity') }}</span>
             <el-slider
-              v-model="watermarkConfig.textStyle.opacity"
+              v-model:value="watermarkConfig.textStyle.opacity"
               style="width: 170px"
               :min="0"
               :max="1"
@@ -90,13 +90,13 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextFontSize') }}</span>
             <el-input-number
-              v-model="watermarkConfig.textStyle.fontSize"
+              v-model:value="watermarkConfig.textStyle.fontSize"
               size="small"
               :min="0"
               :max="50"
               :step="1"
               @change="updateWatermarkConfig"
-              @keydown.native.stop
+              @keydown.stop
             ></el-input-number>
           </div>
         </div>
@@ -105,13 +105,13 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkAngle') }}</span>
             <el-input-number
-              v-model="watermarkConfig.angle"
+              v-model:value="watermarkConfig.angle"
               size="small"
               :min="0"
               :max="90"
               :step="10"
               @change="updateWatermarkConfig"
-              @keydown.native.stop
+              @keydown.stop
             ></el-input-number>
           </div>
         </div>
@@ -120,11 +120,11 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkLineSpacing') }}</span>
             <el-input-number
-              v-model="watermarkConfig.lineSpacing"
+              v-model:value="watermarkConfig.lineSpacing"
               size="small"
               :step="10"
               @change="updateWatermarkConfig"
-              @keydown.native.stop
+              @keydown.stop
             ></el-input-number>
           </div>
         </div>
@@ -133,11 +133,11 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextSpacing') }}</span>
             <el-input-number
-              v-model="watermarkConfig.textSpacing"
+              v-model:value="watermarkConfig.textSpacing"
               size="small"
               :step="10"
               @change="updateWatermarkConfig"
-              @keydown.native.stop
+              @keydown.stop
             ></el-input-number>
           </div>
         </div>
@@ -146,9 +146,9 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.openPerformance"
+            v-model:value="config.openPerformance"
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('openPerformance', value)
               }
             "
@@ -160,9 +160,9 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.enableFreeDrag"
+            v-model:value="config.enableFreeDrag"
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('enableFreeDrag', value)
               }
             "
@@ -174,7 +174,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="enableNodeRichText"
+            v-model:value="enableNodeRichText"
             @change="enableNodeRichTextChange"
             >{{ $t('setting.isEnableNodeRichText') }}</el-checkbox
           >
@@ -184,7 +184,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.openRealtimeRenderOnNodeTextEdit"
+            v-model:value="config.openRealtimeRenderOnNodeTextEdit"
             @change="
               updateOtherConfig('openRealtimeRenderOnNodeTextEdit', $event)
             "
@@ -196,7 +196,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="localConfigs.isShowScrollbar"
+            v-model:value="localConfigs.isShowScrollbar"
             @change="updateLocalConfig('isShowScrollbar', $event)"
             >{{ $t('setting.isShowScrollbar') }}</el-checkbox
           >
@@ -206,7 +206,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.alwaysShowExpandBtn"
+            v-model:value="config.alwaysShowExpandBtn"
             @change="updateOtherConfig('alwaysShowExpandBtn', $event)"
             >{{ $t('setting.alwaysShowExpandBtn') }}</el-checkbox
           >
@@ -216,7 +216,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.enableAutoEnterTextEditWhenKeydown"
+            v-model:value="config.enableAutoEnterTextEditWhenKeydown"
             @change="
               updateOtherConfig('enableAutoEnterTextEditWhenKeydown', $event)
             "
@@ -228,7 +228,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="localConfigs.enableDragImport"
+            v-model:value="localConfigs.enableDragImport"
             @change="updateLocalConfig('enableDragImport', $event)"
             >{{ $t('setting.enableDragImport') }}</el-checkbox
           >
@@ -238,7 +238,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="config.enableInheritAncestorLineStyle"
+            v-model:value="config.enableInheritAncestorLineStyle"
             @change="
               updateOtherConfig('enableInheritAncestorLineStyle', $event)
             "
@@ -250,7 +250,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="localConfigs.enableAi"
+            v-model:value="localConfigs.enableAi"
             @change="updateLocalConfig('enableAi', $event)"
             >{{ $t('setting.enableAi') }}</el-checkbox
           >
@@ -263,10 +263,10 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model="config.mousewheelAction"
+            v-model:value="config.mousewheelAction"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('mousewheelAction', value)
               }
             "
@@ -288,10 +288,10 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model="config.mousewheelZoomActionReverse"
+            v-model:value="config.mousewheelZoomActionReverse"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('mousewheelZoomActionReverse', value)
               }
             "
@@ -314,10 +314,10 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model="config.createNewNodeBehavior"
+            v-model:value="config.createNewNodeBehavior"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('createNewNodeBehavior', value)
               }
             "
@@ -343,9 +343,9 @@
           <span class="name">{{ $t('setting.imgTextMargin') }}</span>
           <el-slider
             style="width: 150px"
-            v-model="config.imgTextMargin"
+            v-model:value="config.imgTextMargin"
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('imgTextMargin', value)
               }
             "
@@ -358,9 +358,9 @@
           <span class="name">{{ $t('setting.textContentMargin') }}</span>
           <el-slider
             style="width: 150px"
-            v-model="config.textContentMargin"
+            v-model:value="config.textContentMargin"
             @change="
-              value => {
+              (value) => {
                 updateOtherConfig('textContentMargin', value)
               }
             "
@@ -372,6 +372,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { storeConfig } from '@/api'
 import { mapState, mapActions } from 'pinia'
@@ -381,16 +382,16 @@ import Color from './Color.vue'
 export default {
   components: {
     Sidebar,
-    Color
+    Color,
   },
   props: {
     configData: {
       type: Object,
-      default: null
+      default: null,
     },
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -405,7 +406,7 @@ export default {
         enableAutoEnterTextEditWhenKeydown: true,
         imgTextMargin: 0,
         textContentMargin: 0,
-        enableInheritAncestorLineStyle: false
+        enableInheritAncestorLineStyle: false,
       },
       watermarkConfig: {
         show: false,
@@ -417,24 +418,24 @@ export default {
         textStyle: {
           color: '',
           opacity: 0,
-          fontSize: 1
-        }
+          fontSize: 1,
+        },
       },
       updateWatermarkTimer: null,
       enableNodeRichText: true,
       localConfigs: {
         isShowScrollbar: false,
         enableDragImport: false,
-        enableAi: false
-      }
+        enableAi: false,
+      },
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar,
-      localConfig: state => state.localConfig,
-      isDark: state => state.localConfig.isDark
-    })
+      activeSidebar: (state) => state.activeSidebar,
+      localConfig: (state) => state.localConfig,
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -445,24 +446,24 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
     this.initLoacalConfig()
-    this.$bus.$on('toggleOpenNodeRichText', this.onToggleOpenNodeRichText)
+    $on(this.$bus, 'toggleOpenNodeRichText', this.onToggleOpenNodeRichText)
   },
-  beforeDestroy() {
-    this.$bus.$off('toggleOpenNodeRichText', this.onToggleOpenNodeRichText)
+  beforeUnmount() {
+    $off(this.$bus, 'toggleOpenNodeRichText', this.onToggleOpenNodeRichText)
   },
   methods: {
     ...mapActions(useAppStore, ['setLocalConfig']),
 
     // 初始化其他配置
     initConfig() {
-      Object.keys(this.config).forEach(key => {
+      Object.keys(this.config).forEach((key) => {
         if (typeof this.config[key] === 'object') {
           this.config[key] = {
-            ...(this.mindMap.getConfig(key) || {})
+            ...(this.mindMap.getConfig(key) || {}),
           }
         } else {
           this.config[key] = this.mindMap.getConfig(key)
@@ -474,8 +475,9 @@ export default {
     initLoacalConfig() {
       this.enableNodeRichText = this.localConfig.openNodeRichText
       this.mousewheelAction = this.localConfig.mousewheelAction
-      this.mousewheelZoomActionReverse = this.localConfig.mousewheelZoomActionReverse
-      Object.keys(this.localConfigs).forEach(key => {
+      this.mousewheelZoomActionReverse =
+        this.localConfig.mousewheelZoomActionReverse
+      Object.keys(this.localConfigs).forEach((key) => {
         this.localConfigs[key] = this.localConfig[key]
       })
     },
@@ -484,7 +486,7 @@ export default {
     initWatermark() {
       const config = this.mindMap.getConfig('watermarkConfig')
       ;['text', 'lineSpacing', 'textSpacing', 'angle', 'onlyExport'].forEach(
-        key => {
+        (key) => {
           this.watermarkConfig[key] = config[key]
         }
       )
@@ -495,7 +497,7 @@ export default {
     // 更新其他配置
     updateOtherConfig(key, value) {
       this.mindMap.updateConfig({
-        [key]: value
+        [key]: value,
       })
       this.configData[key] = value
       storeConfig(this.configData)
@@ -504,7 +506,7 @@ export default {
           'alwaysShowExpandBtn',
           'imgTextMargin',
           'textContentMargin',
-          'enableInheritAncestorLineStyle'
+          'enableInheritAncestorLineStyle',
         ].includes(key)
       ) {
         this.mindMap.reRender()
@@ -517,11 +519,10 @@ export default {
       this.updateWatermarkTimer = setTimeout(() => {
         let { show, ...config } = this.watermarkConfig
         this.mindMap.watermark.updateWatermark({
-          ...config
+          ...config,
         })
-        this.configData.watermarkConfig = this.mindMap.getConfig(
-          'watermarkConfig'
-        )
+        this.configData.watermarkConfig =
+          this.mindMap.getConfig('watermarkConfig')
         storeConfig(this.configData)
       }, 300)
     },
@@ -548,13 +549,13 @@ export default {
         {
           confirmButtonText: this.$t('setting.confirm'),
           cancelButtonText: this.$t('setting.cancel'),
-          type: 'warning'
+          type: 'warning',
         }
       )
         .then(() => {
           this.mindMap.renderer.textEdit.hideEditTextBox()
           this.setLocalConfig({
-            openNodeRichText: e
+            openNodeRichText: e,
           })
         })
         .catch(() => {
@@ -564,7 +565,7 @@ export default {
 
     onToggleOpenNodeRichText(val) {
       this.setLocalConfig({
-        openNodeRichText: val
+        openNodeRichText: val,
       })
       this.enableNodeRichText = val
     },
@@ -572,10 +573,10 @@ export default {
     // 本地配置
     updateLocalConfig(key, value) {
       this.setLocalConfig({
-        [key]: value
+        [key]: value,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -583,7 +584,6 @@ export default {
 .sidebarContent {
   padding: 20px;
   padding-top: 10px;
-
   &.isDark {
     .title {
       color: #fff;

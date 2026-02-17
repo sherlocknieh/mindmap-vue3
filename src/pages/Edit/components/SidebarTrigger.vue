@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sidebarTriggerContainer "
+    class="sidebarTriggerContainer"
     @click.stop
     :class="{ hasActive: show && activeSidebar, show: show, isDark: isDark }"
     :style="{ maxHeight: maxHeight + 'px' }"
@@ -33,44 +33,44 @@ export default {
   data() {
     return {
       show: true,
-      maxHeight: 0
+      maxHeight: 0,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar,
-      isReadonly: state => state.isReadonly,
-      enableAi: state => state.localConfig.enableAi
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+      isReadonly: (state) => state.isReadonly,
+      enableAi: (state) => state.localConfig.enableAi,
     }),
 
     triggerList() {
       let list = sidebarTriggerList[this.$i18n.locale] || sidebarTriggerList.zh
       if (this.isReadonly) {
-        list = list.filter(item => {
+        list = list.filter((item) => {
           return ['outline', 'shortcutKey', 'ai'].includes(item.value)
         })
       }
       if (!this.enableAi) {
-        list = list.filter(item => {
+        list = list.filter((item) => {
           return item.value !== 'ai'
         })
       }
       return list
-    }
+    },
   },
   watch: {
     isReadonly(val) {
       if (val) {
         this.setActiveSidebar(null)
       }
-    }
+    },
   },
   created() {
     window.addEventListener('resize', this.onResize)
     this.updateSize()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
@@ -88,8 +88,8 @@ export default {
       const topMargin = 110
       const bottomMargin = 80
       this.maxHeight = window.innerHeight - topMargin - bottomMargin
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -103,7 +103,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   &.isDark {
     .trigger {
       background-color: #262a2e;

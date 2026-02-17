@@ -2,7 +2,7 @@
   <el-dialog
     class="aiConfigDialog"
     :title="$t('ai.AIConfiguration')"
-    :visible.sync="aiConfigDialogVisible"
+    v-model:visible="aiConfigDialogVisible"
     width="550px"
     append-to-body
   >
@@ -15,53 +15,60 @@
       >
         <p class="title">{{ $t('ai.VolcanoArkLargeModelConfiguration') }}</p>
         <p class="desc">
-          {{ $t('ai.configTip') }}<a href="https://mp.weixin.qq.com/s/JNb7PH4sCjWzIZ9G8wStGQ" target="_blank">{{ $t('ai.course') }}</a
+          {{ $t('ai.configTip')
+          }}<a
+            href="https://mp.weixin.qq.com/s/JNb7PH4sCjWzIZ9G8wStGQ"
+            target="_blank"
+            >{{ $t('ai.course') }}</a
           >。
         </p>
         <el-form-item label="API Key" prop="key">
-          <el-input v-model="ruleForm.key"></el-input>
+          <el-input v-model:value="ruleForm.key"></el-input>
         </el-form-item>
         <el-form-item :label="$t('ai.inferenceAccessPoint')" prop="model">
-          <el-input v-model="ruleForm.model"></el-input>
+          <el-input v-model:value="ruleForm.model"></el-input>
         </el-form-item>
         <!-- <el-form-item label="接口" prop="api">
-          <el-input v-model="ruleForm.api"></el-input>
-        </el-form-item>
-        <el-form-item label="请求方式" prop="method">
-          <el-select v-model="ruleForm.method" placeholder="请选择">
-            <el-option key="POST" label="POST" value="POST"></el-option>
-            <el-option key="GET" label="GET" value="GET"></el-option>
-          </el-select>
-        </el-form-item> -->
+            <el-input v-model="ruleForm.api"></el-input>
+          </el-form-item>
+          <el-form-item label="请求方式" prop="method">
+            <el-select v-model="ruleForm.method" placeholder="请选择">
+              <el-option key="POST" label="POST" value="POST"></el-option>
+              <el-option key="GET" label="GET" value="GET"></el-option>
+            </el-select>
+          </el-form-item> -->
         <!-- <p class="title">{{ $t('ai.mindMappingClientConfiguration') }}</p>
-        <el-form-item :label="$t('ai.port')" prop="port">
-          <el-input v-model="ruleForm.port"></el-input>
-        </el-form-item> -->
+          <el-form-item :label="$t('ai.port')" prop="port">
+            <el-input v-model="ruleForm.port"></el-input>
+          </el-form-item> -->
       </el-form>
     </div>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">{{ $t('ai.cancel') }}</el-button>
-      <el-button type="primary" @click="confirm">{{
-        $t('ai.confirm')
-      }}</el-button>
-    </div>
+    <template v-slot:footer>
+      <div class="dialog-footer">
+        <el-button @click="cancel">{{ $t('ai.cancel') }}</el-button>
+        <el-button type="primary" @click="confirm">{{
+          $t('ai.confirm')
+        }}</el-button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
 export default {
   model: {
     prop: 'visible',
-    event: 'change'
+    event: 'change',
   },
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -71,49 +78,49 @@ export default {
         key: '',
         model: '',
         port: '',
-        method: ''
+        method: '',
       },
       rules: {
         api: [
           {
             required: true,
             message: this.$t('ai.apiValidateTip'),
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         key: [
           {
             required: true,
             message: this.$t('ai.keyValidateTip'),
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         model: [
           {
             required: true,
             message: this.$t('ai.modelValidateTip'),
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         port: [
           {
             required: true,
             message: this.$t('ai.portValidateTip'),
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         method: [
           {
             required: true,
             message: this.$t('ai.methodValidateTip'),
-            trigger: 'blur'
-          }
-        ]
-      }
+            trigger: 'blur',
+          },
+        ],
+      },
     }
   },
   computed: {
-    ...mapState(['aiConfig'])
+    ...mapState(['aiConfig']),
   },
   watch: {
     visible(val) {
@@ -123,7 +130,7 @@ export default {
       if (!val && oldVal) {
         this.close()
       }
-    }
+    },
   },
   created() {
     this.initFormData()
@@ -132,11 +139,11 @@ export default {
     ...mapActions(useAppStore, ['setLocalConfig']),
 
     close() {
-      this.$emit('change', false)
+      $emit(this, 'change', false)
     },
 
     initFormData() {
-      Object.keys(this.aiConfig).forEach(key => {
+      Object.keys(this.aiConfig).forEach((key) => {
         this.ruleForm[key] = this.aiConfig[key]
       })
     },
@@ -147,17 +154,18 @@ export default {
     },
 
     confirm() {
-      this.$refs.ruleFormRef.validate(valid => {
+      this.$refs.ruleFormRef.validate((valid) => {
         if (valid) {
           this.close()
           this.setLocalConfig({
-            ...this.ruleForm
+            ...this.ruleForm,
           })
           this.$message.success(this.$t('ai.configSaveSuccessTip'))
         }
       })
-    }
-  }
+    },
+  },
+  emits: ['change'],
 }
 </script>
 

@@ -14,7 +14,7 @@
             <Color
               :color="style.associativeLineColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineColor', color)
                 }
               "
@@ -26,10 +26,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineWidth"
+            v-model:value="style.associativeLineWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineWidth', value)
               }
             "
@@ -64,7 +64,7 @@
             <Color
               :color="style.associativeLineActiveColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineActiveColor', color)
                 }
               "
@@ -78,10 +78,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineActiveWidth"
+            v-model:value="style.associativeLineActiveWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineActiveWidth', value)
               }
             "
@@ -108,10 +108,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineDasharray"
+            v-model:value="style.associativeLineDasharray"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineDasharray', value)
               }
             "
@@ -150,7 +150,7 @@
           <span class="name">{{ $t('baseStyle.fontFamily') }}</span>
           <el-select
             size="mini"
-            v-model="style.associativeLineTextFontFamily"
+            v-model:value="style.associativeLineTextFontFamily"
             placeholder=""
             @change="update('associativeLineTextFontFamily', $event)"
           >
@@ -177,7 +177,7 @@
             <Color
               :color="style.associativeLineTextColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineTextColor', color)
                 }
               "
@@ -189,7 +189,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineTextFontSize"
+            v-model:value="style.associativeLineTextFontSize"
             placeholder=""
             @change="update('associativeLineTextFontSize', $event)"
           >
@@ -215,7 +215,7 @@ import {
   lineWidthList,
   fontFamilyList,
   fontSizeList,
-  borderDasharrayList
+  borderDasharrayList,
 } from '@/config'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -228,18 +228,18 @@ const defaultStyle = {
   associativeLineActiveColor: '',
   associativeLineTextFontSize: 0,
   associativeLineTextColor: '',
-  associativeLineTextFontFamily: ''
+  associativeLineTextFontFamily: '',
 }
 
 export default {
   components: {
     Sidebar,
-    Color
+    Color,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -248,14 +248,14 @@ export default {
       activeLineNode: null,
       activeLineToNode: null,
       style: {
-        ...defaultStyle
-      }
+        ...defaultStyle,
+      },
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar,
-      isDark: state => state.localConfig.isDark
+      activeSidebar: (state) => state.activeSidebar,
+      isDark: (state) => state.localConfig.isDark,
     }),
 
     fontFamilyList() {
@@ -264,7 +264,7 @@ export default {
 
     borderDasharrayList() {
       return borderDasharrayList[this.$i18n.locale] || borderDasharrayList.zh
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -273,7 +273,7 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
     this.mindMap.on('associative_line_click', this.onAssociativeLineClick)
@@ -292,7 +292,7 @@ export default {
         node,
         toNode
       )
-      Object.keys(this.style).forEach(item => {
+      Object.keys(this.style).forEach((item) => {
         this.style[item] = styleConfig[item]
       })
       this.setActiveSidebar('associativeLineStyle')
@@ -305,7 +305,7 @@ export default {
       this.activeLineNode = null
       this.activeLineToNode = null
       this.style = {
-        ...defaultStyle
+        ...defaultStyle,
       }
     },
 
@@ -320,13 +320,13 @@ export default {
           ...associativeLineStyle,
           [toNodeUid]: {
             ...lineStyle,
-            ...this.style
-          }
-        }
+            ...this.style,
+          },
+        },
       })
       this.mindMap.associativeLine.updateActiveLineStyle()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -334,7 +334,6 @@ export default {
 .sidebarContent {
   padding: 20px;
   padding-top: 10px;
-
   &.isDark {
     .title {
       color: #fff;
@@ -389,17 +388,16 @@ export default {
     }
   }
 }
-
 .borderLine {
   display: inline-block;
   width: 100%;
   background-color: #000;
-
   &.isDark {
     background-color: #fff;
   }
 }
 </style>
+
 <style lang="less">
 .el-select-dropdown__item.selected {
   .borderLine {

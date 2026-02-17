@@ -1,7 +1,7 @@
 <template>
   <Sidebar ref="sidebar" :title="$t('nodeIconSidebar.title')">
     <div class="box" :class="{ isDark: isDark }">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model:value="activeName">
         <el-tab-pane
           :label="$t('nodeIconSidebar.icon')"
           name="icon"
@@ -23,7 +23,7 @@
                 :key="icon.name"
                 v-html="getHtml(icon.icon)"
                 :class="{
-                  selected: iconList.includes(item.type + '_' + icon.name)
+                  selected: iconList.includes(item.type + '_' + icon.name),
                 }"
                 @click="setIcon(item.type, icon.name)"
               ></div>
@@ -40,7 +40,7 @@
                 v-for="image in item.list"
                 :key="image.url"
                 :class="{
-                  selected: nodeImage === image.url
+                  selected: nodeImage === image.url,
                 }"
                 @click="setImage(image)"
               >
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -65,7 +66,7 @@ import image from '@/config/image'
 
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   data() {
     return {
@@ -74,14 +75,14 @@ export default {
       nodeImageList: [...image],
       iconList: [],
       nodeImage: '',
-      activeNodes: []
+      activeNodes: [],
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar,
-      isDark: state => state.localConfig.isDark
-    })
+      activeSidebar: (state) => state.activeSidebar,
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -90,15 +91,15 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeIcon', this.handleShowNodeIcon)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
+    $on(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeIcon', this.handleShowNodeIcon)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
+    $off(this.$bus, 'showNodeIcon', this.handleShowNodeIcon)
   },
   methods: {
     handleNodeActive(...args) {
@@ -129,17 +130,17 @@ export default {
 
     // 设置icon
     setIcon(type, name) {
-      this.activeNodes.forEach(node => {
+      this.activeNodes.forEach((node) => {
         const iconList = [...(node.getData('icon') || [])]
         let key = type + '_' + name
-        let index = iconList.findIndex(item => {
+        let index = iconList.findIndex((item) => {
           return item === key
         })
         // 删除icon
         if (index !== -1) {
           iconList.splice(index, 1)
         } else {
-          let typeIndex = iconList.findIndex(item => {
+          let typeIndex = iconList.findIndex((item) => {
             return item.split('_')[0] === type
           })
           // 替换icon
@@ -159,21 +160,20 @@ export default {
 
     // 设置贴纸
     setImage(image) {
-      this.activeNodes.forEach(node => {
+      this.activeNodes.forEach((node) => {
         this.nodeImage = image.url
         node.setImage({
-          ...image
+          ...image,
         })
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="less" scoped>
 .box {
   padding: 0 20px;
-
   &.isDark {
     .title {
       color: #fff;

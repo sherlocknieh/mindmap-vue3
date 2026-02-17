@@ -29,20 +29,21 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../utils/gogocodeTransfer'
 export default {
   model: {
     prop: 'value',
-    event: 'change'
+    event: 'change',
   },
   props: {
     value: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
-      file: null
+      file: null,
     }
   },
   methods: {
@@ -64,26 +65,26 @@ export default {
       this.file = file
       let fr = new FileReader()
       fr.readAsDataURL(file)
-      fr.onload = e => {
-        this.$emit('change', e.target.result)
+      fr.onload = (e) => {
+        $emit(this, 'change', e.target.result)
       }
     },
 
     // 获取图片大小
     getSize() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         let img = new Image()
         img.src = this.value
         img.onload = () => {
           resolve({
             width: img.width,
-            height: img.height
+            height: img.height,
           })
         }
         img.onerror = () => {
           resolve({
             width: 0,
-            height: 0
+            height: 0,
           })
         }
       })
@@ -91,10 +92,11 @@ export default {
 
     // 删除图片
     deleteImg() {
-      this.$emit('change', '')
+      $emit(this, 'change', '')
       this.file = null
-    }
-  }
+    },
+  },
+  emits: ['change', 'update:value'],
 }
 </script>
 

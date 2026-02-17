@@ -2,7 +2,7 @@
   <div class="navigatorContainer customScrollbar" :class="{ isDark: isDark }">
     <div class="item">
       <el-select
-        v-model="lang"
+        v-model:value="lang"
         size="small"
         style="width: 100px"
         @change="onLangChange"
@@ -45,12 +45,12 @@
     </div>
     <div class="item">
       <!-- <el-switch
-        v-model="isReadonly"
-        :active-text="$t('navigatorToolbar.readonly')"
-        :inactive-text="$t('navigatorToolbar.edit')"
-        @change="readonlyChange"
-      >
-      </el-switch> -->
+          v-model="isReadonly"
+          :active-text="$t('navigatorToolbar.readonly')"
+          :inactive-text="$t('navigatorToolbar.edit')"
+          @change="readonlyChange"
+        >
+        </el-switch> -->
       <el-tooltip
         effect="dark"
         :content="
@@ -81,53 +81,56 @@
       ></div>
     </div>
     <!-- <div class="item">
-      <el-tooltip
-        effect="dark"
-        :content="$t('navigatorToolbar.changeSourceCodeEdit')"
-        placement="top"
-      >
-        <div class="btn iconfont iconyuanma" @click="openSourceCodeEdit"></div>
-      </el-tooltip>
-    </div> -->
+        <el-tooltip
+          effect="dark"
+          :content="$t('navigatorToolbar.changeSourceCodeEdit')"
+          placement="top"
+        >
+          <div class="btn iconfont iconyuanma" @click="openSourceCodeEdit"></div>
+        </el-tooltip>
+      </div> -->
     <div class="item">
       <Demonstrate :isDark="isDark" :mindMap="mindMap"></Demonstrate>
     </div>
     <div class="item">
       <el-dropdown @command="handleCommand">
         <div class="btn el-icon-more"></div>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="shortcutKey">
-            <span class="iconfont iconjianpan"></span>
-            {{ $t('navigatorToolbar.shortcutKeys') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="aiChat">
-            <span class="iconfont iconAIshengcheng"></span>
-            {{ $t('navigatorToolbar.ai') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="client">
-            <span class="iconfont iconxiazai"></span>
-            {{ $t('navigatorToolbar.downloadClient') }}
-          </el-dropdown-item>
-          <el-dropdown-item command="github">
-            <span class="iconfont icongithub"></span>
-            Github
-          </el-dropdown-item>
-          <el-dropdown-item command="site">
-            <span class="iconfont iconwangzhan"></span>
-            {{ $t('navigatorToolbar.site') }}
-          </el-dropdown-item>
-          <el-dropdown-item disabled
-            >{{ $t('navigatorToolbar.current') }}v{{
-              version
-            }}</el-dropdown-item
-          >
-        </el-dropdown-menu>
+        <template v-slot:dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="shortcutKey">
+              <span class="iconfont iconjianpan"></span>
+              {{ $t('navigatorToolbar.shortcutKeys') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="aiChat">
+              <span class="iconfont iconAIshengcheng"></span>
+              {{ $t('navigatorToolbar.ai') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="client">
+              <span class="iconfont iconxiazai"></span>
+              {{ $t('navigatorToolbar.downloadClient') }}
+            </el-dropdown-item>
+            <el-dropdown-item command="github">
+              <span class="iconfont icongithub"></span>
+              Github
+            </el-dropdown-item>
+            <el-dropdown-item command="site">
+              <span class="iconfont iconwangzhan"></span>
+              {{ $t('navigatorToolbar.site') }}
+            </el-dropdown-item>
+            <el-dropdown-item disabled
+              >{{ $t('navigatorToolbar.current') }}v{{
+                version
+              }}</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
       </el-dropdown>
     </div>
   </div>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Scale from './Scale.vue'
 import Fullscreen from './Fullscreen.vue'
 import MouseAction from './MouseAction.vue'
@@ -139,32 +142,31 @@ import { useAppStore } from '@/store'
 import pkg from 'simple-mind-map/package.json'
 import Demonstrate from './Demonstrate.vue'
 
-// 导航器工具栏
 export default {
   components: {
     Scale,
     Fullscreen,
     MouseAction,
-    Demonstrate
+    Demonstrate,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       version: pkg.version,
       langList,
       lang: '',
-      openMiniMap: false
+      openMiniMap: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark
-    })
+      isReadonly: (state) => state.isReadonly,
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   created() {
     this.lang = getLang()
@@ -174,7 +176,7 @@ export default {
       'setLocalConfig',
       'setIsReadonly',
       'setIsSourceCodeEdit',
-      'setActiveSidebar'
+      'setActiveSidebar',
     ]),
 
     readonlyChange() {
@@ -184,22 +186,22 @@ export default {
 
     toggleMiniMap() {
       this.openMiniMap = !this.openMiniMap
-      this.$bus.$emit('toggle_mini_map', this.openMiniMap)
+      $emit(this.$bus, 'toggle_mini_map', this.openMiniMap)
     },
 
     onLangChange(lang) {
       i18n.locale = lang
       storeLang(lang)
-      this.$bus.$emit('lang_change')
+      $emit(this.$bus, 'lang_change')
     },
 
     showSearch() {
-      this.$bus.$emit('show_search')
+      $emit(this.$bus, 'show_search')
     },
 
     toggleDark() {
       this.setLocalConfig({
-        isDark: !this.isDark
+        isDark: !this.isDark,
       })
     },
 
@@ -211,7 +213,8 @@ export default {
         this.setActiveSidebar('ai')
         return
       } else if (command === 'client') {
-        this.$bus.$emit(
+        $emit(
+          this.$bus,
           'showDownloadTip',
           this.$t('navigatorToolbar.downloadClient'),
           this.$t('navigatorToolbar.downloadDesc')
@@ -252,8 +255,9 @@ export default {
 
     openSourceCodeEdit() {
       this.setIsSourceCodeEdit(true)
-    }
-  }
+    },
+  },
+  emits: ['toggle_mini_map', 'showDownloadTip', 'lang_change', 'show_search'],
 }
 </script>
 
@@ -270,7 +274,6 @@ export default {
   font-size: 12px;
   display: flex;
   align-items: center;
-
   &.isDark {
     background: #262a2e;
 
@@ -303,7 +306,6 @@ export default {
     }
   }
 }
-
 @media screen and (max-width: 700px) {
   .navigatorContainer {
     left: 20px;

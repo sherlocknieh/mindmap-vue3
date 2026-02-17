@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
@@ -20,29 +21,29 @@ let countEl = document.createElement('div')
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       textStr: '',
       words: 0,
-      num: 0
+      num: 0,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
-    })
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   created() {
-    this.$bus.$on('data_change', this.onDataChange)
+    $on(this.$bus, 'data_change', this.onDataChange)
     if (this.mindMap) {
       this.onDataChange(this.mindMap.getData())
     }
   },
-  beforeDestroy() {
-    this.$bus.$off('data_change', this.onDataChange)
+  beforeUnmount() {
+    $off(this.$bus, 'data_change', this.onDataChange)
   },
   methods: {
     // 监听数据变化
@@ -61,12 +62,12 @@ export default {
       this.num++
       this.textStr += String(data.data.text) || ''
       if (data.children && data.children.length > 0) {
-        data.children.forEach(item => {
+        data.children.forEach((item) => {
           this.walk(item)
         })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -83,7 +84,6 @@ export default {
   line-height: 22px;
   font-size: 12px;
   display: flex;
-
   &.isDark {
     background: #262a2e;
 
@@ -105,7 +105,6 @@ export default {
     }
   }
 }
-
 @media screen and (max-width: 900px) {
   .countContainer {
     display: none;

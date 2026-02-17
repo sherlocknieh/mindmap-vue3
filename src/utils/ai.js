@@ -15,12 +15,12 @@ class Ai {
         api: options.api,
         method: options.method,
         headers: {
-          Authorization: 'Bearer ' + options.key
+          Authorization: 'Bearer ' + options.key,
         },
         data: {
           model: options.model,
-          stream: true
-        }
+          stream: true,
+        },
       }
     }
   }
@@ -43,16 +43,16 @@ class Ai {
         let isEnd = false
         const list = chunk
           .split('\n')
-          .filter(item => {
+          .filter((item) => {
             isEnd = item.includes('[DONE]')
             return !!item && !isEnd
           })
-          .map(item => {
+          .map((item) => {
             return JSON.parse(item.replace(/^data:/, ''))
           })
-        list.forEach(item => {
+        list.forEach((item) => {
           this.content += item.choices
-            .map(item2 => {
+            .map((item2) => {
               return item2.delta.content
             })
             .join('')
@@ -77,15 +77,15 @@ class Ai {
       signal: this.controller.signal,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         ...this.baseData,
         data: {
           ...this.baseData.data,
-          ...data
-        }
-      })
+          ...data,
+        },
+      }),
     })
     if (res.status && res.status !== 200) {
       throw new Error('请求失败')

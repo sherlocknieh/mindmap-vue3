@@ -34,37 +34,37 @@ import { layoutGroupList } from '@/config'
 // 结构
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       layoutImgMap,
-      layout: ''
+      layout: '',
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
     }),
 
     layoutGroupList() {
       const groupList = layoutGroupList[this.$i18n.locale] || layoutGroupList.zh
-      return groupList.map(group => {
-        let list = [...group.list].filter(item => {
+      return groupList.map((group) => {
+        let list = [...group.list].filter((item) => {
           return !['rightFishbone', 'rightFishbone2'].includes(item)
         })
         return {
           name: group.name,
-          list
+          list,
         }
       })
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -74,17 +74,17 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   methods: {
     useLayout(layout) {
       this.layout = layout
       this.mindMap.setLayout(layout)
       storeData({
-        layout: layout
+        layout: layout,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -92,7 +92,6 @@ export default {
 .layoutGroupList {
   width: 100%;
   padding: 20px;
-
   &.isDark {
     .laytouGroup {
       .groupName {

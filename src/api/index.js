@@ -51,7 +51,7 @@ export const storeData = (data, emitter) => {
     }
     originData = {
       ...originData,
-      ...data
+      ...data,
     }
     if (window.takeOverApp) {
       mindMapData = originData
@@ -85,7 +85,7 @@ export const getConfig = () => {
 }
 
 // 存储思维导图配置数据
-export const storeConfig = config => {
+export const storeConfig = (config) => {
   try {
     if (window.takeOverApp) {
       window.takeOverAppMethods.saveMindMapConfig(config)
@@ -98,7 +98,7 @@ export const storeConfig = config => {
 }
 
 // 存储语言
-export const storeLang = lang => {
+export const storeLang = (lang) => {
   if (window.takeOverApp) {
     window.takeOverAppMethods.saveLanguage(lang)
     return
@@ -120,7 +120,7 @@ export const getLang = () => {
 }
 
 // 存储本地配置
-export const storeLocalConfig = config => {
+export const storeLocalConfig = (config) => {
   if (window.takeOverApp) {
     return window.takeOverAppMethods.saveLocalConfig(config)
   }

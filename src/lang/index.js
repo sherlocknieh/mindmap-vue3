@@ -7,5 +7,5 @@ export default {
   zh,
   zhtw,
   en,
-  vi
+  vi,
 }

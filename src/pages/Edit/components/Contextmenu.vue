@@ -182,6 +182,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { getTextFromHtml, imgToDataUrl } from 'simple-mind-map/src/utils'
@@ -190,12 +191,11 @@ import { transformToTxt } from 'simple-mind-map/src/parse/toTxt'
 import { setDataToClipboard, setImgToClipboard, copy } from '@/utils'
 import { numberTypeList, numberLevelList } from '@/config'
 
-// 右键菜单
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -211,14 +211,14 @@ export default {
       numberType: '',
       numberLevel: '',
       subItemsShowLeft: false,
-      isNodeMousedown: false
+      isNodeMousedown: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isZenMode: state => state.localConfig.isZenMode,
-      isDark: state => state.localConfig.isDark,
-      enableAi: state => state.localConfig.enableAi
+      isZenMode: (state) => state.localConfig.isZenMode,
+      isDark: (state) => state.localConfig.isDark,
+      enableAi: (state) => state.localConfig.enableAi,
     }),
     expandList() {
       return [
@@ -227,32 +227,32 @@ export default {
         this.$t('contextmenu.level3'),
         this.$t('contextmenu.level4'),
         this.$t('contextmenu.level5'),
-        this.$t('contextmenu.level6')
+        this.$t('contextmenu.level6'),
       ]
     },
     copyList() {
       const list = [
         {
           name: this.$t('contextmenu.copyToSmm'),
-          value: 'smm'
+          value: 'smm',
         },
         {
           name: this.$t('contextmenu.copyToJson'),
-          value: 'json'
+          value: 'json',
         },
         {
           name: this.$t('contextmenu.copyToMarkdown'),
-          value: 'md'
+          value: 'md',
         },
         {
           name: this.$t('contextmenu.copyToTxt'),
-          value: 'txt'
-        }
+          value: 'txt',
+        },
       ]
       if (this.enableCopyToClipboardApi) {
         list.push({
           name: this.$t('contextmenu.copyToPng'),
-          value: 'png'
+          value: 'png',
         })
       }
       return list
@@ -265,7 +265,7 @@ export default {
         return true
       }
       let isFirst =
-        this.node.parent.children.findIndex(item => {
+        this.node.parent.children.findIndex((item) => {
           return item === this.node
         }) === 0
       return isFirst
@@ -276,7 +276,7 @@ export default {
       }
       let children = this.node.parent.children
       let isLast =
-        children.findIndex(item => {
+        children.findIndex((item) => {
           return item === this.node
         }) ===
         children.length - 1
@@ -302,27 +302,27 @@ export default {
     },
     hasNodeLink() {
       return !!this.node.getData('nodeLink')
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_contextmenu', this.show)
-    this.$bus.$on('node_click', this.hide)
-    this.$bus.$on('draw_click', this.hide)
-    this.$bus.$on('expand_btn_click', this.hide)
-    this.$bus.$on('svg_mousedown', this.onMousedown)
-    this.$bus.$on('mouseup', this.onMouseup)
-    this.$bus.$on('translate', this.hide)
-    this.$bus.$on('node_mousedown', this.onNodeMousedown)
+    $on(this.$bus, 'node_contextmenu', this.show)
+    $on(this.$bus, 'node_click', this.hide)
+    $on(this.$bus, 'draw_click', this.hide)
+    $on(this.$bus, 'expand_btn_click', this.hide)
+    $on(this.$bus, 'svg_mousedown', this.onMousedown)
+    $on(this.$bus, 'mouseup', this.onMouseup)
+    $on(this.$bus, 'translate', this.hide)
+    $on(this.$bus, 'node_mousedown', this.onNodeMousedown)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_contextmenu', this.show)
-    this.$bus.$off('node_click', this.hide)
-    this.$bus.$off('draw_click', this.hide)
-    this.$bus.$off('expand_btn_click', this.hide)
-    this.$bus.$off('svg_mousedown', this.onMousedown)
-    this.$bus.$off('mouseup', this.onMouseup)
-    this.$bus.$off('translate', this.hide)
-    this.$bus.$off('node_mousedown', this.onNodeMousedown)
+  beforeUnmount() {
+    $off(this.$bus, 'node_contextmenu', this.show)
+    $off(this.$bus, 'node_click', this.hide)
+    $off(this.$bus, 'draw_click', this.hide)
+    $off(this.$bus, 'expand_btn_click', this.hide)
+    $off(this.$bus, 'svg_mousedown', this.onMousedown)
+    $off(this.$bus, 'mouseup', this.onMouseup)
+    $off(this.$bus, 'translate', this.hide)
+    $off(this.$bus, 'node_mousedown', this.onNodeMousedown)
   },
   methods: {
     ...mapActions(useAppStore, ['setLocalConfig']),
@@ -433,7 +433,7 @@ export default {
           break
         case 'TOGGLE_ZEN_MODE':
           this.setLocalConfig({
-            isZenMode: !this.isZenMode
+            isZenMode: !this.isZenMode,
           })
           break
         case 'FIT_CANVAS':
@@ -456,13 +456,13 @@ export default {
           break
         case 'UNEXPAND_ALL':
           const uid = this.node ? this.node.uid : ''
-          this.$bus.$emit('execCommand', key, !uid, uid)
+          $emit(this.$bus, 'execCommand', key, !uid, uid)
           break
         case 'EXPAND_ALL':
-          this.$bus.$emit('execCommand', key, this.node ? this.node.uid : '')
+          $emit(this.$bus, 'execCommand', key, this.node ? this.node.uid : '')
           break
         default:
-          this.$bus.$emit('execCommand', key, ...args)
+          $emit(this.$bus, 'execCommand', key, ...args)
           break
       }
       this.hide()
@@ -512,10 +512,11 @@ export default {
 
     // AI续写
     aiCreate() {
-      this.$bus.$emit('ai_create_part', this.node)
+      $emit(this.$bus, 'ai_create_part', this.node)
       this.hide()
-    }
-  }
+    },
+  },
+  emits: ['execCommand', 'ai_create_part'],
 }
 </script>
 
@@ -527,7 +528,6 @@ export default {
   border-radius: 4px;
   padding-top: 16px;
   padding-bottom: 16px;
-
   &.isDark {
     background: #363b3f;
   }
@@ -538,7 +538,6 @@ export default {
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #1a1a1a;
-
   &.isDark {
     color: #fff;
 

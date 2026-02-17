@@ -2,15 +2,15 @@
   <el-dialog
     class="nodeTagDialog"
     :title="$t('nodeTag.title')"
-    :visible.sync="dialogVisible"
+    v-model:visible="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <el-input
-      v-model="tag"
-      @keyup.native.enter="add"
-      @keyup.native.stop
-      @keydown.native.stop
+      v-model:value="tag"
+      @keyup.enter="add"
+      @keyup.stop
+      @keydown.stop
       :disabled="tagArr.length >= max"
       :placeholder="$t('nodeTag.addTip')"
     >
@@ -21,7 +21,7 @@
         v-for="(item, index) in tagArr"
         :key="index"
         :style="{
-          backgroundColor: generateColorByContent(item)
+          backgroundColor: generateColorByContent(item),
         }"
       >
         {{ typeof item === 'string' ? item : item.text }}
@@ -30,22 +30,24 @@
         </div>
       </div>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
-      <el-button type="primary" @click="confirm">{{
-        $t('dialog.confirm')
-      }}</el-button>
-    </span>
+    <template v-slot:footer>
+      <span class="dialog-footer">
+        <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
+        <el-button type="primary" @click="confirm">{{
+          $t('dialog.confirm')
+        }}</el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import {
   generateColorByContent,
-  isMobile
+  isMobile,
 } from 'simple-mind-map/src/utils/index'
 
-// 节点标签内容设置
 export default {
   data() {
     return {
@@ -54,23 +56,23 @@ export default {
       tag: '',
       activeNodes: [],
       max: 5,
-      isMobile: isMobile()
+      isMobile: isMobile(),
     }
   },
   watch: {
     dialogVisible(val, oldVal) {
       if (!val && oldVal) {
-        this.$bus.$emit('endTextEdit')
+        $emit(this.$bus, 'endTextEdit')
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeTag', this.handleShowNodeTag)
+    $on(this.$bus, 'node_active', this.handleNodeActive)
+    $on(this.$bus, 'showNodeTag', this.handleShowNodeTag)
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeTag', this.handleShowNodeTag)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.handleNodeActive)
+    $off(this.$bus, 'showNodeTag', this.handleShowNodeTag)
   },
   methods: {
     generateColorByContent,
@@ -87,7 +89,7 @@ export default {
     },
 
     handleShowNodeTag() {
-      this.$bus.$emit('startTextEdit')
+      $emit(this.$bus, 'startTextEdit')
       this.dialogVisible = true
     },
 
@@ -107,12 +109,13 @@ export default {
     },
 
     confirm() {
-      this.activeNodes.forEach(node => {
+      this.activeNodes.forEach((node) => {
         node.setTag(this.tagArr)
       })
       this.cancel()
-    }
-  }
+    },
+  },
+  emits: ['endTextEdit', 'startTextEdit'],
 }
 </script>
 

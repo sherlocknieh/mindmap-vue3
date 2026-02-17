@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -68,20 +69,20 @@ let md = null
 
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   data() {
     return {
       text: '',
       chatList: [],
-      isCreating: false
+      isCreating: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
-    })
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -90,10 +91,10 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {},
-  beforeDestroy() {},
+  beforeUnmount() {},
   methods: {
     onKeydown(e) {
       if (e.keyCode === 13) {
@@ -113,33 +114,35 @@ export default {
       }
       this.text = ''
       const historyUserMsgList = this.chatList
-        .filter(item => {
+        .filter((item) => {
           return item.type === 'user'
         })
-        .map(item => {
+        .map((item) => {
           return item.content
         })
       this.chatList.push({
         id: createUid(),
         type: 'user',
-        content: text
+        content: text,
       })
       this.chatList.push({
         id: createUid(),
         type: 'ai',
-        content: ''
+        content: '',
       })
       this.isCreating = true
       const textList = [...historyUserMsgList, text]
-      this.$bus.$emit(
+      $emit(
+        this.$bus,
         'ai_chat',
         textList,
-        res => {
+        (res) => {
           if (!md) {
             md = new MarkdownIt()
           }
           this.chatList[this.chatList.length - 1].content = md.render(res)
-          this.$refs.chatResBoxRef.scrollTop = this.$refs.chatResBoxRef.scrollHeight
+          this.$refs.chatResBoxRef.scrollTop =
+            this.$refs.chatResBoxRef.scrollHeight
         },
         () => {
           this.isCreating = false
@@ -152,7 +155,7 @@ export default {
     },
 
     stop() {
-      this.$bus.$emit('ai_chat_stop')
+      $emit(this.$bus, 'ai_chat_stop')
       this.isCreating = false
     },
 
@@ -161,9 +164,10 @@ export default {
     },
 
     modifyAiConfig() {
-      this.$bus.$emit('showAiConfigDialog')
-    }
-  }
+      $emit(this.$bus, 'showAiConfigDialog')
+    },
+  },
+  emits: ['ai_chat', 'ai_chat_stop', 'showAiConfigDialog'],
 }
 </script>
 
@@ -174,7 +178,6 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-
   &.isDark {
   }
 

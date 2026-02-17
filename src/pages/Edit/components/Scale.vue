@@ -36,16 +36,16 @@
 export default {
   props: {
     mindMap: {
-      type: Object
+      type: Object,
     },
     isDark: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {
       scaleNum: 100,
-      cacheScaleNum: 0
+      cacheScaleNum: 0,
     }
   },
   watch: {
@@ -55,9 +55,9 @@ export default {
         this.mindMap.on('draw_click', this.onDrawClick)
         this.scaleNum = this.toPer(this.mindMap.view.scale)
       }
-    }
+    },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('scale', this.onScale)
     this.mindMap.off('draw_click', this.onDrawClick)
   },
@@ -105,8 +105,8 @@ export default {
 
     onDrawClick() {
       if (this.$refs.inputRef) this.$refs.inputRef.blur()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -114,7 +114,6 @@ export default {
 .scaleContainer {
   display: flex;
   align-items: center;
-
   &.isDark {
     .btn {
       color: hsla(0, 0%, 100%, 0.6);

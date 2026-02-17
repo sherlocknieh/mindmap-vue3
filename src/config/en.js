@@ -2,184 +2,184 @@
 export const fontFamilyList = [
   {
     name: 'Song Ti',
-    value: '宋体, SimSun, Songti SC'
+    value: '宋体, SimSun, Songti SC',
   },
   {
     name: 'Microsoft Yahei',
-    value: '微软雅黑, Microsoft YaHei'
+    value: '微软雅黑, Microsoft YaHei',
   },
   {
     name: 'Italics',
-    value: '楷体, 楷体_GB2312, SimKai, STKaiti'
+    value: '楷体, 楷体_GB2312, SimKai, STKaiti',
   },
   {
     name: 'Boldface',
-    value: '黑体, SimHei, Heiti SC'
+    value: '黑体, SimHei, Heiti SC',
   },
   {
     name: 'Official script',
-    value: '隶书, SimLi'
+    value: '隶书, SimLi',
   },
   {
     name: 'Andale Mono',
-    value: 'andale mono'
+    value: 'andale mono',
   },
   {
     name: 'Arial',
-    value: 'arial, helvetica, sans-serif'
+    value: 'arial, helvetica, sans-serif',
   },
   {
     name: 'arialBlack',
-    value: 'arial black, avant garde'
+    value: 'arial black, avant garde',
   },
   {
     name: 'Comic Sans Ms',
-    value: 'comic sans ms'
+    value: 'comic sans ms',
   },
   {
     name: 'Impact',
-    value: 'impact, chicago'
+    value: 'impact, chicago',
   },
   {
     name: 'Times New Roman',
-    value: 'times new roman'
+    value: 'times new roman',
   },
   {
     name: 'Sans-Serif',
-    value: 'sans-serif'
+    value: 'sans-serif',
   },
   {
     name: 'serif',
-    value: 'serif'
-  }
+    value: 'serif',
+  },
 ]
 
 // 边框样式
 export const borderDasharrayList = [
   {
     name: 'Solid',
-    value: 'none'
+    value: 'none',
   },
   {
     name: 'Dotted1',
-    value: '5,5'
+    value: '5,5',
   },
   {
     name: 'Dotted2',
-    value: '10,10'
+    value: '10,10',
   },
   {
     name: 'Dotted3',
-    value: '20,10,5,5,5,10'
+    value: '20,10,5,5,5,10',
   },
   {
     name: 'Dotted4',
-    value: '5,5,1,5'
+    value: '5,5,1,5',
   },
   {
     name: 'Dotted5',
-    value: '15,10,5,10,15'
+    value: '15,10,5,10,15',
   },
   {
     name: 'Dotted6',
-    value: '1,5'
+    value: '1,5',
   },
   {
     name: 'Dotted7',
-    value: '6,4'
-  }
+    value: '6,4',
+  },
 ]
 
 // 连线风格
 export const lineStyleList = [
   {
     name: 'Straight',
-    value: 'straight'
+    value: 'straight',
   },
   {
     name: 'Curve',
-    value: 'curve'
+    value: 'curve',
   },
   {
     name: 'Direct',
-    value: 'direct'
-  }
+    value: 'direct',
+  },
 ]
 
 // 曲线风格中，根节点样式是否和其他节点保持一致
 export const rootLineKeepSameInCurveList = [
   {
     name: 'Bracket',
-    value: false
+    value: false,
   },
   {
     name: 'Brace',
-    value: true
-  }
+    value: true,
+  },
 ]
 
 // 图片重复方式
 export const backgroundRepeatList = [
   {
     name: 'No repeat',
-    value: 'no-repeat'
+    value: 'no-repeat',
   },
   {
     name: 'Repeat',
-    value: 'repeat'
+    value: 'repeat',
   },
   {
     name: 'Repeat-x',
-    value: 'repeat-x'
+    value: 'repeat-x',
   },
   {
     name: 'Repeat-y',
-    value: 'repeat-y'
-  }
+    value: 'repeat-y',
+  },
 ]
 
 // 背景图片定位
 export const backgroundPositionList = [
   {
     name: 'Default',
-    value: '0% 0%'
+    value: '0% 0%',
   },
   {
     name: 'Left top',
-    value: 'left top'
+    value: 'left top',
   },
   {
     name: 'Left center',
-    value: 'left center'
+    value: 'left center',
   },
   {
     name: 'Left bottom',
-    value: 'left bottom'
+    value: 'left bottom',
   },
   {
     name: 'Right top',
-    value: 'right top'
+    value: 'right top',
   },
   {
     name: 'Right center',
-    value: 'right center'
+    value: 'right center',
   },
   {
     name: 'Right bottom',
-    value: 'right bottom'
+    value: 'right bottom',
   },
   {
     name: 'Center top',
-    value: 'center top'
+    value: 'center top',
   },
   {
     name: 'Center center',
-    value: 'center center'
+    value: 'center center',
   },
   {
     name: 'Center bottom',
-    value: 'center bottom'
-  }
+    value: 'center bottom',
+  },
 ]
 
 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
@@ -191,16 +191,16 @@ const macFn = isMac ? 'fn + ' : ''
 export const backgroundSizeList = [
   {
     name: 'Auto',
-    value: 'auto'
+    value: 'auto',
   },
   {
     name: 'Cover',
-    value: 'cover'
+    value: 'cover',
   },
   {
     name: 'Contain',
-    value: 'contain'
-  }
+    value: 'contain',
+  },
 ]
 
 // 快捷键列表
@@ -211,104 +211,104 @@ export const shortcutKeyList = [
       {
         icon: 'icontianjiazijiedian',
         name: 'Inert child node',
-        value: 'Tab | Insert'
+        value: 'Tab | Insert',
       },
       {
         icon: 'iconjiedian',
         name: 'Insert sibling node',
-        value: enter
+        value: enter,
       },
       {
         icon: 'icondodeparent',
         name: 'Insert parent node',
-        value: 'Shift + Tab'
+        value: 'Shift + Tab',
       },
       {
         icon: 'iconshangyi',
         name: 'Move up node',
-        value: `${ctrl} + ↑`
+        value: `${ctrl} + ↑`,
       },
       {
         icon: 'iconxiayi',
         name: 'Move down node',
-        value: `${ctrl} + ↓`
+        value: `${ctrl} + ↓`,
       },
       {
         icon: 'icongaikuozonglan',
         name: 'Insert summary',
-        value: `${ctrl} + G`
+        value: `${ctrl} + G`,
       },
       {
         icon: 'iconzhankai',
         name: 'Expand/UnExpand node',
-        value: '/'
+        value: '/',
       },
       {
         icon: 'iconshanchu',
         name: 'Delete node',
-        value: 'Delete | Backspace'
+        value: 'Delete | Backspace',
       },
       {
         icon: 'iconshanchu',
         name: 'Delete current node',
-        value: 'Shift + Backspace'
+        value: 'Shift + Backspace',
       },
       {
         icon: 'iconfuzhi',
         name: 'Copy node',
-        value: `${ctrl} + C`
+        value: `${ctrl} + C`,
       },
       {
         icon: 'iconjianqie',
         name: 'Cut node',
-        value: `${ctrl} + X`
+        value: `${ctrl} + X`,
       },
       {
         icon: 'iconniantie',
         name: 'Paste node',
-        value: `${ctrl} + V`
+        value: `${ctrl} + V`,
       },
       {
         icon: 'iconbianji',
         name: 'Edit node',
-        value: macFn + 'F2'
+        value: macFn + 'F2',
       },
       {
         icon: 'iconhuanhang',
         name: 'Text Wrap',
-        value: `Shift + ${enter}`
+        value: `Shift + ${enter}`,
       },
       {
         icon: 'iconhoutui-shi',
         name: 'Undo',
-        value: `${ctrl} + Z`
+        value: `${ctrl} + Z`,
       },
       {
         icon: 'iconqianjin1',
         name: 'Redo',
-        value: `${ctrl} + Y`
+        value: `${ctrl} + Y`,
       },
       {
         icon: 'iconquanxuan',
         name: 'Select All',
-        value: `${ctrl} + A`
+        value: `${ctrl} + A`,
       },
       {
         icon: 'iconquanxuan',
         name: 'Multiple choice',
-        value: `Right click / ${ctrl} + Left click`
+        value: `Right click / ${ctrl} + Left click`,
       },
       {
         icon: 'iconzhengli',
         name: 'Arrange layout',
-        value: `${ctrl} + L`
+        value: `${ctrl} + L`,
       },
       {
         icon: 'iconsousuo',
         name: 'Search and Replace',
-        value: `${ctrl} + F`
-      }
-    ]
+        value: `${ctrl} + F`,
+      },
+    ],
   },
   {
     type: 'Canvas operation',
@@ -316,29 +316,29 @@ export const shortcutKeyList = [
       {
         icon: 'iconfangda',
         name: 'Zoom in',
-        value: `${ctrl} + +`
+        value: `${ctrl} + +`,
       },
       {
         icon: 'iconsuoxiao',
         name: 'Zoom out',
-        value: `${ctrl} + -`
+        value: `${ctrl} + -`,
       },
       {
         icon: 'iconfangda',
         name: 'Zoom in/Zoom out',
-        value: `${ctrl} + Mouse wheel`
+        value: `${ctrl} + Mouse wheel`,
       },
       {
         icon: 'icondingwei',
         name: 'Back root node',
-        value: `${ctrl} + ${enter}`
+        value: `${ctrl} + ${enter}`,
       },
       {
         icon: 'iconquanping1',
         name: 'fit canvas',
-        value: `${ctrl} + i`
-      }
-    ]
+        value: `${ctrl} + i`,
+      },
+    ],
   },
   {
     type: 'Outline Operation',
@@ -346,70 +346,70 @@ export const shortcutKeyList = [
       {
         icon: 'iconhuanhang',
         name: 'Text Wrap',
-        value: `Shift + ${enter}`
+        value: `Shift + ${enter}`,
       },
       {
         icon: 'iconshanchu',
         name: 'Delete current node',
-        value: 'Delete'
+        value: 'Delete',
       },
       {
         icon: 'icontianjiazijiedian',
         name: 'Inert child node',
-        value: 'Tab'
+        value: 'Tab',
       },
       {
         icon: 'iconjiedian',
         name: 'Insert sibling node',
-        value: enter
+        value: enter,
       },
       {
         icon: 'icondodeparent',
         name: 'Move up one level',
-        value: 'Shift + Tab'
-      }
-    ]
-  }
+        value: 'Shift + Tab',
+      },
+    ],
+  },
 ]
 
 // 形状列表
 export const shapeList = [
   {
     name: 'Rectangle',
-    value: 'rectangle'
+    value: 'rectangle',
   },
   {
     name: 'Diamond',
-    value: 'diamond'
+    value: 'diamond',
   },
   {
     name: 'Parallelogram',
-    value: 'parallelogram'
+    value: 'parallelogram',
   },
   {
     name: 'Rounded rectangle',
-    value: 'roundedRectangle'
+    value: 'roundedRectangle',
   },
   {
     name: 'Octagonal rectangle',
-    value: 'octagonalRectangle'
+    value: 'octagonalRectangle',
   },
   {
     name: 'Outer triangular rectangle',
-    value: 'outerTriangularRectangle'
+    value: 'outerTriangularRectangle',
   },
   {
     name: 'Inner triangular rectangle',
-    value: 'innerTriangularRectangle'
+    value: 'innerTriangularRectangle',
   },
   {
     name: 'Ellipse',
-    value: 'ellipse'
+    value: 'ellipse',
   },
   {
     name: 'Circle',
-    value: 'circle'
-  }
+    value: 'circle',
+  },
 ]
 
 // 侧边栏列表
@@ -417,27 +417,27 @@ export const sidebarTriggerList = [
   {
     name: 'Node style',
     value: 'nodeStyle',
-    icon: 'iconzhuti'
+    icon: 'iconzhuti',
   },
   {
     name: 'Base style',
     value: 'baseStyle',
-    icon: 'iconyangshi'
+    icon: 'iconyangshi',
   },
   {
     name: 'Theme',
     value: 'theme',
-    icon: 'iconjingzi'
+    icon: 'iconjingzi',
   },
   {
     name: 'Structure',
     value: 'structure',
-    icon: 'iconjiegou'
+    icon: 'iconjiegou',
   },
   {
     name: 'Outline',
     value: 'outline',
-    icon: 'iconfuhao-dagangshu'
+    icon: 'iconfuhao-dagangshu',
   },
   // {
   //   name: 'AI',
@@ -447,7 +447,7 @@ export const sidebarTriggerList = [
   {
     name: 'Setting',
     value: 'setting',
-    icon: 'iconshezhi'
+    icon: 'iconshezhi',
   },
   // {
   //   name: 'ShortcutKey',
@@ -462,62 +462,61 @@ export const downTypeList = [
     name: '思绪 file',
     type: 'smm',
     icon: 'iconwenjian',
-    desc:
-      'SimpleMindMap private format, can be used for re import, and the client can directly edit it'
+    desc: 'SimpleMindMap private format, can be used for re import, and the client can directly edit it',
   },
   {
     name: 'Image',
     type: 'png',
     icon: 'iconPNG',
-    desc: 'Common image formats, suitable for viewing and sharing'
+    desc: 'Common image formats, suitable for viewing and sharing',
   },
   {
     name: 'SVG',
     type: 'svg',
     icon: 'iconSVG',
-    desc: 'Scalable Vector Graphics'
+    desc: 'Scalable Vector Graphics',
   },
   {
     name: 'PDF',
     type: 'pdf',
     icon: 'iconpdf',
-    desc: 'Suitable for viewing, browsing, and printing'
+    desc: 'Suitable for viewing, browsing, and printing',
   },
   {
     name: 'Markdown',
     type: 'md',
     icon: 'iconmarkdown',
-    desc: 'MD text format, easy for other software to open'
+    desc: 'MD text format, easy for other software to open',
   },
   {
     name: 'XMind',
     type: 'xmind',
     icon: 'iconxmind',
-    desc: 'XMind software file'
+    desc: 'XMind software file',
   },
   {
     name: 'Txt',
     type: 'txt',
     icon: 'iconTXT',
-    desc: 'Plain text file'
+    desc: 'Plain text file',
   },
   {
     name: 'Excel',
     type: 'xlsx',
     icon: 'iconfile-excel',
-    desc: 'Table text format, editable with Excel software'
+    desc: 'Table text format, editable with Excel software',
   },
   {
     name: 'FreeMind',
     type: 'mm',
     icon: 'iconfreemind',
-    desc: 'FreeMind software format'
+    desc: 'FreeMind software format',
   },
   {
     name: 'JSON',
     type: 'json',
     icon: 'iconjson',
-    desc: 'Popular data exchange format that can be used for re importing'
+    desc: 'Popular data exchange format that can be used for re importing',
   },
 ]
 
@@ -525,60 +524,60 @@ export const downTypeList = [
 export const numberTypeList = [
   {
     name: 'None',
-    value: ''
+    value: '',
   },
   {
     name: '1, 2, 3',
-    value: 1
+    value: 1,
   },
   {
     name: '1., 2., 3.',
-    value: 2
+    value: 2,
   },
   {
     name: '(1), (2), (3)',
-    value: 3
+    value: 3,
   },
   {
     name: 'a., b., c.',
-    value: 4
+    value: 4,
   },
   {
     name: 'A., B., C.',
-    value: 5
+    value: 5,
   },
   {
     name: 'i., ii., iii.',
-    value: 6
+    value: 6,
   },
   {
     name: 'I., II., III.',
-    value: 7
+    value: 7,
   },
   {
     name: '一、, 二、, 三、',
-    value: 8
-  }
+    value: 8,
+  },
 ]
 
 // 编号层级列表
 export const numberLevelList = [
   {
     name: '1 level',
-    value: 1
+    value: 1,
   },
   {
     name: '2 level',
-    value: 2
+    value: 2,
   },
   {
     name: '3 level',
-    value: 3
+    value: 3,
   },
   {
     name: 'All level',
-    value: 0
-  }
+    value: 0,
+  },
 ]
 
 // 背景渐变方向
@@ -587,96 +586,92 @@ export const linearGradientDirList = [
     name: 'Left to right',
     value: '1',
     start: [0, 0],
-    end: [1, 0]
+    end: [1, 0],
   },
   {
     name: 'Right to left',
     value: '2',
     start: [1, 0],
-    end: [0, 0]
+    end: [0, 0],
   },
   {
     name: 'Top to bottom',
     value: '3',
     start: [0, 0],
-    end: [0, 1]
+    end: [0, 1],
   },
   {
     name: 'Bottom to top',
     value: '4',
     start: [0, 1],
-    end: [0, 0]
+    end: [0, 0],
   },
   {
     name: 'Left top to right bottom',
     value: '5',
     start: [0, 0],
-    end: [1, 1]
+    end: [1, 1],
   },
   {
     name: 'Left bottom to right top',
     value: '6',
     start: [0, 1],
-    end: [1, 0]
+    end: [1, 0],
   },
   {
     name: 'Right top to left bottom',
     value: '7',
     start: [1, 0],
-    end: [0, 1]
+    end: [0, 1],
   },
   {
     name: 'Right bottom to left top',
     value: '8',
     start: [1, 1],
-    end: [0, 0]
-  }
+    end: [0, 0],
+  },
 ]
 
 // 文本对齐方式
 export const alignList = [
   {
     name: 'Align left',
-    value: 'left'
+    value: 'left',
   },
   {
     name: 'Align center',
-    value: 'center'
+    value: 'center',
   },
   {
     name: 'Align right',
-    value: 'right'
-  }
+    value: 'right',
+  },
 ]
 
 // 结构列表
 export const layoutGroupList = [
   {
     name: 'Logical structure',
-    list: ['logicalStructure', 'logicalStructureLeft']
+    list: ['logicalStructure', 'logicalStructureLeft'],
   },
   {
     name: 'Mind map',
-    list: ['mindMap']
+    list: ['mindMap'],
   },
   {
     name: 'Organization structure',
-    list: ['organizationStructure']
+    list: ['organizationStructure'],
   },
   {
     name: 'Catalog organization',
-    list: ['catalogOrganization']
+    list: ['catalogOrganization'],
   },
   {
     name: 'Timeline',
-    list: [
-      'timeline',
-      'timeline2',
-      'verticalTimeline'
-    ]
+    list: ['timeline', 'timeline2', 'verticalTimeline'],
   },
   {
     name: 'Fishbone',
-    list: ['fishbone']
-  }
+    list: ['fishbone'],
+  },
 ]

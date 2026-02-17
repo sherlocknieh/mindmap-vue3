@@ -8,12 +8,12 @@
       <!-- 背景 -->
       <div class="title noTop">{{ $t('baseStyle.background') }}</div>
       <div class="row">
-        <el-tabs class="tab" v-model="activeTab">
+        <el-tabs class="tab" v-model:value="activeTab">
           <el-tab-pane :label="$t('baseStyle.color')" name="color">
             <Color
               :color="style.backgroundColor"
               @change="
-                color => {
+                (color) => {
                   update('backgroundColor', color)
                 }
               "
@@ -22,9 +22,9 @@
           <el-tab-pane :label="$t('baseStyle.image')" name="image">
             <ImgUpload
               class="imgUpload"
-              v-model="style.backgroundImage"
+              v-model:value="style.backgroundImage"
               @change="
-                img => {
+                (img) => {
                   update('backgroundImage', img)
                 }
               "
@@ -35,10 +35,10 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model="style.backgroundRepeat"
+                v-model:value="style.backgroundRepeat"
                 placeholder=""
                 @change="
-                  value => {
+                  (value) => {
                     update('backgroundRepeat', value)
                   }
                 "
@@ -58,10 +58,10 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model="style.backgroundPosition"
+                v-model:value="style.backgroundPosition"
                 placeholder=""
                 @change="
-                  value => {
+                  (value) => {
                     update('backgroundPosition', value)
                   }
                 "
@@ -81,10 +81,10 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model="style.backgroundSize"
+                v-model:value="style.backgroundSize"
                 placeholder=""
                 @change="
-                  value => {
+                  (value) => {
                     update('backgroundSize', value)
                   }
                 "
@@ -101,10 +101,12 @@
             <!-- 内置背景图片 -->
             <div
               class="rowItem spaceBetween"
-              style="margin-top: 8px; margin-bottom: 8px;"
+              style="margin-top: 8px; margin-bottom: 8px"
               v-if="bgList.length > 0"
             >
-              <div class="name">{{ $t('baseStyle.builtInBackgroundImage') }}</div>
+              <div class="name">
+                {{ $t('baseStyle.builtInBackgroundImage') }}
+              </div>
               <div
                 class="iconBtn el-icon-arrow-down"
                 :class="{ top: !bgListExpand }"
@@ -116,7 +118,7 @@
                 class="bgItem"
                 v-for="(item, index) in bgList"
                 :key="index"
-                :class="{active: style.backgroundImage === item}"
+                :class="{ active: style.backgroundImage === item }"
                 @click="useBg(item)"
               >
                 <img :src="item" alt="" />
@@ -139,7 +141,7 @@
             <Color
               :color="style.lineColor"
               @change="
-                color => {
+                (color) => {
                   update('lineColor', color)
                 }
               "
@@ -151,10 +153,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.lineWidth"
+            v-model:value="style.lineWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('lineWidth', value)
               }
             "
@@ -182,10 +184,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.lineStyle"
+            v-model:value="style.lineStyle"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('lineStyle', value)
               }
             "
@@ -198,7 +200,7 @@
               class="lineStyleOption"
               :class="{
                 isDark: isDark,
-                isSelected: style.lineStyle === item.value
+                isSelected: style.lineStyle === item.value,
               }"
               v-html="lineStyleMap[item.value]"
             >
@@ -216,10 +218,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.rootLineKeepSameInCurve"
+            v-model:value="style.rootLineKeepSameInCurve"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('rootLineKeepSameInCurve', value)
               }
             "
@@ -239,10 +241,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.lineRadius"
+            v-model:value="style.lineRadius"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('lineRadius', value)
               }
             "
@@ -269,10 +271,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.rootLineStartPositionKeepSameInCurve"
+            v-model:value="style.rootLineStartPositionKeepSameInCurve"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('rootLineStartPositionKeepSameInCurve', value)
               }
             "
@@ -291,9 +293,9 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model="style.showLineMarker"
+            v-model:value="style.showLineMarker"
             @change="
-              value => {
+              (value) => {
                 update('showLineMarker', value)
               }
             "
@@ -308,7 +310,7 @@
           <el-popover
             placement="right"
             trigger="click"
-            v-model="rainbowLinesPopoverVisible"
+            v-model:value="rainbowLinesPopoverVisible"
           >
             <div class="rainbowLinesOptionsBox" :class="{ isDark: isDark }">
               <div
@@ -332,16 +334,18 @@
                 }}</span>
               </div>
             </div>
-            <div slot="reference" class="curRainbowLine">
-              <div class="colorsBar" v-if="curRainbowLineColorList">
-                <span
-                  class="colorItem"
-                  v-for="color in curRainbowLineColorList"
-                  :style="{ backgroundColor: color }"
-                ></span>
+            <template v-slot:reference>
+              <div class="curRainbowLine">
+                <div class="colorsBar" v-if="curRainbowLineColorList">
+                  <span
+                    class="colorItem"
+                    v-for="color in curRainbowLineColorList"
+                    :style="{ backgroundColor: color }"
+                  ></span>
+                </div>
+                <span v-else>{{ $t('baseStyle.notUseRainbowLines') }}</span>
               </div>
-              <span v-else>{{ $t('baseStyle.notUseRainbowLines') }}</span>
-            </div>
+            </template>
           </el-popover>
         </div>
       </div>
@@ -359,7 +363,7 @@
             <Color
               :color="style.generalizationLineColor"
               @change="
-                color => {
+                (color) => {
                   update('generalizationLineColor', color)
                 }
               "
@@ -371,10 +375,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.generalizationLineWidth"
+            v-model:value="style.generalizationLineWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('generalizationLineWidth', value)
               }
             "
@@ -409,7 +413,7 @@
             <Color
               :color="style.associativeLineColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineColor', color)
                 }
               "
@@ -421,10 +425,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineWidth"
+            v-model:value="style.associativeLineWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineWidth', value)
               }
             "
@@ -459,7 +463,7 @@
             <Color
               :color="style.associativeLineActiveColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineActiveColor', color)
                 }
               "
@@ -473,10 +477,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineActiveWidth"
+            v-model:value="style.associativeLineActiveWidth"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineActiveWidth', value)
               }
             "
@@ -503,10 +507,10 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineDasharray"
+            v-model:value="style.associativeLineDasharray"
             placeholder=""
             @change="
-              value => {
+              (value) => {
                 update('associativeLineDasharray', value)
               }
             "
@@ -545,7 +549,7 @@
           <span class="name">{{ $t('baseStyle.fontFamily') }}</span>
           <el-select
             size="mini"
-            v-model="style.associativeLineTextFontFamily"
+            v-model:value="style.associativeLineTextFontFamily"
             placeholder=""
             @change="update('associativeLineTextFontFamily', $event)"
           >
@@ -572,7 +576,7 @@
             <Color
               :color="style.associativeLineTextColor"
               @change="
-                color => {
+                (color) => {
                   update('associativeLineTextColor', color)
                 }
               "
@@ -584,7 +588,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model="style.associativeLineTextFontSize"
+            v-model:value="style.associativeLineTextFontSize"
             placeholder=""
             @change="update('associativeLineTextFontSize', $event)"
           >
@@ -605,9 +609,9 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model="style.nodeUseLineStyle"
+              v-model:value="style.nodeUseLineStyle"
               @change="
-                value => {
+                (value) => {
                   update('nodeUseLineStyle', value)
                 }
               "
@@ -623,9 +627,9 @@
           <span class="name">{{ $t('baseStyle.horizontal') }}</span>
           <el-slider
             style="width: 200px"
-            v-model="style.paddingX"
+            v-model:value="style.paddingX"
             @change="
-              value => {
+              (value) => {
                 update('paddingX', value)
               }
             "
@@ -637,9 +641,9 @@
           <span class="name">{{ $t('baseStyle.vertical') }}</span>
           <el-slider
             style="width: 200px"
-            v-model="style.paddingY"
+            v-model:value="style.paddingY"
             @change="
-              value => {
+              (value) => {
                 update('paddingY', value)
               }
             "
@@ -653,11 +657,11 @@
           <span class="name">{{ $t('baseStyle.maximumWidth') }}</span>
           <el-slider
             style="width: 140px"
-            v-model="style.imgMaxWidth"
+            v-model:value="style.imgMaxWidth"
             :min="10"
             :max="500"
             @change="
-              value => {
+              (value) => {
                 update('imgMaxWidth', value)
               }
             "
@@ -669,11 +673,11 @@
           <span class="name">{{ $t('baseStyle.maximumHeight') }}</span>
           <el-slider
             style="width: 140px"
-            v-model="style.imgMaxHeight"
+            v-model:value="style.imgMaxHeight"
             :min="10"
             :max="500"
             @change="
-              value => {
+              (value) => {
                 update('imgMaxHeight', value)
               }
             "
@@ -687,11 +691,11 @@
           <span class="name">{{ $t('baseStyle.size') }}</span>
           <el-slider
             style="width: 200px"
-            v-model="style.iconSize"
+            v-model:value="style.iconSize"
             :min="12"
             :max="50"
             @change="
-              value => {
+              (value) => {
                 update('iconSize', value)
               }
             "
@@ -703,7 +707,7 @@
       <div class="row column noBottom">
         <el-tabs
           class="tab"
-          v-model="marginActiveTab"
+          v-model:value="marginActiveTab"
           @tab-click="initMarginStyle"
         >
           <el-tab-pane
@@ -720,9 +724,9 @@
           <el-slider
             :max="200"
             style="width: 200px"
-            v-model="style.marginX"
+            v-model:value="style.marginX"
             @change="
-              value => {
+              (value) => {
                 updateMargin('marginX', value)
               }
             "
@@ -733,9 +737,9 @@
           <el-slider
             :max="200"
             style="width: 200px"
-            v-model="style.marginY"
+            v-model:value="style.marginY"
             @change="
-              value => {
+              (value) => {
                 updateMargin('marginY', value)
               }
             "
@@ -749,9 +753,9 @@
           <span class="name">{{ $t('baseStyle.horizontal') }}</span>
           <el-slider
             style="width: 200px"
-            v-model="outerFramePadding.outerFramePaddingX"
+            v-model:value="outerFramePadding.outerFramePaddingX"
             @change="
-              value => {
+              (value) => {
                 updateOuterFramePadding('outerFramePaddingX', value)
               }
             "
@@ -763,9 +767,9 @@
           <span class="name">{{ $t('baseStyle.vertical') }}</span>
           <el-slider
             style="width: 200px"
-            v-model="outerFramePadding.outerFramePaddingY"
+            v-model:value="outerFramePadding.outerFramePaddingY"
             @change="
-              value => {
+              (value) => {
                 updateOuterFramePadding('outerFramePaddingY', value)
               }
             "
@@ -777,6 +781,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import Color from './Color.vue'
 import {
@@ -789,7 +794,7 @@ import {
   fontSizeList,
   rootLineKeepSameInCurveList,
   lineStyleMap,
-  borderDasharrayList
+  borderDasharrayList,
 } from '@/config'
 import ImgUpload from '@/components/ImgUpload/index.vue'
 import { storeData, storeConfig } from '@/api'
@@ -800,26 +805,25 @@ import {
   supportLineRadiusLayouts,
   supportNodeUseLineStyleLayouts,
   supportRootLineKeepSameInCurveLayouts,
-  rainbowLinesOptions
+  rainbowLinesOptions,
 } from '@/config/constant'
 
-// 基础样式
 export default {
   components: {
     Sidebar,
     Color,
-    ImgUpload
+    ImgUpload,
   },
   props: {
     data: {
-      type: [Object, null]
+      type: [Object, null],
     },
     configData: {
-      type: Object
+      type: Object,
     },
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -862,24 +866,24 @@ export default {
         backgroundSize: '',
         marginX: 0,
         marginY: 0,
-        nodeUseLineStyle: false
+        nodeUseLineStyle: false,
       },
       rainbowLinesPopoverVisible: false,
       curRainbowLineColorList: null,
       currentLayout: '', // 当前结构
       outerFramePadding: {
         outerFramePaddingX: 0,
-        outerFramePaddingY: 0
+        outerFramePaddingY: 0,
       },
-      bgListExpand: true
+      bgListExpand: true,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar,
-      localConfig: state => state.localConfig,
-      isDark: state => state.localConfig.isDark,
-      bgList: state => state.bgList
+      activeSidebar: (state) => state.activeSidebar,
+      localConfig: (state) => state.localConfig,
+      isDark: (state) => state.localConfig.isDark,
+      bgList: (state) => state.bgList,
     }),
     lineStyleList() {
       return lineStyleList[this.$i18n.locale] || lineStyleList.zh
@@ -915,7 +919,7 @@ export default {
     },
     lineStyleListShow() {
       const res = []
-      this.lineStyleList.forEach(item => {
+      this.lineStyleList.forEach((item) => {
         const list = supportLineStyleLayoutsMap[item.value]
         if (list) {
           if (list.includes(this.currentLayout)) {
@@ -932,7 +936,7 @@ export default {
     },
     borderDasharrayList() {
       return borderDasharrayList[this.$i18n.locale] || borderDasharrayList.zh
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -949,20 +953,20 @@ export default {
     lineStyleListShow: {
       deep: true,
       handler() {
-        const has = this.lineStyleListShow.find(item => {
+        const has = this.lineStyleListShow.find((item) => {
           return item.value === this.style.lineStyle
         })
         if (!has) {
           this.style.lineStyle = this.lineStyleListShow[0].value
         }
-      }
-    }
+      },
+    },
   },
   created() {
-    this.$bus.$on('setData', this.onSetData)
+    $on(this.$bus, 'setData', this.onSetData)
   },
-  beforeDestroy() {
-    this.$bus.$off('setData', this.onSetData)
+  beforeUnmount() {
+    $off(this.$bus, 'setData', this.onSetData)
   },
   methods: {
     onSetData() {
@@ -974,7 +978,7 @@ export default {
 
     // 初始样式
     initStyle() {
-      Object.keys(this.style).forEach(key => {
+      Object.keys(this.style).forEach((key) => {
         this.style[key] = this.mindMap.getThemeConfig(key)
         if (key === 'backgroundImage' && this.style[key] === 'none') {
           this.style[key] = ''
@@ -995,20 +999,17 @@ export default {
 
     // 外框
     initOuterFramePadding() {
-      this.outerFramePadding.outerFramePaddingX = this.mindMap.getConfig(
-        'outerFramePaddingX'
-      )
-      this.outerFramePadding.outerFramePaddingY = this.mindMap.getConfig(
-        'outerFramePaddingX'
-      )
+      this.outerFramePadding.outerFramePaddingX =
+        this.mindMap.getConfig('outerFramePaddingX')
+      this.outerFramePadding.outerFramePaddingY =
+        this.mindMap.getConfig('outerFramePaddingX')
     },
 
     // margin初始值
     initMarginStyle() {
-      ;['marginX', 'marginY'].forEach(key => {
-        this.style[key] = this.mindMap.getThemeConfig()[this.marginActiveTab][
-          key
-        ]
+      ;['marginX', 'marginY'].forEach((key) => {
+        this.style[key] =
+          this.mindMap.getThemeConfig()[this.marginActiveTab][key]
       })
     },
 
@@ -1020,13 +1021,13 @@ export default {
         this.style[key] = value
       }
       this.data.theme.config[key] = value
-      this.$bus.$emit('showLoading')
+      $emit(this.$bus, 'showLoading')
       this.mindMap.setThemeConfig(this.data.theme.config)
       storeData({
         theme: {
           template: this.mindMap.getTheme(),
-          config: this.data.theme.config
-        }
+          config: this.data.theme.config,
+        },
       })
     },
 
@@ -1038,11 +1039,11 @@ export default {
       if (item.list) {
         newConfig = {
           open: true,
-          colorsList: item.list
+          colorsList: item.list,
         }
       } else {
         newConfig = {
-          open: false
+          open: false,
         }
       }
       this.configData.rainbowLinesConfig = newConfig
@@ -1055,7 +1056,7 @@ export default {
       this.outerFramePadding[prop] = value
       this.configData[prop] = value
       this.mindMap.updateConfig({
-        [prop]: value
+        [prop]: value,
       })
       storeConfig(this.configData)
       this.mindMap.render()
@@ -1072,15 +1073,16 @@ export default {
       storeData({
         theme: {
           template: this.mindMap.getTheme(),
-          config: this.data.theme.config
-        }
+          config: this.data.theme.config,
+        },
       })
     },
 
     useBg(bg) {
       this.update('backgroundImage', bg)
-    }
-  }
+    },
+  },
+  emits: ['showLoading'],
 }
 </script>
 
@@ -1088,7 +1090,6 @@ export default {
 .sidebarContent {
   padding: 20px;
   padding-top: 10px;
-
   &.isDark {
     .title {
       color: #fff;
@@ -1248,17 +1249,16 @@ export default {
     }
   }
 }
-
 .borderLine {
   display: inline-block;
   width: 100%;
   background-color: #000;
-
   &.isDark {
     background-color: #fff;
   }
 }
 </style>
+
 <style lang="less">
 .el-select-dropdown__item.selected {
   .borderLine {

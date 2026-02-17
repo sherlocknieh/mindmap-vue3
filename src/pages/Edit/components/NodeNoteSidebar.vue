@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import Sidebar from './Sidebar.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -13,24 +14,24 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 
 export default {
   components: {
-    Sidebar
+    Sidebar,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       editor: null,
-      node: null
+      node: null,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
-    })
+      isDark: (state) => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+    }),
   },
   watch: {
     activeSidebar(val) {
@@ -39,17 +40,17 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('node_active', this.onNodeActive)
+    $on(this.$bus, 'node_active', this.onNodeActive)
     this.mindMap.on('node_note_click', this.onNodeNoteClick)
   },
   mounted() {
     this.initEditor()
   },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.onNodeActive)
+  beforeUnmount() {
+    $off(this.$bus, 'node_active', this.onNodeActive)
     this.mindMap.off('node_note_click', this.onNodeNoteClick)
   },
   methods: {
@@ -73,7 +74,7 @@ export default {
     initEditor() {
       if (!this.editor) {
         this.editor = new Viewer({
-          el: this.$refs.noteContentWrap
+          el: this.$refs.noteContentWrap,
         })
       }
     },
@@ -82,8 +83,8 @@ export default {
       this.node = node
       this.setActiveSidebar('noteSidebar')
       this.editor.setMarkdown(node.getData('note'))
-    }
-  }
+    },
+  },
 }
 </script>
 

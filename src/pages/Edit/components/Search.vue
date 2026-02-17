@@ -8,20 +8,23 @@
         ref="searchInputRef"
         :placeholder="$t('search.searchPlaceholder')"
         size="small"
-        v-model="searchText"
-        @keyup.native.enter.stop="onSearchNext"
-        @keydown.native.stop
+        v-model:value="searchText"
+        @keyup.enter.stop="onSearchNext"
+        @keydown.stop
         @focus="onFocus"
         @blur="onBlur"
       >
-        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-        <el-button
-          size="small"
-          slot="append"
-          v-if="!isUndef(searchText)"
-          @click="showReplaceInput = true"
-          >{{ $t('search.replace') }}</el-button
-        >
+        <template v-slot:prefix>
+          <i class="el-input__icon el-icon-search"></i>
+        </template>
+        <template v-slot:append>
+          <el-button
+            size="small"
+            v-if="!isUndef(searchText)"
+            @click="showReplaceInput = true"
+            >{{ $t('search.replace') }}</el-button
+          >
+        </template>
       </el-input>
       <div class="searchInfo" v-if="showSearchInfo && !isUndef(searchText)">
         {{ currentIndex }} / {{ total }}
@@ -32,16 +35,20 @@
       ref="replaceInputRef"
       :placeholder="$t('search.replacePlaceholder')"
       size="small"
-      v-model="replaceText"
-      style="margin: 12px 0;"
-      @keydown.native.stop
+      v-model:value="replaceText"
+      style="margin: 12px 0"
+      @keydown.stop
       @focus="onFocus"
       @blur="onBlur"
     >
-      <i slot="prefix" class="el-input__icon el-icon-edit"></i>
-      <el-button size="small" slot="append" @click="hideReplaceInput">{{
-        $t('search.cancel')
-      }}</el-button>
+      <template v-slot:prefix>
+        <i class="el-input__icon el-icon-edit"></i>
+      </template>
+      <template v-slot:append>
+        <el-button size="small" @click="hideReplaceInput">{{
+          $t('search.cancel')
+        }}</el-button>
+      </template>
     </el-input>
     <div class="btnList" v-if="showReplaceInput">
       <el-button size="small" :disabled="isReadonly" @click="replace">{{
@@ -73,16 +80,16 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { isUndef, getTextFromHtml } from 'simple-mind-map/src/utils/index'
 
-// 搜索替换
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -95,14 +102,14 @@ export default {
       showSearchInfo: false,
       searchResultListHeight: 0,
       searchResultList: [],
-      showSearchResultList: false
+      showSearchResultList: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark
-    })
+      isReadonly: (state) => state.isReadonly,
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   watch: {
     searchText() {
@@ -111,10 +118,10 @@ export default {
         this.total = 0
         this.showSearchInfo = false
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('show_search', this.showSearch)
+    $on(this.$bus, 'show_search', this.showSearch)
     this.mindMap.on('search_info_change', this.handleSearchInfoChange)
     this.mindMap.on('node_click', this.blur)
     this.mindMap.on('draw_click', this.blur)
@@ -125,13 +132,13 @@ export default {
     )
     this.mindMap.keyCommand.addShortcut('Control+f', this.showSearch)
     window.addEventListener('resize', this.setSearchResultListHeight)
-    this.$bus.$on('setData', this.close)
+    $on(this.$bus, 'setData', this.close)
   },
   mounted() {
     this.setSearchResultListHeight()
   },
-  beforeDestroy() {
-    this.$bus.$off('show_search', this.showSearch)
+  beforeUnmount() {
+    $off(this.$bus, 'show_search', this.showSearch)
     this.mindMap.off('search_info_change', this.handleSearchInfoChange)
     this.mindMap.off('node_click', this.blur)
     this.mindMap.off('draw_click', this.blur)
@@ -142,7 +149,7 @@ export default {
     )
     this.mindMap.keyCommand.removeShortcut('Control+f', this.showSearch)
     window.removeEventListener('resize', this.setSearchResultListHeight)
-    this.$bus.$off('setData', this.close)
+    $off(this.$bus, 'setData', this.close)
   },
   methods: {
     isUndef,
@@ -154,7 +161,7 @@ export default {
     },
 
     showSearch() {
-      this.$bus.$emit('closeSideBar')
+      $emit(this.$bus, 'closeSideBar')
       this.show = true
       this.$refs.searchInputRef.focus()
     },
@@ -167,14 +174,14 @@ export default {
     // 输入框聚焦时，禁止思维导图节点响应按键事件自动进入文本编辑
     onFocus() {
       this.mindMap.updateConfig({
-        enableAutoEnterTextEditWhenKeydown: false
+        enableAutoEnterTextEditWhenKeydown: false,
       })
     },
 
     // 输入框失焦时恢复
     onBlur() {
       this.mindMap.updateConfig({
-        enableAutoEnterTextEditWhenKeydown: true
+        enableAutoEnterTextEditWhenKeydown: true,
       })
     },
 
@@ -213,7 +220,7 @@ export default {
     },
 
     onSearchMatchNodeListChange(list) {
-      this.searchResultList = list.map(item => {
+      this.searchResultList = list.map((item) => {
         const data = item.data || item.nodeData.data
         let name = data.text
         const id = data.uid
@@ -221,14 +228,14 @@ export default {
           name = getTextFromHtml(name)
         }
         const reg = new RegExp(`${this.searchText.trim()}`, 'g')
-        const text = name.replace(reg, a => {
+        const text = name.replace(reg, (a) => {
           return `<span class="match">${a}</span>`
         })
         return {
           data: item,
           id,
           text,
-          name
+          name,
         }
       })
     },
@@ -239,8 +246,9 @@ export default {
 
     onSearchResultItemClick(index) {
       this.mindMap.search.jump(index)
-    }
-  }
+    },
+  },
+  emits: ['closeSideBar'],
 }
 </script>
 
@@ -256,7 +264,6 @@ export default {
   top: 110px;
   right: -296px;
   transition: all 0.3s;
-
   &.isDark {
     background-color: #363b3f;
 

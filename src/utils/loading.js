@@ -4,14 +4,13 @@ let loadingInstance = null
 
 export const showLoading = () => {
   loadingInstance = ElLoading.service({
-    lock: true
+    lock: true,
   })
 }
 
 export const hideLoading = () => {
-    if (loadingInstance) {
-        loadingInstance.close()
-        loadingInstance = null
-    }
+  if (loadingInstance) {
+    loadingInstance.close()
+    loadingInstance = null
   }
-  
+}

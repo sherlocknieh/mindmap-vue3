@@ -42,7 +42,7 @@ export default {
     notUseRainbowLines: 'Not use rainbow lines',
     outerFramePadding: 'Outer frame padding',
     associativeLineStyle: 'Associative line style',
-    builtInBackgroundImage: 'Built in background image'
+    builtInBackgroundImage: 'Built in background image',
   },
   setting: {
     title: 'Setting',
@@ -91,10 +91,10 @@ export default {
     textContentMargin: 'Node contents margin',
     enableInheritAncestorLineStyle:
       'Node connection style inherits the style of ancestor nodes',
-    enableAi: 'Is enable AI function'
+    enableAi: 'Is enable AI function',
   },
   color: {
-    moreColor: 'More color'
+    moreColor: 'More color',
   },
   contextmenu: {
     insertSiblingNode: 'Insert sibling node',
@@ -143,15 +143,15 @@ export default {
     aiCreate: 'AI Continuation',
     modifyNodeLink: 'Modify node link',
     linkToNode: 'Link to node',
-    removeNodeLink: 'Remove node link'
+    removeNodeLink: 'Remove node link',
   },
   count: {
     words: 'Words',
-    nodes: 'Nodes'
+    nodes: 'Nodes',
   },
   dialog: {
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
   },
   export: {
     title: 'Export',
@@ -179,14 +179,14 @@ export default {
     isFitBg:
       'Whether to display the complete background image (effective when a background image is used)',
     format: 'Format',
-    confirm: 'Export'
+    confirm: 'Export',
   },
   fullscreen: {
     fullscreenShow: 'Full screen show',
-    fullscreenEdit: 'Full screen edit'
+    fullscreenEdit: 'Full screen edit',
   },
   demonstrate: {
-    demonstrate: 'Enter demonstration mode'
+    demonstrate: 'Enter demonstration mode',
   },
   import: {
     title: 'Import',
@@ -202,7 +202,7 @@ export default {
     xmindCanvasSelectDialogTitle: 'Select the canvas to import',
     mdImportDialogTitle: 'Paste Markdown content to import',
     mdPlaceholder: 'Please enter the content in Markdown format',
-    mdEmptyTip: 'The content cannot be empty'
+    mdEmptyTip: 'The content cannot be empty',
   },
   navigatorToolbar: {
     openMiniMap: 'Open mini map',
@@ -216,42 +216,42 @@ export default {
     downloadClient: 'Download client',
     site: 'Official website',
     current: 'Current:',
-    downloadDesc: 'You can download it from the following address:'
+    downloadDesc: 'You can download it from the following address:',
   },
   nodeHyperlink: {
     title: 'Link',
     link: 'Href',
-    name: 'Name'
+    name: 'Name',
   },
   nodeIcon: {
-    title: 'Icon'
+    title: 'Icon',
   },
   nodeImage: {
     title: 'Image',
-    imgTitle: 'Title'
+    imgTitle: 'Title',
   },
   nodeNote: {
-    title: 'Note'
+    title: 'Note',
   },
   nodeTag: {
     title: 'Tag',
-    addTip: 'Press Enter to add'
+    addTip: 'Press Enter to add',
   },
   outline: {
     title: 'Outline',
     nodeDefaultText: 'Branch node',
     print: 'Print',
-    fullscreen: 'Fullscreen'
+    fullscreen: 'Fullscreen',
   },
   scale: {
     zoomIn: 'Zoom in',
-    zoomOut: 'Zoom out'
+    zoomOut: 'Zoom out',
   },
   shortcutKey: {
-    title: 'Shortcut key'
+    title: 'Shortcut key',
   },
   strusture: {
-    title: 'Strusture'
+    title: 'Strusture',
   },
   style: {
     title: 'Node style',
@@ -296,7 +296,7 @@ export default {
     bottom: 'Bottom',
     left: 'Left',
     right: 'Right',
-    tag: 'Tag'
+    tag: 'Tag',
   },
   theme: {
     title: 'Theme',
@@ -307,7 +307,7 @@ export default {
       'You have currently customized the basic style, do you want to overwrite it?',
     tip: 'Tip',
     cover: 'Cover',
-    reserve: 'Reserve'
+    reserve: 'Reserve',
   },
   toolbar: {
     undo: 'Undo',
@@ -352,7 +352,7 @@ export default {
       'Please export the currently edited file before creating a new one, Beware of content loss',
     openFileTip:
       'Please export the currently edited file before opening it, Beware of content loss',
-    ai: 'AI'
+    ai: 'AI',
   },
   edit: {
     newFeatureNoticeTitle: 'New feature reminder',
@@ -375,13 +375,11 @@ export default {
     tryTipDesc:
       'This feature is a trial feature in the web version. Please download the client to use it:',
     downBaidu: 'Go to Baidu Netdisk to download',
-    downGithub: 'Download from Github'
+    downGithub: 'Download from Github',
   },
   mouseAction: {
-    tip1:
-      'Current: Left click to drag the canvas, right click to box select nodes',
-    tip2:
-      'Current: Left click to box select nodes, right click to drag the canvas'
+    tip1: 'Current: Left click to drag the canvas, right click to box select nodes',
+    tip2: 'Current: Left click to box select nodes, right click to drag the canvas',
   },
   search: {
     searchPlaceholder: 'Enter the search content and press Enter',
@@ -389,19 +387,19 @@ export default {
     replace: 'Replace',
     replaceAll: 'Replace all',
     cancel: 'Cancel',
-    noResult: 'No result'
+    noResult: 'No result',
   },
   nodeIconSidebar: {
     title: 'Icon/Sticker',
     icon: 'Icon',
-    sticker: 'Sticker'
+    sticker: 'Sticker',
   },
   formulaSidebar: {
     title: 'Formula',
     placeholder: 'Please enter LaTeX syntax',
     confirm: 'Confirm',
     common: 'Common formulas',
-    tip: 'Inserting formulas is not supported in non rich text mode'
+    tip: 'Inserting formulas is not supported in non rich text mode',
   },
   richTextToolbar: {
     bold: 'Bold',
@@ -413,10 +411,10 @@ export default {
     color: 'Color',
     backgroundColor: 'Background color',
     removeFormat: 'Clear Style',
-    textAlign: 'Text align'
+    textAlign: 'Text align',
   },
   other: {
-    loading: 'Loading, please wait...'
+    loading: 'Loading, please wait...',
   },
   sourceCodeEdit: {
     sourceCodeTip:
@@ -427,11 +425,11 @@ export default {
     close: 'Close',
     formatErrorTip: 'The JSON format is incorrect. Please check and try again',
     copyTip: 'Copied to clipboard',
-    formatTip: 'Format complete'
+    formatTip: 'Format complete',
   },
   attachment: {
     deleteAttachment: 'Delete attachment',
-    tip: 'The attachment function is only available on the client side'
+    tip: 'The attachment function is only available on the client side',
   },
   annotation: {
     mark: 'Mark',
@@ -440,7 +438,7 @@ export default {
     color: 'Color',
     lineWidth: 'Line width',
     padding: 'Padding',
-    animate: 'Animate'
+    animate: 'Animate',
   },
   nodeOuterFrame: {
     outerFrameSetting: 'Outer frame setting',
@@ -465,11 +463,11 @@ export default {
     center: 'Center',
     right: 'Right',
     paddingX: 'Padding x',
-    paddingY: 'Padding y'
+    paddingY: 'Padding y',
   },
   nodeTagStyle: {
     placeholder: 'Please enter the tag content',
-    delete: 'Delete this tag'
+    delete: 'Delete this tag',
   },
   ai: {
     chatTitle: 'AI dialogue',
@@ -530,10 +528,10 @@ export default {
     aiCreatePartMsgPostfix: '】The subordinate content of the node',
     aiCreatePartMsgHelp:
       '. Needs to be returned in Markdown format and can only use two syntax: Markdown title and unordered list. It can support multi-level nesting. Just return the content.',
-    aiCreatePart: 'AI Continuation'
+    aiCreatePart: 'AI Continuation',
   },
   note: {
-    title: 'Note'
+    title: 'Note',
   },
   nodeLink: {
     linkToNode: 'Link to node',
@@ -542,6 +540,6 @@ export default {
     tip2: 'Cannot link to oneself',
     tip3: 'Link successful',
     tip4: 'Delete successful',
-    tip5: 'The link node does not exist. Weather to delete the link?'
-  }
+    tip5: 'The link node does not exist. Weather to delete the link?',
+  },
 }

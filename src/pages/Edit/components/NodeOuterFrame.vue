@@ -16,10 +16,10 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="styleConfig.strokeWidth"
+              v-model:value="styleConfig.strokeWidth"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('strokeWidth', value)
                 }
               "
@@ -41,11 +41,11 @@
             <!-- 实现虚线 -->
             <el-select
               size="mini"
-              style="width: 80px;margin-left: 4px;"
-              v-model="styleConfig.strokeDasharray"
+              style="width: 80px; margin-left: 4px"
+              v-model:value="styleConfig.strokeDasharray"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('strokeDasharray', value)
                 }
               "
@@ -89,7 +89,7 @@
               <Color
                 :color="styleConfig.strokeColor"
                 @change="
-                  color => {
+                  (color) => {
                     updateOuterFrame('strokeColor', color)
                   }
                 "
@@ -101,10 +101,10 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="styleConfig.radius"
+              v-model:value="styleConfig.radius"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('radius', value)
                 }
               "
@@ -131,7 +131,7 @@
               <Color
                 :color="styleConfig.fill"
                 @change="
-                  color => {
+                  (color) => {
                     updateOuterFrame('fill', color)
                   }
                 "
@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-      <div class="panelHeader" style="margin-top: 12px;">
+      <div class="panelHeader" style="margin-top: 12px">
         <span class="name">{{ $t('nodeOuterFrame.outerFrameText') }}</span>
         <span class="deleteBtn" @click="deleteOuterFrameText">
           {{ $t('nodeOuterFrame.deleteOuterFrameText') }}
@@ -153,10 +153,10 @@
             <span class="name">{{ $t('nodeOuterFrame.fontFamily') }}</span>
             <el-select
               size="mini"
-              v-model="styleConfig.fontFamily"
+              v-model:value="styleConfig.fontFamily"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('fontFamily', value)
                 }
               "
@@ -193,7 +193,7 @@
               <div
                 class="styleBtn"
                 :class="{
-                  actived: styleConfig.fontWeight === 'bold'
+                  actived: styleConfig.fontWeight === 'bold',
                 }"
                 @click="toggleFontWeight"
               >
@@ -207,7 +207,7 @@
               <div
                 class="styleBtn i"
                 :class="{
-                  actived: styleConfig.fontStyle === 'italic'
+                  actived: styleConfig.fontStyle === 'italic',
                 }"
                 @click="toggleFontStyle"
               >
@@ -219,7 +219,7 @@
             <Color
               :color="styleConfig.color"
               @change="
-                color => {
+                (color) => {
                   updateOuterFrame('color', color)
                 }
               "
@@ -232,10 +232,10 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="styleConfig.lineHeight"
+              v-model:value="styleConfig.lineHeight"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('lineHeight', value)
                 }
               "
@@ -254,10 +254,10 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="styleConfig.fontSize"
+              v-model:value="styleConfig.fontSize"
               placeholder=""
               @change="
-                color => {
+                (color) => {
                   updateOuterFrame('fontSize', color)
                 }
               "
@@ -285,7 +285,7 @@
               <Color
                 :color="styleConfig.textFill"
                 @change="
-                  color => {
+                  (color) => {
                     updateOuterFrame('textFill', color)
                   }
                 "
@@ -297,10 +297,10 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model="styleConfig.textFillRadius"
+              v-model:value="styleConfig.textFillRadius"
               placeholder=""
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('textFillRadius', value)
                 }
               "
@@ -319,10 +319,10 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.textAlign') }}</span>
             <el-radio-group
-              v-model="styleConfig.textAlign"
+              v-model:value="styleConfig.textAlign"
               size="mini"
               @change="
-                value => {
+                (value) => {
                   updateOuterFrame('textAlign', value)
                 }
               "
@@ -344,9 +344,9 @@
             <span class="name">{{ $t('nodeOuterFrame.paddingX') }}</span>
             <el-slider
               style="width: 180px"
-              v-model="paddingStyle.paddingX"
+              v-model:value="paddingStyle.paddingX"
               @change="
-                value => {
+                (value) => {
                   updatePadding('x', value)
                 }
               "
@@ -358,9 +358,9 @@
             <span class="name">{{ $t('nodeOuterFrame.paddingY') }}</span>
             <el-slider
               style="width: 180px"
-              v-model="paddingStyle.paddingY"
+              v-model:value="paddingStyle.paddingY"
               @change="
-                value => {
+                (value) => {
                   updatePadding('y', value)
                 }
               "
@@ -383,19 +383,19 @@ import {
   fontFamilyList,
   fontSizeList,
   borderRadiusList,
-  lineHeightList
+  lineHeightList,
 } from '@/config'
 import OuterFrame from 'simple-mind-map/src/plugins/OuterFrame'
 
 export default {
   components: {
     Sidebar,
-    Color
+    Color,
   },
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -404,26 +404,26 @@ export default {
       fontSizeList,
       borderRadiusList,
       styleConfig: {
-        ...OuterFrame.defaultStyle
+        ...OuterFrame.defaultStyle,
       },
       paddingStyle: {
         paddingX: 0,
-        paddingY: 0
-      }
+        paddingY: 0,
+      },
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      activeSidebar: state => state.activeSidebar,
-      isDark: state => state.localConfig.isDark,
+      activeSidebar: (state) => state.activeSidebar,
+      isDark: (state) => state.localConfig.isDark,
       borderDasharrayList() {
         return borderDasharrayList[this.$i18n.locale] || borderDasharrayList.zh
-      }
+      },
     }),
 
     fontFamilyList() {
       return fontFamilyList[this.$i18n.locale] || fontFamilyList.zh
-    }
+    },
   },
   watch: {
     activeSidebar(val) {
@@ -432,14 +432,14 @@ export default {
       } else {
         this.$refs.sidebar.show = false
       }
-    }
+    },
   },
   created() {
     this.mindMap.on('outer_frame_active', this.onOuterFrameActive)
     this.mindMap.on('outer_frame_delete', this.hide)
     this.mindMap.on('outer_frame_deactivate', this.hide)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.mindMap.off('outer_frame_active', this.onOuterFrameActive)
     this.mindMap.off('outer_frame_delete', this.hide)
     this.mindMap.off('outer_frame_deactivate', this.hide)
@@ -451,7 +451,7 @@ export default {
       // 取范围内第一个节点的外框样式
       const firstNode = parentNode.children[range[0]]
       const firstNodeOuterFrame = firstNode.getData('outerFrame')
-      Object.keys(this.styleConfig).forEach(key => {
+      Object.keys(this.styleConfig).forEach((key) => {
         if (typeof firstNodeOuterFrame[key] !== 'undefined') {
           this.styleConfig[key] = firstNodeOuterFrame[key]
         } else {
@@ -467,7 +467,7 @@ export default {
     updateOuterFrame(key, val) {
       this.styleConfig[key] = val
       this.mindMap.outerFrame.updateActiveOuterFrame({
-        [key]: val
+        [key]: val,
       })
     },
 
@@ -507,8 +507,8 @@ export default {
         return
       }
       this.setActiveSidebar(null)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -519,6 +519,7 @@ export default {
   }
 }
 </style>
+
 <style lang="less" scoped>
 .sidebarContent {
   padding: 20px;

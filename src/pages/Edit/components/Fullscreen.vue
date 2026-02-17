@@ -26,11 +26,11 @@ import { fullscrrenEvent, fullScreen } from '@/utils'
 export default {
   props: {
     mindMap: {
-      type: Object
+      type: Object,
     },
     isDark: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {}
@@ -51,8 +51,8 @@ export default {
     // 全屏编辑
     toFullscreenEdit() {
       fullScreen(document.body)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -60,10 +60,9 @@ export default {
 .fullscreenContainer {
   display: flex;
   align-items: center;
-
   &.isDark {
     .btn {
-      color: hsla(0,0%,100%,.6);
+      color: hsla(0, 0%, 100%, 0.6);
     }
   }
 

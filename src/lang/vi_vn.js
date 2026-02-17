@@ -42,7 +42,7 @@ export default {
     notUseRainbowLines: 'Không sử dụng đường cầu vồng',
     outerFramePadding: 'Đệm khung ngoài',
     associativeLineStyle: 'Kiểu đường liên kết',
-    builtInBackgroundImage: 'Hình nền tích hợp'
+    builtInBackgroundImage: 'Hình nền tích hợp',
   },
   setting: {
     title: 'Cài đặt',
@@ -92,10 +92,10 @@ export default {
     textContentMargin: 'Khoảng cách nội dung nút',
     enableInheritAncestorLineStyle:
       'Kiểu kết nối nút kế thừa kiểu của nút tổ tiên',
-    enableAi: 'Bật chức năng AI'
+    enableAi: 'Bật chức năng AI',
   },
   color: {
-    moreColor: 'Thêm màu'
+    moreColor: 'Thêm màu',
   },
   contextmenu: {
     insertSiblingNode: 'Chèn nút cùng cấp',
@@ -144,15 +144,15 @@ export default {
     aiCreate: 'AI Tiếp tục',
     modifyNodeLink: 'Sửa liên kết nút',
     linkToNode: 'Liên kết đến nút',
-    removeNodeLink: 'Xóa liên kết nút'
+    removeNodeLink: 'Xóa liên kết nút',
   },
   count: {
     words: 'Từ',
-    nodes: 'Nút'
+    nodes: 'Nút',
   },
   dialog: {
     cancel: 'Hủy',
-    confirm: 'Xác nhận'
+    confirm: 'Xác nhận',
   },
   export: {
     title: 'Xuất',
@@ -178,14 +178,14 @@ export default {
     desc: 'Mô tả',
     options: 'Tùy chọn',
     isFitBg: 'Hiển thị đầy đủ hình nền (có hiệu lực khi dùng hình nền)',
-    format: 'Định dạng'
+    format: 'Định dạng',
   },
   fullscreen: {
     fullscreenShow: 'Hiển thị toàn màn hình',
-    fullscreenEdit: 'Chỉnh sửa toàn màn hình'
+    fullscreenEdit: 'Chỉnh sửa toàn màn hình',
   },
   demonstrate: {
-    demonstrate: 'Vào chế độ trình diễn'
+    demonstrate: 'Vào chế độ trình diễn',
   },
   import: {
     title: 'Nhập',
@@ -201,7 +201,7 @@ export default {
     xmindCanvasSelectDialogTitle: 'Chọn canvas để nhập',
     mdImportDialogTitle: 'Dán nội dung Markdown để nhập',
     mdPlaceholder: 'Vui lòng nhập nội dung ở định dạng Markdown',
-    mdEmptyTip: 'Nội dung không được trống'
+    mdEmptyTip: 'Nội dung không được trống',
   },
   navigatorToolbar: {
     openMiniMap: 'Mở bản đồ thu nhỏ',
@@ -215,42 +215,42 @@ export default {
     downloadClient: 'Tải về khách hàng',
     site: 'Trang web chính thức',
     current: 'Hiện tại:',
-    downloadDesc: 'Có thể download từ địa chỉ sau:'
+    downloadDesc: 'Có thể download từ địa chỉ sau:',
   },
   nodeHyperlink: {
     title: 'Liên kết',
     link: 'Href',
-    name: 'Tên'
+    name: 'Tên',
   },
   nodeIcon: {
-    title: 'Biểu tượng'
+    title: 'Biểu tượng',
   },
   nodeImage: {
     title: 'Hình ảnh',
-    imgTitle: 'Tiêu đề'
+    imgTitle: 'Tiêu đề',
   },
   nodeNote: {
-    title: 'Ghi chú'
+    title: 'Ghi chú',
   },
   nodeTag: {
     title: 'Thẻ',
-    addTip: 'Nhấn Enter để thêm'
+    addTip: 'Nhấn Enter để thêm',
   },
   outline: {
     title: 'Dàn bài',
     nodeDefaultText: 'Nhánh nút',
     print: 'In',
-    fullscreen: 'Toàn màn hình'
+    fullscreen: 'Toàn màn hình',
   },
   scale: {
     zoomIn: 'Phóng to',
-    zoomOut: 'Thu nhỏ'
+    zoomOut: 'Thu nhỏ',
   },
   shortcutKey: {
-    title: 'Phím tắt'
+    title: 'Phím tắt',
   },
   strusture: {
-    title: 'Cấu trúc'
+    title: 'Cấu trúc',
   },
   style: {
     title: 'Kiểu nút',
@@ -295,7 +295,7 @@ export default {
     bottom: 'Dưới',
     left: 'Trái',
     right: 'Phải',
-    tag: 'Thẻ'
+    tag: 'Thẻ',
   },
   theme: {
     title: 'Chủ đề',
@@ -305,7 +305,7 @@ export default {
     coverTip: 'Bạn hiện đã tùy chỉnh kiểu cơ bản, bạn có muốn ghi đè không?',
     tip: 'Mẹo',
     cover: 'Ghi đè',
-    reserve: 'Giữ lại'
+    reserve: 'Giữ lại',
   },
   toolbar: {
     undo: 'Hoàn tác',
@@ -350,7 +350,7 @@ export default {
       'Vui lòng xuất tệp đang chỉnh sửa trước khi tạo mới, Cẩn thận mất nội dung',
     openFileTip:
       'Vui lòng xuất tệp đang chỉnh sửa trước khi mở tệp, Cẩn thận mất nội dung',
-    ai: 'AI'
+    ai: 'AI',
   },
   edit: {
     newFeatureNoticeTitle: 'Nhắc nhở tính năng mới',
@@ -373,13 +373,11 @@ export default {
     tryTipDesc:
       'Chức năng này là chức năng dùng thử trong phiên bản web, xin vui lòng tải xuống để khách hàng sử dụng:',
     downBaidu: 'Tải xuống Baidu',
-    downGithub: 'Tải xuống Github'
+    downGithub: 'Tải xuống Github',
   },
   mouseAction: {
-    tip1:
-      'Hiện tại: Nhấp chuột trái để kéo canvas, nhấp chuột phải để chọn nút theo hộp',
-    tip2:
-      'Hiện tại: Nhấp chuột trái để chọn nút theo hộp, nhấp chuột phải để kéo canvas'
+    tip1: 'Hiện tại: Nhấp chuột trái để kéo canvas, nhấp chuột phải để chọn nút theo hộp',
+    tip2: 'Hiện tại: Nhấp chuột trái để chọn nút theo hộp, nhấp chuột phải để kéo canvas',
   },
   search: {
     searchPlaceholder: 'Nhập nội dung tìm kiếm và nhấn Enter',
@@ -387,19 +385,19 @@ export default {
     replace: 'Thay thế',
     replaceAll: 'Thay thế tất cả',
     cancel: 'Hủy',
-    noResult: 'Không có kết quả'
+    noResult: 'Không có kết quả',
   },
   nodeIconSidebar: {
     title: 'Biểu tượng/Sticker',
     icon: 'Biểu tượng',
-    sticker: 'Sticker'
+    sticker: 'Sticker',
   },
   formulaSidebar: {
     title: 'Công thức',
     placeholder: 'Vui lòng nhập cú pháp LaTeX',
     confirm: 'Xác nhận',
     common: 'Công thức phổ biến',
-    tip: 'Không hỗ trợ chèn công thức trong chế độ không phải văn bản phong phú'
+    tip: 'Không hỗ trợ chèn công thức trong chế độ không phải văn bản phong phú',
   },
   richTextToolbar: {
     bold: 'Đậm',
@@ -411,10 +409,10 @@ export default {
     color: 'Màu sắc',
     backgroundColor: 'Màu nền',
     removeFormat: 'Xóa định dạng',
-    textAlign: 'Căn chỉnh văn bản'
+    textAlign: 'Căn chỉnh văn bản',
   },
   other: {
-    loading: 'Đang tải, vui lòng đợi...'
+    loading: 'Đang tải, vui lòng đợi...',
   },
   sourceCodeEdit: {
     sourceCodeTip:
@@ -426,11 +424,11 @@ export default {
     formatErrorTip:
       'Định dạng JSON không chính xác. Vui lòng kiểm tra và thử lại',
     copyTip: 'Đã sao chép vào clipboard',
-    formatTip: 'Định dạng hoàn thành'
+    formatTip: 'Định dạng hoàn thành',
   },
   attachment: {
     deleteAttachment: 'Xóa đính kèm',
-    tip: 'Chức năng đính kèm chỉ có sẵn ở phía máy khách'
+    tip: 'Chức năng đính kèm chỉ có sẵn ở phía máy khách',
   },
   annotation: {
     mark: 'Đánh dấu',
@@ -439,7 +437,7 @@ export default {
     color: 'Màu sắc',
     lineWidth: 'Độ rộng đường kẻ',
     padding: 'Đệm',
-    animate: 'Hoạt ảnh'
+    animate: 'Hoạt ảnh',
   },
   nodeOuterFrame: {
     outerFrameSetting: 'Cài đặt khung ngoài',
@@ -464,11 +462,11 @@ export default {
     center: 'Giữa',
     right: 'Phải',
     paddingX: 'Đệm x',
-    paddingY: 'Đệm y'
+    paddingY: 'Đệm y',
   },
   nodeTagStyle: {
     placeholder: 'Vui lòng nhập nội dung thẻ',
-    delete: 'Xóa thẻ này'
+    delete: 'Xóa thẻ này',
   },
   ai: {
     chatTitle: 'Đối thoại AI',
@@ -528,10 +526,10 @@ export default {
     aiCreatePartMsgPostfix: '】Nội dung phụ thuộc của nút',
     aiCreatePartMsgHelp:
       '. Cần được trả về ở định dạng Markdown và chỉ có thể sử dụng hai cú pháp: tiêu đề Markdown và danh sách không có thứ tự. Nó có thể hỗ trợ lồng ghép nhiều cấp độ. Chỉ cần trả về nội dung.',
-    aiCreatePart: 'AI Tiếp tục'
+    aiCreatePart: 'AI Tiếp tục',
   },
   note: {
-    title: 'Ghi chú'
+    title: 'Ghi chú',
   },
   nodeLink: {
     linkToNode: 'Liên kết đến nút',
@@ -540,6 +538,6 @@ export default {
     tip2: 'Không thể liên kết đến chính mình',
     tip3: 'Liên kết thành công',
     tip4: 'Xóa thành công',
-    tip5: 'Nút liên kết không tồn tại. Có nên xóa liên kết không?'
-  }
+    tip5: 'Nút liên kết không tồn tại. Có nên xóa liên kết không?',
+  },
 }

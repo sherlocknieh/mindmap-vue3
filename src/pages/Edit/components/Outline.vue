@@ -15,30 +15,28 @@
     @node-drag-start="onNodeDragStart"
     @node-drag-end="onNodeDragEnd"
     @current-change="onCurrentChange"
-    @mouseenter.native="isInTreArea = true"
-    @mouseleave.native="isInTreArea = false"
+    @mouseenter="isInTreArea = true"
+    @mouseleave="isInTreArea = false"
   >
-    <span
-      class="customNode"
-      slot-scope="{ node, data }"
-      :data-id="data.uid"
-      @click="onClick(data)"
-    >
-      <span
-        class="nodeEdit"
-        :contenteditable="!isReadonly"
-        :key="getKey()"
-        @keydown.stop="onNodeInputKeydown($event, node)"
-        @keyup.stop
-        @blur="onBlur($event, node)"
-        @paste="onPaste($event, node)"
-        v-html="node.label"
-      ></span>
-    </span>
+    <template v-slot="{ node, data }">
+      <span class="customNode" :data-id="data.uid" @click="onClick(data)">
+        <span
+          class="nodeEdit"
+          :contenteditable="!isReadonly"
+          :key="getKey()"
+          @keydown.stop="onNodeInputKeydown($event, node)"
+          @keyup.stop
+          @blur="onBlur($event, node)"
+          @paste="onPaste($event, node)"
+          v-html="node.label"
+        ></span>
+      </span>
+    </template>
   </el-tree>
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import {
@@ -46,21 +44,20 @@ import {
   textToNodeRichTextWithWrap,
   createUid,
   htmlEscape,
-  handleInputPasteText
+  handleInputPasteText,
 } from 'simple-mind-map/src/utils'
 
-// 大纲树
 export default {
   props: {
     mindMap: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
       data: [],
       defaultProps: {
-        label: 'label'
+        label: 'label',
       },
       currentData: null,
       notHandleDataChange: false,
@@ -68,29 +65,29 @@ export default {
       beInsertNodeUid: '',
       insertType: '',
       isInTreArea: false,
-      isAfterCreateNewNode: false
+      isAfterCreateNewNode: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark
-    })
+      isReadonly: (state) => state.isReadonly,
+      isDark: (state) => state.localConfig.isDark,
+    }),
   },
   created() {
     window.addEventListener('keydown', this.onKeyDown)
-    this.$bus.$on('data_change', this.handleDataChange)
-    this.$bus.$on('node_tree_render_end', this.handleNodeTreeRenderEnd)
-    this.$bus.$on('hide_text_edit', this.handleHideTextEdit)
+    $on(this.$bus, 'data_change', this.handleDataChange)
+    $on(this.$bus, 'node_tree_render_end', this.handleNodeTreeRenderEnd)
+    $on(this.$bus, 'hide_text_edit', this.handleHideTextEdit)
   },
   mounted() {
     this.refresh()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.onKeyDown)
-    this.$bus.$off('data_change', this.handleDataChange)
-    this.$bus.$off('node_tree_render_end', this.handleNodeTreeRenderEnd)
-    this.$bus.$off('hide_text_edit', this.handleHideTextEdit)
+    $off(this.$bus, 'data_change', this.handleDataChange)
+    $off(this.$bus, 'node_tree_render_end', this.handleNodeTreeRenderEnd)
+    $off(this.$bus, 'hide_text_edit', this.handleHideTextEdit)
   },
   methods: {
     ...mapActions(useAppStore, ['setIsDragOutlineTreeNode']),
@@ -137,7 +134,7 @@ export default {
     refresh() {
       let data = this.mindMap.getData()
       data.root = true // 标记根节点
-      let walk = root => {
+      let walk = (root) => {
         let text = root.data.richText
           ? nodeRichTextToTextWithWrap(root.data.text)
           : root.data.text
@@ -147,7 +144,7 @@ export default {
         root.label = text
         root.uid = root.data.uid
         if (root.children && root.children.length > 0) {
-          root.children.forEach(item => {
+          root.children.forEach((item) => {
             walk(item)
           })
         }
@@ -180,7 +177,7 @@ export default {
             selection.removeAllRanges()
             selection.addRange(range)
             let offsetTop = el.offsetTop
-            this.$emit('scrollTo', offsetTop)
+            $emit(this, 'scrollTo', offsetTop)
           }
         } catch (error) {
           console.log(error)
@@ -261,7 +258,7 @@ export default {
       this.isHandleNodeTreeRenderEnd = true
       this.beInsertNodeUid = createUid()
       this.mindMap.execCommand('INSERT_NODE', false, [], {
-        uid: this.beInsertNodeUid
+        uid: this.beInsertNodeUid,
       })
     },
 
@@ -271,7 +268,7 @@ export default {
       this.isHandleNodeTreeRenderEnd = true
       this.beInsertNodeUid = createUid()
       this.mindMap.execCommand('INSERT_CHILD_NODE', false, [], {
-        uid: this.beInsertNodeUid
+        uid: this.beInsertNodeUid,
       })
     },
 
@@ -334,8 +331,9 @@ export default {
           this.mindMap.execCommand('REMOVE_NODE', [node])
         }
       }
-    }
-  }
+    },
+  },
+  emits: ['scrollTo'],
 }
 </script>
 
@@ -344,7 +342,6 @@ export default {
   width: 100%;
   color: rgba(0, 0, 0, 0.85);
   font-weight: bold;
-
   .nodeEdit {
     outline: none;
     white-space: normal;
@@ -352,6 +349,7 @@ export default {
   }
 }
 </style>
+
 <style lang="less" scoped>
 @import url('../../../style/outlineTree.less');
 </style>

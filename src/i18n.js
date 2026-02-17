@@ -5,7 +5,7 @@ const i18n = createI18n({
   legacy: false, // Use Composition API mode
   locale: 'zh',
   fallbackLocale: 'zh',
-  messages
+  messages,
 })
 
 export default i18n

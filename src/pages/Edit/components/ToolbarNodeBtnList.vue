@@ -5,7 +5,7 @@
         v-if="item === 'back'"
         class="toolbarBtn"
         :class="{
-          disabled: readonly || backEnd
+          disabled: readonly || backEnd,
         }"
         @click="$bus.$emit('execCommand', 'BACK')"
       >
@@ -16,7 +16,7 @@
         v-if="item === 'forward'"
         class="toolbarBtn"
         :class="{
-          disabled: readonly || forwardEnd
+          disabled: readonly || forwardEnd,
         }"
         @click="$bus.$emit('execCommand', 'FORWARD')"
       >
@@ -28,7 +28,7 @@
         class="toolbarBtn"
         :class="{
           disabled: activeNodes.length <= 0 || hasGeneralization,
-          active: isInPainter
+          active: isInPainter,
         }"
         @click="$bus.$emit('startPainter')"
       >
@@ -39,7 +39,7 @@
         v-if="item === 'siblingNode'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasRoot || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasRoot || hasGeneralization,
         }"
         @click="$bus.$emit('execCommand', 'INSERT_NODE')"
       >
@@ -50,7 +50,7 @@
         v-if="item === 'childNode'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasGeneralization,
         }"
         @click="$bus.$emit('execCommand', 'INSERT_CHILD_NODE')"
       >
@@ -61,7 +61,7 @@
         v-if="item === 'deleteNode'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="$bus.$emit('execCommand', 'REMOVE_NODE')"
       >
@@ -72,7 +72,7 @@
         v-if="item === 'image'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="$bus.$emit('showNodeImage')"
       >
@@ -83,7 +83,7 @@
         v-if="item === 'icon'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="showNodeIcon"
       >
@@ -94,7 +94,7 @@
         v-if="item === 'link'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="$bus.$emit('showNodeLink')"
       >
@@ -105,7 +105,7 @@
         v-if="item === 'note'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="$bus.$emit('showNodeNote')"
       >
@@ -116,7 +116,7 @@
         v-if="item === 'tag'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0
+          disabled: activeNodes.length <= 0,
         }"
         @click="$bus.$emit('showNodeTag')"
       >
@@ -127,7 +127,7 @@
         v-if="item === 'summary'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasRoot || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasRoot || hasGeneralization,
         }"
         @click="$bus.$emit('execCommand', 'ADD_GENERALIZATION')"
       >
@@ -138,7 +138,7 @@
         v-if="item === 'associativeLine'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasGeneralization,
         }"
         @click="$bus.$emit('createAssociativeLine')"
       >
@@ -149,7 +149,7 @@
         v-if="item === 'formula'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasGeneralization,
         }"
         @click="showFormula"
       >
@@ -160,7 +160,7 @@
         v-if="item === 'attachment'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasGeneralization,
         }"
         @click="selectAttachmentFile"
       >
@@ -171,7 +171,7 @@
         v-if="item === 'outerFrame'"
         class="toolbarBtn"
         :class="{
-          disabled: activeNodes.length <= 0 || hasGeneralization
+          disabled: activeNodes.length <= 0 || hasGeneralization,
         }"
         @click="$bus.$emit('execCommand', 'ADD_OUTER_FRAME')"
       >
@@ -182,7 +182,7 @@
         v-if="item === 'ai'"
         class="toolbarBtn"
         :class="{
-          disabled: hasGeneralization
+          disabled: hasGeneralization,
         }"
         @click="aiCrate"
       >
@@ -194,6 +194,7 @@
 </template>
 
 <script>
+import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
@@ -201,14 +202,14 @@ export default {
   props: {
     dir: {
       type: String,
-      default: 'h' // h（水平排列）、v（垂直排列）
+      default: 'h', // h（水平排列）、v（垂直排列）
     },
     list: {
       type: Array,
       default() {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -218,47 +219,47 @@ export default {
       readonly: false,
       isFullDataFile: false,
       timer: null,
-      isInPainter: false
+      isInPainter: false,
     }
   },
   computed: {
     ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark
+      isDark: (state) => state.localConfig.isDark,
     }),
     hasRoot() {
       return (
-        this.activeNodes.findIndex(node => {
+        this.activeNodes.findIndex((node) => {
           return node.isRoot
         }) !== -1
       )
     },
     hasGeneralization() {
       return (
-        this.activeNodes.findIndex(node => {
+        this.activeNodes.findIndex((node) => {
           return node.isGeneralization
         }) !== -1
       )
     },
     annotationRightHasBtn() {
-      const index = this.list.findIndex(item => {
+      const index = this.list.findIndex((item) => {
         return item === 'annotation'
       })
       return index !== -1 && index < this.list.length - 1
-    }
+    },
   },
   created() {
-    this.$bus.$on('mode_change', this.onModeChange)
-    this.$bus.$on('node_active', this.onNodeActive)
-    this.$bus.$on('back_forward', this.onBackForward)
-    this.$bus.$on('painter_start', this.onPainterStart)
-    this.$bus.$on('painter_end', this.onPainterEnd)
+    $on(this.$bus, 'mode_change', this.onModeChange)
+    $on(this.$bus, 'node_active', this.onNodeActive)
+    $on(this.$bus, 'back_forward', this.onBackForward)
+    $on(this.$bus, 'painter_start', this.onPainterStart)
+    $on(this.$bus, 'painter_end', this.onPainterEnd)
   },
-  beforeDestroy() {
-    this.$bus.$off('mode_change', this.onModeChange)
-    this.$bus.$off('node_active', this.onNodeActive)
-    this.$bus.$off('back_forward', this.onBackForward)
-    this.$bus.$off('painter_start', this.onPainterStart)
-    this.$bus.$off('painter_end', this.onPainterEnd)
+  beforeUnmount() {
+    $off(this.$bus, 'mode_change', this.onModeChange)
+    $off(this.$bus, 'node_active', this.onNodeActive)
+    $off(this.$bus, 'back_forward', this.onBackForward)
+    $off(this.$bus, 'painter_start', this.onPainterStart)
+    $off(this.$bus, 'painter_end', this.onPainterEnd)
   },
   methods: {
     ...mapActions(useAppStore, ['setActiveSidebar']),
@@ -291,7 +292,7 @@ export default {
 
     // 显示节点图标侧边栏
     showNodeIcon() {
-      this.$bus.$emit('close_node_icon_toolbar')
+      $emit(this.$bus, 'close_node_icon_toolbar')
       this.setActiveSidebar('nodeIconSidebar')
     },
 
@@ -302,26 +303,37 @@ export default {
 
     // 选择附件
     selectAttachmentFile() {
-      this.$bus.$emit('selectAttachment', this.activeNodes)
+      $emit(this.$bus, 'selectAttachment', this.activeNodes)
     },
 
     // 设置标记
     onSetAnnotation(...args) {
-      this.$bus.$emit('execCommand', 'SET_NOTATION', this.activeNodes, ...args)
+      $emit(this.$bus, 'execCommand', 'SET_NOTATION', this.activeNodes, ...args)
     },
 
     // AI生成整体
     aiCrate() {
-      this.$bus.$emit('ai_create_all')
-    }
-  }
+      $emit(this.$bus, 'ai_create_all')
+    },
+  },
+  emits: [
+    'execCommand',
+    'startPainter',
+    'showNodeImage',
+    'showNodeLink',
+    'showNodeNote',
+    'showNodeTag',
+    'createAssociativeLine',
+    'selectAttachment',
+    'close_node_icon_toolbar',
+    'ai_create_all',
+  ],
 }
 </script>
 
 <style lang="less">
 .toolbarNodeBtnList {
   display: flex;
-
   &.isDark {
     .toolbarBtn {
       color: hsla(0, 0%, 100%, 0.9);
