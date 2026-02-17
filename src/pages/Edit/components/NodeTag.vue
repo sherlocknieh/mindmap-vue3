@@ -2,15 +2,15 @@
   <el-dialog
     class="nodeTagDialog"
     :title="$t('nodeTag.title')"
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <el-input
       v-model="tag"
-      @keyup.native.enter="add"
-      @keyup.native.stop
-      @keydown.native.stop
+      @keyup.enter="add"
+      @keyup.stop
+      @keydown.stop
       :disabled="tagArr.length >= max"
       :placeholder="$t('nodeTag.addTip')"
     >
@@ -30,90 +30,86 @@
         </div>
       </div>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
-      <el-button type="primary" @click="confirm">{{
-        $t('dialog.confirm')
-      }}</el-button>
-    </span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
+        <el-button type="primary" @click="confirm">{{
+          $t('dialog.confirm')
+        }}</el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import {
   generateColorByContent,
-  isMobile
+  isMobile as isMobileUtil
 } from 'simple-mind-map/src/utils/index'
 
-// 节点标签内容设置
-export default {
-  data() {
-    return {
-      dialogVisible: false,
-      tagArr: [],
-      tag: '',
-      activeNodes: [],
-      max: 5,
-      isMobile: isMobile()
-    }
-  },
-  watch: {
-    dialogVisible(val, oldVal) {
-      if (!val && oldVal) {
-        this.$bus.$emit('endTextEdit')
-      }
-    }
-  },
-  created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeTag', this.handleShowNodeTag)
-  },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeTag', this.handleShowNodeTag)
-  },
-  methods: {
-    generateColorByContent,
+const { proxy } = getCurrentInstance()
 
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (this.activeNodes.length > 0) {
-        let firstNode = this.activeNodes[0]
-        this.tagArr = firstNode.getData('tag') || []
-      } else {
-        this.tagArr = []
-        this.tag = ''
-      }
-    },
+const dialogVisible = ref(false)
+const tagArr = ref([])
+const tag = ref('')
+const activeNodes = ref([])
+const max = ref(5)
+const isMobile = ref(isMobileUtil())
 
-    handleShowNodeTag() {
-      this.$bus.$emit('startTextEdit')
-      this.dialogVisible = true
-    },
+watch(dialogVisible, (val, oldVal) => {
+  if (!val && oldVal) {
+    proxy.$bus.$emit('endTextEdit')
+  }
+})
 
-    add() {
-      const text = this.tag.trim()
-      if (!text) return
-      this.tagArr.push(text)
-      this.tag = ''
-    },
-
-    del(index) {
-      this.tagArr.splice(index, 1)
-    },
-
-    cancel() {
-      this.dialogVisible = false
-    },
-
-    confirm() {
-      this.activeNodes.forEach(node => {
-        node.setTag(this.tagArr)
-      })
-      this.cancel()
-    }
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    tagArr.value = firstNode.getData('tag') || []
+  } else {
+    tagArr.value = []
+    tag.value = ''
   }
 }
+
+const handleShowNodeTag = () => {
+  proxy.$bus.$emit('startTextEdit')
+  dialogVisible.value = true
+}
+
+const add = () => {
+  const text = tag.value.trim()
+  if (!text) return
+  tagArr.value.push(text)
+  tag.value = ''
+}
+
+const del = (index) => {
+  tagArr.value.splice(index, 1)
+}
+
+const cancel = () => {
+  dialogVisible.value = false
+}
+
+const confirm = () => {
+  activeNodes.value.forEach(node => {
+    node.setTag(tagArr.value)
+  })
+  cancel()
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeTag', handleShowNodeTag)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeTag', handleShowNodeTag)
+})
 </script>
 
 <style lang="less" scoped>

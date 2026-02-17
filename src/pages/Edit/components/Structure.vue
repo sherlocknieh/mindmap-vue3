@@ -1,9 +1,9 @@
 <template>
-  <Sidebar ref="sidebar" :title="$t('strusture.title')">
+  <Sidebar ref="sidebarRef" :title="$t('strusture.title')">
     <div class="layoutGroupList" :class="{ isDark: isDark }">
       <div
         class="laytouGroup"
-        v-for="group in layoutGroupList"
+        v-for="group in layoutGroupListData"
         :key="group.name"
       >
         <div class="groupName">{{ group.name }}</div>
@@ -23,68 +23,57 @@
   </Sidebar>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, watch, getCurrentInstance } from 'vue'
 import Sidebar from './Sidebar.vue'
 import { storeData } from '@/api'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { layoutImgMap } from '@/config/constant.js'
 import { layoutGroupList } from '@/config'
 
-// 结构
-export default {
-  components: {
-    Sidebar
-  },
-  props: {
-    mindMap: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      layoutImgMap,
-      layout: ''
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: state => state.localConfig.isDark,
-      activeSidebar: state => state.activeSidebar
-    }),
-
-    layoutGroupList() {
-      const groupList = layoutGroupList[this.$i18n.locale] || layoutGroupList.zh
-      return groupList.map(group => {
-        let list = [...group.list].filter(item => {
-          return !['rightFishbone', 'rightFishbone2'].includes(item)
-        })
-        return {
-          name: group.name,
-          list
-        }
-      })
-    }
-  },
-  watch: {
-    activeSidebar(val) {
-      if (val === 'structure') {
-        this.layout = this.mindMap.getLayout()
-        this.$refs.sidebar.show = true
-      } else {
-        this.$refs.sidebar.show = false
-      }
-    }
-  },
-  methods: {
-    useLayout(layout) {
-      this.layout = layout
-      this.mindMap.setLayout(layout)
-      storeData({
-        layout: layout
-      })
-    }
+const props = defineProps({
+  mindMap: {
+    type: Object
   }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const layout = ref('')
+const sidebarRef = ref(null)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+const activeSidebar = computed(() => appStore.activeSidebar)
+
+const layoutGroupListData = computed(() => {
+  const groupList = layoutGroupList[proxy.$i18n.locale] || layoutGroupList.zh
+  return groupList.map(group => {
+    let list = [...group.list].filter(item => {
+      return !['rightFishbone', 'rightFishbone2'].includes(item)
+    })
+    return {
+      name: group.name,
+      list
+    }
+  })
+})
+
+watch(activeSidebar, (val) => {
+  if (val === 'structure') {
+    layout.value = props.mindMap.getLayout()
+    sidebarRef.value.show = true
+  } else {
+    sidebarRef.value.show = false
+  }
+})
+
+const useLayout = (layoutType) => {
+  layout.value = layoutType
+  props.mindMap.setLayout(layoutType)
+  storeData({
+    layout: layoutType
+  })
 }
 </script>
 

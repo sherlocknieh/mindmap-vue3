@@ -2,7 +2,7 @@
   <el-dialog
     class="nodeIconDialog"
     :title="$t('nodeIcon.title')"
-    :visible.sync="dialogVisible"
+    v-model="dialogVisible"
     width="500"
   >
     <div class="item" v-for="item in nodeIconList" :key="item.name">
@@ -23,73 +23,70 @@
   </el-dialog>
 </template>
 
-<script>
-import { nodeIconList } from 'simple-mind-map/src/svg/icons'
+<script setup>
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
+import { nodeIconList as nodeIconListData } from 'simple-mind-map/src/svg/icons'
 import icon from '@/config/icon'
 
-// 节点图标内容设置
-export default {
-  data() {
-    return {
-      nodeIconList: [...nodeIconList, ...icon],
-      dialogVisible: false,
-      iconList: [],
-      activeNodes: []
-    }
-  },
-  created() {
-    this.$bus.$on('node_active', this.handleNodeActive)
-    this.$bus.$on('showNodeIcon', this.handleShowNodeIcon)
-  },
-  beforeDestroy() {
-    this.$bus.$off('node_active', this.handleNodeActive)
-    this.$bus.$off('showNodeIcon', this.handleShowNodeIcon)
-  },
-  methods: {
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (this.activeNodes.length > 0) {
-        let firstNode = this.activeNodes[0]
-        this.iconList = firstNode.getData('icon') || []
-      } else {
-        this.iconList = []
-      }
-    },
+const { proxy } = getCurrentInstance()
 
-    handleShowNodeIcon() {
-      this.dialogVisible = true
-    },
+const nodeIconList = [...nodeIconListData, ...icon]
+const dialogVisible = ref(false)
+const iconList = ref([])
+const activeNodes = ref([])
 
-    getHtml(icon) {
-      return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
-    },
-
-    setIcon(type, name) {
-      let key = type + '_' + name
-      let index = this.iconList.findIndex(item => {
-        return item === key
-      })
-      // 删除icon
-      if (index !== -1) {
-        this.iconList.splice(index, 1)
-      } else {
-        let typeIndex = this.iconList.findIndex(item => {
-          return item.split('_')[0] === type
-        })
-        // 替换icon
-        if (typeIndex !== -1) {
-          this.iconList.splice(typeIndex, 1, key)
-        } else {
-          // 增加icon
-          this.iconList.push(key)
-        }
-      }
-      this.activeNodes.forEach(node => {
-        node.setIcon([...this.iconList])
-      })
-    }
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    iconList.value = firstNode.getData('icon') || []
+  } else {
+    iconList.value = []
   }
 }
+
+const handleShowNodeIcon = () => {
+  dialogVisible.value = true
+}
+
+const getHtml = (icon) => {
+  return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
+}
+
+const setIcon = (type, name) => {
+  let key = type + '_' + name
+  let index = iconList.value.findIndex(item => {
+    return item === key
+  })
+  // 删除icon
+  if (index !== -1) {
+    iconList.value.splice(index, 1)
+  } else {
+    let typeIndex = iconList.value.findIndex(item => {
+      return item.split('_')[0] === type
+    })
+    // 替换icon
+    if (typeIndex !== -1) {
+      iconList.value.splice(typeIndex, 1, key)
+    } else {
+      // 增加icon
+      iconList.value.push(key)
+    }
+  }
+  activeNodes.value.forEach(node => {
+    node.setIcon([...iconList.value])
+  })
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeIcon', handleShowNodeIcon)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeIcon', handleShowNodeIcon)
+})
 </script>
 
 <style lang="less" scoped>
