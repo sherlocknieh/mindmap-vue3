@@ -19,42 +19,33 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { computed } from 'vue'
 import { useAppStore } from '@/store'
 
-// 鼠标操作设置
-export default {
-  props: {
-    mindMap: {
-      type: Object
-    },
-    isDark: {
-      type: Boolean
-    }
+const props = defineProps({
+  mindMap: {
+    type: Object
   },
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      useLeftKeySelectionRightKeyDrag: state =>
-        state.localConfig.useLeftKeySelectionRightKeyDrag
-    })
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setLocalConfig']),
-
-    toggleAction() {
-      let val = !this.useLeftKeySelectionRightKeyDrag
-      this.mindMap.updateConfig({
-        useLeftKeySelectionRightKeyDrag: val
-      })
-      this.setLocalConfig({
-        useLeftKeySelectionRightKeyDrag: val
-      })
-    }
+  isDark: {
+    type: Boolean
   }
+})
+
+const appStore = useAppStore()
+
+const useLeftKeySelectionRightKeyDrag = computed(
+  () => appStore.localConfig.useLeftKeySelectionRightKeyDrag
+)
+
+const toggleAction = () => {
+  const val = !useLeftKeySelectionRightKeyDrag.value
+  props.mindMap.updateConfig({
+    useLeftKeySelectionRightKeyDrag: val
+  })
+  appStore.setLocalConfig({
+    useLeftKeySelectionRightKeyDrag: val
+  })
 }
 </script>
 
