@@ -84,7 +84,8 @@ const onScaleNumInputFocus = () => {
 
 // 禁止输入非数字
 const onScaleNumInput = () => {
-  scaleNum.value = scaleNum.value.replace(/[^0-9]+/g, '')
+  const sanitized = scaleNum.value.replace(/[^0-9]+/g, '')
+  scaleNum.value = sanitized
 }
 
 // 手动输入缩放倍数

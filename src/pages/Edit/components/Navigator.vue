@@ -113,7 +113,7 @@ const init = () => {
 const drawMiniMap = () => {
   let {
     getImgUrl,
-    viewBoxStyle: vbs,
+    viewBoxStyle: calculatedViewBoxStyle,
     miniMapBoxScale,
     miniMapBoxLeft,
     miniMapBoxTop
@@ -122,7 +122,7 @@ const drawMiniMap = () => {
   getImgUrl(img => {
     mindMapImg.value = img
   })
-  viewBoxStyle.value = vbs
+  viewBoxStyle.value = calculatedViewBoxStyle
   svgBoxScale.value = miniMapBoxScale
   svgBoxLeft.value = miniMapBoxLeft
   svgBoxTop.value = miniMapBoxTop
