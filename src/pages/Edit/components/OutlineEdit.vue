@@ -41,31 +41,33 @@
           @node-drop="onNodeDrop"
           @current-change="onCurrentChange"
         >
-          <span
-            class="customNode"
-            slot-scope="{ node, data }"
-            :data-id="data.uid"
-          >
+          <template #default="{ node, data }">
             <span
-              class="nodeEdit"
-              :contenteditable="!isReadonly"
-              :key="getKey()"
-              @blur="onBlur($event, node)"
-              @keydown.stop="onNodeInputKeydown($event, node)"
-              @keyup.stop
-              @paste="onPaste($event, node)"
-              v-html="node.label"
-            ></span>
-          </span>
+              class="customNode"
+              :data-id="data.uid"
+            >
+              <span
+                class="nodeEdit"
+                :contenteditable="!isReadonly"
+                :key="getKey()"
+                @blur="onBlur($event, node)"
+                @keydown.stop="onNodeInputKeydown($event, node)"
+                @keyup.stop
+                @paste="onPaste($event, node)"
+                v-html="node.label"
+              ></span>
+            </span>
+          </template>
         </el-tree>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
+import { useI18n } from 'vue-i18n'
 import {
   nodeRichTextToTextWithWrap,
   textToNodeRichTextWithWrap,
@@ -77,218 +79,200 @@ import {
 import { storeData } from '@/api'
 import { printOutline } from '@/utils'
 
-// 大纲侧边栏
-export default {
-  props: {
-    mindMap: {
-      type: Object
-    }
-  },
-  data() {
-    return {
-      data: [],
-      defaultProps: {
-        label: 'label'
-      },
-      currentData: null
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isReadonly: state => state.isReadonly,
-      isDark: state => state.localConfig.isDark,
-      isOutlineEdit: state => state.isOutlineEdit
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
+
+const { proxy } = getCurrentInstance()
+const { t: $t } = useI18n()
+const appStore = useAppStore()
+
+const outlineEditContainer = ref(null)
+const outlineEditBox = ref(null)
+const tree = ref(null)
+const data = ref([])
+const defaultProps = ref({
+  label: 'label'
+})
+const currentData = ref(null)
+
+const isReadonly = computed(() => appStore.isReadonly)
+const isDark = computed(() => appStore.localConfig.isDark)
+const isOutlineEdit = computed(() => appStore.isOutlineEdit)
+
+watch(isOutlineEdit, (val) => {
+  if (val) {
+    refresh()
+    nextTick(() => {
+      document.body.appendChild(outlineEditContainer.value)
     })
-  },
-  watch: {
-    isOutlineEdit(val) {
-      if (val) {
-        this.refresh()
-        this.$nextTick(() => {
-          document.body.appendChild(this.$refs.outlineEditContainer)
-        })
-      }
-    }
-  },
-  created() {
-    window.addEventListener('keydown', this.onKeyDown)
-  },
-  beforeDestroy() {
-    window.removeEventListener('keydown', this.onKeyDown)
-  },
-  methods: {
-    ...mapActions(useAppStore, ['setIsOutlineEdit']),
+  }
+})
 
-    // 刷新树数据
-    refresh() {
-      let data = this.mindMap.getData()
-      data.root = true // 标记根节点
-      let walk = root => {
-        let text = root.data.richText
-          ? nodeRichTextToTextWithWrap(root.data.text)
-          : root.data.text
-        text = htmlEscape(text)
-        text = text.replace(/\n/g, '<br>')
-        root.textCache = text // 保存一份修改前的数据，用于对比是否修改了
-        root.label = text
-        root.uid = root.data.uid
-        if (root.children && root.children.length > 0) {
-          root.children.forEach(item => {
-            walk(item)
-          })
-        }
-      }
-      walk(data)
-      this.data = [data]
-    },
-
-    // 根节点不允许拖拽
-    checkAllowDrag(node) {
-      return !node.data.root
-    },
-
-    // 拖拽结束事件
-    onNodeDrop() {
-      this.save()
-    },
-
-    // 当前选中的树节点变化事件
-    onCurrentChange(data) {
-      this.currentData = data
-    },
-
-    // 失去焦点更新节点文本
-    onBlur(e, node) {
-      // 节点数据没有修改
-      if (node.data.textCache === e.target.innerHTML) {
-        return
-      }
-      const richText = node.data.data.richText
-      const text = richText ? e.target.innerHTML : e.target.innerText
-      node.data.data.text = richText ? textToNodeRichTextWithWrap(text) : text
-      node.data.textCache = e.target.innerHTML
-      this.save()
-    },
-
-    // 节点输入区域按键事件
-    onNodeInputKeydown(e, node) {
-      const richText = !!node.data.data.richText
-      const uid = createUid()
-      const text = this.$t('outline.nodeDefaultText')
-      const data = {
-        textCache: text,
-        uid,
-        label: text,
-        data: {
-          text: richText ? textToNodeRichTextWithWrap(text) : text,
-          uid,
-          richText
-        },
-        children: []
-      }
-      if (e.keyCode === 13 && !e.shiftKey) {
-        e.preventDefault()
-        if (node.data.root) {
-          return
-        }
-        this.$refs.tree.insertAfter(data, node)
-      }
-      if (e.keyCode === 9) {
-        e.preventDefault()
-        if (e.shiftKey) {
-          // 上移一个层级
-          this.$refs.tree.insertAfter(node.data, node.parent)
-          this.$refs.tree.remove(node)
-        } else {
-          this.$refs.tree.append(data, node)
-        }
-      }
-      this.save()
-      this.$nextTick(() => {
-        this.$refs.tree.setCurrentKey(uid)
-        const el = document.querySelector(
-          `.customNode[data-id="${uid}"] .nodeEdit`
-        )
-        if (el) {
-          let selection = window.getSelection()
-          let range = document.createRange()
-          range.selectNodeContents(el)
-          selection.removeAllRanges()
-          selection.addRange(range)
-          let offsetTop = el.offsetTop
-          this.scrollTo(offsetTop)
-        }
-      })
-    },
-
-    // 删除节点
-    onKeyDown(e) {
-      if (!this.isOutlineEdit) return
-      if ([46, 8].includes(e.keyCode) && this.currentData) {
-        e.stopPropagation()
-        this.$refs.tree.remove(this.currentData)
-        this.currentData = null
-        this.save()
-      }
-    },
-
-    // 拦截粘贴事件
-    onPaste(e) {
-      handleInputPasteText(e)
-    },
-
-    // 生成唯一的key
-    getKey() {
-      return Math.random()
-    },
-
-    // 打印
-    onPrint() {
-      printOutline(this.$refs.outlineEditBox)
-    },
-
-    // 关闭
-    onClose() {
-      this.setIsOutlineEdit(false)
-      this.$bus.$emit('setData', this.getData())
-    },
-
-    // 滚动
-    scrollTo(y) {
-      let container = this.$refs.outlineEditBox
-      let height = container.offsetHeight
-      let top = container.scrollTop
-      y += 50
-      if (y > top + height) {
-        container.scrollTo(0, y - height / 2)
-      }
-    },
-
-    // 获取思维导图数据
-    getData() {
-      let newNode = {}
-      let node = this.data[0]
-      let walk = (root, newRoot) => {
-        newRoot.data = root.data
-        newRoot.children = []
-        ;(root.children || []).forEach(child => {
-          const newChild = {}
-          newRoot.children.push(newChild)
-          walk(child, newChild)
-        })
-      }
-      walk(node, newNode)
-      return simpleDeepClone(newNode)
-    },
-
-    // 保存
-    save() {
-      storeData({
-        root: this.getData()
+const refresh = () => {
+  let treeData = props.mindMap.getData()
+  treeData.root = true // 标记根节点
+  let walk = root => {
+    let text = root.data.richText
+      ? nodeRichTextToTextWithWrap(root.data.text)
+      : root.data.text
+    text = htmlEscape(text)
+    text = text.replace(/\n/g, '<br>')
+    root.textCache = text // 保存一份修改前的数据，用于对比是否修改了
+    root.label = text
+    root.uid = root.data.uid
+    if (root.children && root.children.length > 0) {
+      root.children.forEach(item => {
+        walk(item)
       })
     }
   }
+  walk(treeData)
+  data.value = [treeData]
 }
+
+const checkAllowDrag = (node) => {
+  return !node.data.root
+}
+
+const onNodeDrop = () => {
+  save()
+}
+
+const onCurrentChange = (nodeData) => {
+  currentData.value = nodeData
+}
+
+const onBlur = (e, node) => {
+  // 节点数据没有修改
+  if (node.data.textCache === e.target.innerHTML) {
+    return
+  }
+  const richText = node.data.data.richText
+  const text = richText ? e.target.innerHTML : e.target.innerText
+  node.data.data.text = richText ? textToNodeRichTextWithWrap(text) : text
+  node.data.textCache = e.target.innerHTML
+  save()
+}
+
+const onNodeInputKeydown = (e, node) => {
+  const richText = !!node.data.data.richText
+  const uid = createUid()
+  const text = $t('outline.nodeDefaultText')
+  const nodeData = {
+    textCache: text,
+    uid,
+    label: text,
+    data: {
+      text: richText ? textToNodeRichTextWithWrap(text) : text,
+      uid,
+      richText
+    },
+    children: []
+  }
+  if (e.keyCode === 13 && !e.shiftKey) {
+    e.preventDefault()
+    if (node.data.root) {
+      return
+    }
+    tree.value.insertAfter(nodeData, node)
+  }
+  if (e.keyCode === 9) {
+    e.preventDefault()
+    if (e.shiftKey) {
+      // 上移一个层级
+      tree.value.insertAfter(node.data, node.parent)
+      tree.value.remove(node)
+    } else {
+      tree.value.append(nodeData, node)
+    }
+  }
+  save()
+  nextTick(() => {
+    tree.value.setCurrentKey(uid)
+    const el = document.querySelector(
+      `.customNode[data-id="${uid}"] .nodeEdit`
+    )
+    if (el) {
+      let selection = window.getSelection()
+      let range = document.createRange()
+      range.selectNodeContents(el)
+      selection.removeAllRanges()
+      selection.addRange(range)
+      let offsetTop = el.offsetTop
+      scrollTo(offsetTop)
+    }
+  })
+}
+
+const onKeyDown = (e) => {
+  if (!isOutlineEdit.value) return
+  if ([46, 8].includes(e.keyCode) && currentData.value) {
+    e.stopPropagation()
+    tree.value.remove(currentData.value)
+    currentData.value = null
+    save()
+  }
+}
+
+const onPaste = (e) => {
+  handleInputPasteText(e)
+}
+
+const getKey = () => {
+  return Math.random()
+}
+
+const onPrint = () => {
+  printOutline(outlineEditBox.value)
+}
+
+const onClose = () => {
+  appStore.setIsOutlineEdit(false)
+  proxy.$bus.$emit('setData', getData())
+}
+
+const scrollTo = (y) => {
+  let container = outlineEditBox.value
+  let height = container.offsetHeight
+  let top = container.scrollTop
+  y += 50
+  if (y > top + height) {
+    container.scrollTo(0, y - height / 2)
+  }
+}
+
+const getData = () => {
+  let newNode = {}
+  let node = data.value[0]
+  let walk = (root, newRoot) => {
+    newRoot.data = root.data
+    newRoot.children = []
+    ;(root.children || []).forEach(child => {
+      const newChild = {}
+      newRoot.children.push(newChild)
+      walk(child, newChild)
+    })
+  }
+  walk(node, newNode)
+  return simpleDeepClone(newNode)
+}
+
+const save = () => {
+  storeData({
+    root: getData()
+  })
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeyDown)
+})
 </script>
 
 <style lang="less" scoped>
