@@ -3,7 +3,7 @@
     <div class="layoutGroupList" :class="{ isDark: isDark }">
       <div
         class="laytouGroup"
-        v-for="group in layoutGroupListData"
+        v-for="group in localizedLayoutGroups"
         :key="group.name"
       >
         <div class="groupName">{{ group.name }}</div>
@@ -46,7 +46,7 @@ const sidebarRef = ref(null)
 const isDark = computed(() => appStore.localConfig.isDark)
 const activeSidebar = computed(() => appStore.activeSidebar)
 
-const layoutGroupListData = computed(() => {
+const localizedLayoutGroups = computed(() => {
   const groupList = layoutGroupList[proxy.$i18n.locale] || layoutGroupList.zh
   return groupList.map(group => {
     let list = [...group.list].filter(item => {

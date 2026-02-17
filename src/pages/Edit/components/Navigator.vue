@@ -186,12 +186,10 @@ onBeforeUnmount(() => {
   proxy.$bus.$off('view_data_change', data_change)
   proxy.$bus.$off('node_tree_render_end', data_change)
   window.removeEventListener('mouseup', onMouseup)
-  if (props.mindMap) {
-    props.mindMap.off(
-      'mini_map_view_box_position_change',
-      onViewBoxPositionChange
-    )
-  }
+  props.mindMap.off(
+    'mini_map_view_box_position_change',
+    onViewBoxPositionChange
+  )
 })
 </script>
 
