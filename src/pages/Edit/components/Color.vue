@@ -22,50 +22,41 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
 import { colorList } from '@/config'
-import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 
-export default {
-  props: {
-    color: {
-      type: String,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      colorList,
-      selectColor: '',
-    }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  watch: {
-    color() {
-      this.selectColor = this.color
-    },
-  },
-  created() {
-    this.selectColor = this.color
-  },
-  methods: {
-    // 点击预设颜色
-    clickColorItem(color) {
-      $emit(this, 'change', color)
-    },
+const props = defineProps({
+  color: {
+    type: String,
+    default: ''
+  }
+})
 
-    // 修改颜色
-    changeColor() {
-      $emit(this, 'change', this.selectColor)
-    },
-  },
-  emits: ['change'],
+const emit = defineEmits(['change'])
+
+const appStore = useAppStore()
+const selectColor = ref('')
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+watch(() => props.color, () => {
+  selectColor.value = props.color
+})
+
+onMounted(() => {
+  selectColor.value = props.color
+})
+
+// 点击预设颜色
+const clickColorItem = (color) => {
+  emit('change', color)
+}
+
+// 修改颜色
+const changeColor = () => {
+  emit('change', selectColor.value)
 }
 </script>
 

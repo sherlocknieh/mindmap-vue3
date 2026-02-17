@@ -4,10 +4,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App',
-}
+<script setup>
+// App component using Composition API
 </script>
 
 <style lang="less">

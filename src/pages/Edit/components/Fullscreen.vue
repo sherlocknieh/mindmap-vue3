@@ -19,40 +19,35 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted } from 'vue'
 import { fullscrrenEvent, fullScreen } from '@/utils'
 
-// 全屏
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-    isDark: {
-      type: Boolean,
-    },
+const props = defineProps({
+  mindMap: {
+    type: Object
   },
-  data() {
-    return {}
-  },
-  created() {
-    document[fullscrrenEvent] = () => {
-      setTimeout(() => {
-        this.mindMap.resize()
-      }, 1000)
-    }
-  },
-  methods: {
-    // 全屏查看
-    toFullscreenShow() {
-      fullScreen(this.mindMap.el)
-    },
+  isDark: {
+    type: Boolean
+  }
+})
 
-    // 全屏编辑
-    toFullscreenEdit() {
-      fullScreen(document.body)
-    },
-  },
+onMounted(() => {
+  document[fullscrrenEvent] = () => {
+    setTimeout(() => {
+      props.mindMap.resize()
+    }, 1000)
+  }
+})
+
+// 全屏查看
+const toFullscreenShow = () => {
+  fullScreen(props.mindMap.el)
+}
+
+// 全屏编辑
+const toFullscreenEdit = () => {
+  fullScreen(document.body)
 }
 </script>
 
