@@ -1,7 +1,7 @@
 <template>
   <div class="imgUploadContainer">
     <div class="imgUploadPanel">
-      <div class="upBtn" v-if="!value">
+      <div class="upBtn" v-if="!modelValue">
         <label
           for="imgUploadInput"
           class="imgUploadInputArea"
@@ -17,10 +17,10 @@
           @change="onImgUploadInputChange"
         />
       </div>
-      <div v-if="value" class="uploadInfoBox">
+      <div v-if="modelValue" class="uploadInfoBox">
         <div
           class="previewBox"
-          :style="{ backgroundImage: `url('${value}')` }"
+          :style="{ backgroundImage: `url('${modelValue}')` }"
         ></div>
         <span class="delBtn el-icon-close" @click="deleteImg"></span>
       </div>
@@ -28,74 +28,67 @@
   </div>
 </template>
 
-<script>
-export default {
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
-  props: {
-    value: {
-      type: String,
-      default: ''
-    }
-  },
-  data() {
-    return {
-      file: null
-    }
-  },
-  methods: {
-    // 图片选择事件
-    onImgUploadInputChange(e) {
-      let file = e.target.files[0]
-      this.selectImg(file)
-    },
+<script setup>
+import { ref } from 'vue'
 
-    // 拖动上传图片
-    onDrop(e) {
-      let dt = e.dataTransfer
-      let file = dt.files && dt.files[0]
-      this.selectImg(file)
-    },
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  }
+})
 
-    // 选择图片
-    selectImg(file) {
-      this.file = file
-      let fr = new FileReader()
-      fr.readAsDataURL(file)
-      fr.onload = e => {
-        this.$emit('change', e.target.result)
-      }
-    },
+const emit = defineEmits(['update:modelValue'])
 
-    // 获取图片大小
-    getSize() {
-      return new Promise(resolve => {
-        let img = new Image()
-        img.src = this.value
-        img.onload = () => {
-          resolve({
-            width: img.width,
-            height: img.height
-          })
-        }
-        img.onerror = () => {
-          resolve({
-            width: 0,
-            height: 0
-          })
-        }
-      })
-    },
+const file = ref(null)
 
-    // 删除图片
-    deleteImg() {
-      this.$emit('change', '')
-      this.file = null
-    }
+const onImgUploadInputChange = (e) => {
+  let selectedFile = e.target.files[0]
+  selectImg(selectedFile)
+}
+
+const onDrop = (e) => {
+  let dt = e.dataTransfer
+  let selectedFile = dt.files && dt.files[0]
+  selectImg(selectedFile)
+}
+
+const selectImg = (selectedFile) => {
+  file.value = selectedFile
+  let fr = new FileReader()
+  fr.readAsDataURL(selectedFile)
+  fr.onload = e => {
+    emit('update:modelValue', e.target.result)
   }
 }
+
+const getSize = () => {
+  return new Promise(resolve => {
+    let img = new Image()
+    img.src = props.modelValue
+    img.onload = () => {
+      resolve({
+        width: img.width,
+        height: img.height
+      })
+    }
+    img.onerror = () => {
+      resolve({
+        width: 0,
+        height: 0
+      })
+    }
+  })
+}
+
+const deleteImg = () => {
+  emit('update:modelValue', '')
+  file.value = null
+}
+
+defineExpose({
+  getSize
+})
 </script>
 
 <style lang="less" scoped>
