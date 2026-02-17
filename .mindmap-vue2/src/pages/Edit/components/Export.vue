@@ -346,36 +346,30 @@ export default {
 
 .nodeExportDialog {
   &.isDark {
-    /deep/ .el-dialog__body {
-      .el-checkbox {
-        .el-checkbox__label {
-          color: hsla(0, 0%, 100%, 0.6);
-        }
-      }
+    :deep(.el-dialog__body .el-checkbox .el-checkbox__label) {
+      color: hsla(0, 0%, 100%, 0.6);
     }
   }
 
-  /deep/ .el-dialog {
+  :deep(.el-dialog) {
     border-radius: 10px;
     overflow: hidden;
-
-    .el-dialog__header {
-      display: none;
-    }
   }
 
-  /deep/ .el-dialog__body {
+  :deep(.el-dialog .el-dialog__header) {
+    display: none;
+  }
+
+  :deep(.el-dialog__body) {
     padding: 0;
+  }
 
-    .el-checkbox__input.is-checked + .el-checkbox__label {
-      color: #409eff !important;
-    }
+  :deep(.el-dialog__body .el-checkbox__input.is-checked + .el-checkbox__label) {
+    color: #409eff !important;
+  }
 
-    .el-checkbox {
-      .el-checkbox__label {
-        color: #1a1a1a;
-      }
-    }
+  :deep(.el-dialog__body .el-checkbox .el-checkbox__label) {
+    color: #1a1a1a;
   }
 
   &.isMobile {
@@ -669,7 +663,7 @@ export default {
           flex-shrink: 0;
           border-top: 1px solid #f2f4f7;
 
-          /deep/ .el-button--small {
+          :deep(.el-button--small) {
             height: 25px;
             padding: 0 30px;
             border-radius: 5px;

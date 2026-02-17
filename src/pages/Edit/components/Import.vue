@@ -278,7 +278,7 @@ export default {
 .canvasList {
   display: flex;
   flex-direction: column;
-  /deep/ .el-radio {
+  :deep(.el-radio) {
     margin-bottom: 12px;
 
     &:last-of-type {

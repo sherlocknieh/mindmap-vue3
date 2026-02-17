@@ -359,7 +359,7 @@ export default {
         background-color: #f2f4f7;
       }
 
-      /deep/.match {
+      :deep(.match) {
         color: #409eff;
         font-weight: bold;
       }

@@ -171,7 +171,7 @@ export default {
 
 <style lang="less" scoped>
 .aiConfigDialog {
-  /deep/ .el-dialog__body {
+  :deep(.el-dialog__body) {
     padding: 12px 20px;
   }
 

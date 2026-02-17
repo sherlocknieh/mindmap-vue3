@@ -552,23 +552,25 @@ export default {
         .fileTreeBox {
           background-color: #262a2e;
 
-          /deep/ .el-tree {
+          :deep(.el-tree) {
             background-color: #262a2e;
+          }
 
-            &.el-tree--highlight-current {
-              .el-tree-node.is-current > .el-tree-node__content {
-                background-color: hsla(0, 0%, 100%, 0.05) !important;
-              }
-            }
+          :deep(
+              .el-tree.el-tree--highlight-current
+                .el-tree-node.is-current
+                > .el-tree-node__content
+            ) {
+            background-color: hsla(0, 0%, 100%, 0.05) !important;
+          }
 
-            .el-tree-node:focus > .el-tree-node__content {
-              background-color: hsla(0, 0%, 100%, 0.05) !important;
-            }
+          :deep(.el-tree .el-tree-node:focus > .el-tree-node__content) {
+            background-color: hsla(0, 0%, 100%, 0.05) !important;
+          }
 
-            .el-tree-node__content:hover,
-            .el-upload-list__item:hover {
-              background-color: hsla(0, 0%, 100%, 0.02) !important;
-            }
+          :deep(.el-tree .el-tree-node__content:hover),
+          :deep(.el-tree .el-upload-list__item:hover) {
+            background-color: hsla(0, 0%, 100%, 0.02) !important;
           }
 
           .fileTreeWrap {

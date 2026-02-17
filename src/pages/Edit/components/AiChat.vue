@@ -261,14 +261,14 @@ export default {
           }
         }
 
-        /deep/ .content {
+        .content {
           width: 100%;
           overflow: hidden;
           color: #3f4a54;
           font-size: 14px;
           line-height: 1.5;
 
-          p {
+          :deep(p) {
             margin-bottom: 12px;
 
             &:last-of-type {
@@ -276,17 +276,17 @@ export default {
             }
           }
 
-          h1,
-          h2,
-          h3,
-          h4,
-          h5,
-          h6 {
+          :deep(h1),
+          :deep(h2),
+          :deep(h3),
+          :deep(h4),
+          :deep(h5),
+          :deep(h6) {
             margin-top: 24px;
             margin-bottom: 16px;
           }
 
-          code {
+          :deep(code) {
             padding: 0.2em 0.4em;
             margin: 0;
             font-size: 85%;
@@ -297,15 +297,15 @@ export default {
               Liberation Mono, monospace;
           }
 
-          pre {
+          :deep(pre) {
             padding: 12px;
             background-color: rgba(175, 184, 193, 0.2);
+          }
 
-            code {
-              background-color: transparent;
-              padding: 0;
-              overflow: hidden;
-            }
+          :deep(pre code) {
+            background-color: transparent;
+            padding: 0;
+            overflow: hidden;
           }
         }
       }
