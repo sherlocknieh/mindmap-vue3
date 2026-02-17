@@ -29,171 +29,170 @@
   </div>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, getCurrentInstance } from 'vue'
 import { useAppStore } from '@/store'
 
-export default {
-  props: {
-    mindMap: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      showMiniMap: false,
-      timer: null,
-      boxWidth: 0,
-      boxHeight: 0,
-      svgBoxScale: 1,
-      svgBoxLeft: 0,
-      svgBoxTop: 0,
-      viewBoxStyle: {
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-      },
-      mindMapImg: '',
-      width: 0,
-      setSizeTimer: null,
-      withTransition: true,
+const props = defineProps({
+  mindMap: {
+    type: Object
+  }
+})
+
+const { proxy } = getCurrentInstance()
+const appStore = useAppStore()
+
+const showMiniMap = ref(false)
+const timer = ref(null)
+const boxWidth = ref(0)
+const boxHeight = ref(0)
+const svgBoxScale = ref(1)
+const svgBoxLeft = ref(0)
+const svgBoxTop = ref(0)
+const viewBoxStyle = ref({
+  left: 0,
+  top: 0,
+  bottom: 0,
+  right: 0
+})
+const mindMapImg = ref('')
+const width = ref(0)
+const setSizeTimer = ref(null)
+const withTransition = ref(true)
+const navigatorBox = ref(null)
+const svgBox = ref(null)
+
+const isDark = computed(() => appStore.localConfig.isDark)
+
+// 切换显示小地图
+const toggle_mini_map = (show) => {
+  showMiniMap.value = show
+  nextTick(() => {
+    if (navigatorBox.value) {
+      init()
     }
-  },
-  computed: {
-    ...mapState(useAppStore, {
-      isDark: (state) => state.localConfig.isDark,
-    }),
-  },
-  mounted() {
-    this.setSize()
-    window.addEventListener('resize', this.setSize)
-    $on(this.$bus, 'toggle_mini_map', this.toggle_mini_map)
-    $on(this.$bus, 'data_change', this.data_change)
-    $on(this.$bus, 'view_data_change', this.data_change)
-    $on(this.$bus, 'node_tree_render_end', this.data_change)
-    window.addEventListener('mouseup', this.onMouseup)
-    this.mindMap.on(
-      'mini_map_view_box_position_change',
-      this.onViewBoxPositionChange
-    )
-  },
-  unmounted() {
-    window.removeEventListener('resize', this.setSize)
-    $off(this.$bus, 'toggle_mini_map', this.toggle_mini_map)
-    $off(this.$bus, 'data_change', this.data_change)
-    $off(this.$bus, 'view_data_change', this.data_change)
-    $off(this.$bus, 'node_tree_render_end', this.data_change)
-    window.removeEventListener('mouseup', this.onMouseup)
-    this.mindMap.off(
-      'mini_map_view_box_position_change',
-      this.onViewBoxPositionChange
-    )
-  },
-  methods: {
-    // 切换显示小地图
-    toggle_mini_map(show) {
-      this.showMiniMap = show
-      this.$nextTick(() => {
-        if (this.$refs.navigatorBox) {
-          this.init()
-        }
-        if (this.$refs.svgBox) {
-          this.drawMiniMap()
-        }
-      })
-    },
-
-    // 思维导图数据改变，更新小地图
-    data_change() {
-      if (!this.showMiniMap) {
-        return
-      }
-      clearTimeout(this.timer)
-      this.timer = setTimeout(() => {
-        this.drawMiniMap()
-      }, 500)
-    },
-
-    // 计算容器宽度
-    setSize() {
-      clearTimeout(this.setSizeTimer)
-      this.setSizeTimer = setTimeout(() => {
-        this.width = Math.min(window.innerWidth - 80, 370)
-        this.$nextTick(() => {
-          if (this.showMiniMap) {
-            this.init()
-            this.drawMiniMap()
-          }
-        })
-      }, 300)
-    },
-
-    // 获取宽高
-    init() {
-      let { width, height } = this.$refs.navigatorBox.getBoundingClientRect()
-      this.boxWidth = width
-      this.boxHeight = height
-    },
-
-    // 渲染小地图
-    drawMiniMap() {
-      let {
-        getImgUrl,
-        viewBoxStyle,
-        miniMapBoxScale,
-        miniMapBoxLeft,
-        miniMapBoxTop,
-      } = this.mindMap.miniMap.calculationMiniMap(this.boxWidth, this.boxHeight)
-      // 渲染到小地图
-      getImgUrl((img) => {
-        this.mindMapImg = img
-      })
-      this.viewBoxStyle = viewBoxStyle
-      this.svgBoxScale = miniMapBoxScale
-      this.svgBoxLeft = miniMapBoxLeft
-      this.svgBoxTop = miniMapBoxTop
-    },
-
-    // 小地图鼠标按下事件
-    onMousedown(e) {
-      this.mindMap.miniMap.onMousedown(e)
-    },
-
-    // 小地图鼠标移动事件
-    onMousemove(e) {
-      this.mindMap.miniMap.onMousemove(e)
-    },
-
-    // 鼠标松开事件，最好绑定要window
-    onMouseup(e) {
-      if (!this.withTransition) {
-        this.withTransition = true
-      }
-      if (this.mindMap.miniMap) this.mindMap.miniMap.onMouseup(e)
-    },
-
-    // 视口框的鼠标按下事件
-    onViewBoxMousedown(e) {
-      this.mindMap.miniMap.onViewBoxMousedown(e)
-    },
-
-    // 视口框的鼠标移动事件
-    onViewBoxMousemove(e) {
-      this.mindMap.miniMap.onViewBoxMousemove(e)
-    },
-
-    // 视口框的位置大小改变了，需要更新
-    onViewBoxPositionChange({ left, right, top, bottom }) {
-      this.withTransition = false
-      this.viewBoxStyle.left = left
-      this.viewBoxStyle.right = right
-      this.viewBoxStyle.top = top
-      this.viewBoxStyle.bottom = bottom
-    },
-  },
+    if (svgBox.value) {
+      drawMiniMap()
+    }
+  })
 }
+
+// 思维导图数据改变，更新小地图
+const data_change = () => {
+  if (!showMiniMap.value) {
+    return
+  }
+  clearTimeout(timer.value)
+  timer.value = setTimeout(() => {
+    drawMiniMap()
+  }, 500)
+}
+
+// 计算容器宽度
+const setSize = () => {
+  clearTimeout(setSizeTimer.value)
+  setSizeTimer.value = setTimeout(() => {
+    width.value = Math.min(window.innerWidth - 80, 370)
+    nextTick(() => {
+      if (showMiniMap.value) {
+        init()
+        drawMiniMap()
+      }
+    })
+  }, 300)
+}
+
+// 获取宽高
+const init = () => {
+  let { width: w, height: h } = navigatorBox.value.getBoundingClientRect()
+  boxWidth.value = w
+  boxHeight.value = h
+}
+
+// 渲染小地图
+const drawMiniMap = () => {
+  let {
+    getImgUrl,
+    viewBoxStyle: vbs,
+    miniMapBoxScale,
+    miniMapBoxLeft,
+    miniMapBoxTop
+  } = props.mindMap.miniMap.calculationMiniMap(boxWidth.value, boxHeight.value)
+  // 渲染到小地图
+  getImgUrl(img => {
+    mindMapImg.value = img
+  })
+  viewBoxStyle.value = vbs
+  svgBoxScale.value = miniMapBoxScale
+  svgBoxLeft.value = miniMapBoxLeft
+  svgBoxTop.value = miniMapBoxTop
+}
+
+// 小地图鼠标按下事件
+const onMousedown = (e) => {
+  props.mindMap.miniMap.onMousedown(e)
+}
+
+// 小地图鼠标移动事件
+const onMousemove = (e) => {
+  props.mindMap.miniMap.onMousemove(e)
+}
+
+// 鼠标松开事件，最好绑定要window
+const onMouseup = (e) => {
+  if (!withTransition.value) {
+    withTransition.value = true
+  }
+  if (props.mindMap.miniMap) props.mindMap.miniMap.onMouseup(e)
+}
+
+// 视口框的鼠标按下事件
+const onViewBoxMousedown = (e) => {
+  props.mindMap.miniMap.onViewBoxMousedown(e)
+}
+
+// 视口框的鼠标移动事件
+const onViewBoxMousemove = (e) => {
+  props.mindMap.miniMap.onViewBoxMousemove(e)
+}
+
+// 视口框的位置大小改变了，需要更新
+const onViewBoxPositionChange = ({ left, right, top, bottom }) => {
+  withTransition.value = false
+  viewBoxStyle.value.left = left
+  viewBoxStyle.value.right = right
+  viewBoxStyle.value.top = top
+  viewBoxStyle.value.bottom = bottom
+}
+
+onMounted(() => {
+  setSize()
+  window.addEventListener('resize', setSize)
+  proxy.$bus.$on('toggle_mini_map', toggle_mini_map)
+  proxy.$bus.$on('data_change', data_change)
+  proxy.$bus.$on('view_data_change', data_change)
+  proxy.$bus.$on('node_tree_render_end', data_change)
+  window.addEventListener('mouseup', onMouseup)
+  props.mindMap.on(
+    'mini_map_view_box_position_change',
+    onViewBoxPositionChange
+  )
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', setSize)
+  proxy.$bus.$off('toggle_mini_map', toggle_mini_map)
+  proxy.$bus.$off('data_change', data_change)
+  proxy.$bus.$off('view_data_change', data_change)
+  proxy.$bus.$off('node_tree_render_end', data_change)
+  window.removeEventListener('mouseup', onMouseup)
+  if (props.mindMap) {
+    props.mindMap.off(
+      'mini_map_view_box_position_change',
+      onViewBoxPositionChange
+    )
+  }
+})
 </script>
 
 <style lang="less" scoped>

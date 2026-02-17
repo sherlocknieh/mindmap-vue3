@@ -10,14 +10,14 @@
       <span class="name">{{ $t('nodeHyperlink.link') }}</span>
       <el-input
         v-model="link"
-        size="mini"
+        size="small"
         placeholder="http://xxxx.com/"
         @keyup.stop
         @keydown.stop
         @blur="handleUrl()"
       >
-        <template v-slot:prepend>
-          <el-select v-model="protocol" style="width: 80px">
+        <template #prepend>
+          <el-select v-model="protocol" style="width: 80px;">
             <el-option label="https" value="https"></el-option>
             <el-option label="http" value="http"></el-option>
             <el-option label="无" value="none"></el-option>
@@ -29,12 +29,12 @@
       <span class="name">{{ $t('nodeHyperlink.name') }}</span>
       <el-input
         v-model="linkTitle"
-        size="mini"
+        size="small"
         @keyup.stop
         @keydown.stop
       ></el-input>
     </div>
-    <template v-slot:footer>
+    <template #footer>
       <span class="dialog-footer">
         <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
         <el-button type="primary" @click="confirm">{{
@@ -45,79 +45,75 @@
   </el-dialog>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
-import { isMobile } from 'simple-mind-map/src/utils/index'
+<script setup>
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
+import { isMobile as isMobileUtil } from 'simple-mind-map/src/utils/index'
 
-// 节点超链接内容设置
-export default {
-  data() {
-    return {
-      dialogVisible: false,
-      link: '',
-      linkTitle: '',
-      activeNodes: [],
-      protocol: 'https',
-      isMobile: isMobile(),
-    }
-  },
-  created() {
-    $on(this.$bus, 'node_active', this.handleNodeActive)
-    $on(this.$bus, 'showNodeLink', this.handleShowNodeLink)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'node_active', this.handleNodeActive)
-    $off(this.$bus, 'showNodeLink', this.handleShowNodeLink)
-  },
-  methods: {
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (this.activeNodes.length > 0) {
-        let firstNode = this.activeNodes[0]
-        this.link = firstNode.getData('hyperlink') || ''
-        this.handleUrl(true)
-        this.linkTitle = firstNode.getData('hyperlinkTitle') || ''
-      } else {
-        this.link = ''
-        this.linkTitle = ''
-      }
-    },
+const { proxy } = getCurrentInstance()
 
-    removeProtocol(url) {
-      return url.replace(/^https?:\/\//, '')
-    },
+const dialogVisible = ref(false)
+const link = ref('')
+const linkTitle = ref('')
+const activeNodes = ref([])
+const protocol = ref('https')
+const isMobile = ref(isMobileUtil())
 
-    handleUrl(setProtocolNoneIfNotExist) {
-      const res = this.link.match(/^(https?):\/\//)
-      if (res && res[1]) {
-        this.protocol = res[1]
-      } else if (!this.link) {
-        this.protocol = 'https'
-      } else if (setProtocolNoneIfNotExist) {
-        this.protocol = 'none'
-      }
-      this.link = this.removeProtocol(this.link)
-    },
-
-    handleShowNodeLink() {
-      this.dialogVisible = true
-    },
-
-    cancel() {
-      this.dialogVisible = false
-    },
-
-    confirm() {
-      this.activeNodes.forEach((node) => {
-        node.setHyperlink(
-          (this.protocol === 'none' ? '' : this.protocol + '://') + this.link,
-          this.linkTitle
-        )
-        this.cancel()
-      })
-    },
-  },
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    link.value = firstNode.getData('hyperlink') || ''
+    handleUrl(true)
+    linkTitle.value = firstNode.getData('hyperlinkTitle') || ''
+  } else {
+    link.value = ''
+    linkTitle.value = ''
+  }
 }
+
+const removeProtocol = (url) => {
+  return url.replace(/^https?:\/\//, '')
+}
+
+const handleUrl = (setProtocolNoneIfNotExist) => {
+  const res = link.value.match(/^(https?):\/\//)
+  if (res && res[1]) {
+    protocol.value = res[1]
+  } else if (!link.value) {
+    protocol.value = 'https'
+  } else if (setProtocolNoneIfNotExist) {
+    protocol.value = 'none'
+  }
+  link.value = removeProtocol(link.value)
+}
+
+const handleShowNodeLink = () => {
+  dialogVisible.value = true
+}
+
+const cancel = () => {
+  dialogVisible.value = false
+}
+
+const confirm = () => {
+  activeNodes.value.forEach(node => {
+    node.setHyperlink(
+      (protocol.value === 'none' ? '' : protocol.value + '://') + link.value,
+      linkTitle.value
+    )
+    cancel()
+  })
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeLink', handleShowNodeLink)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeLink', handleShowNodeLink)
+})
 </script>
 
 <style lang="less" scoped>

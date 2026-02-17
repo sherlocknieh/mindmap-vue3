@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <template v-slot:footer>
+    <template #footer>
       <span class="dialog-footer">
         <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
         <el-button type="primary" @click="confirm">{{
@@ -41,82 +41,75 @@
   </el-dialog>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import {
   generateColorByContent,
-  isMobile,
+  isMobile as isMobileUtil
 } from 'simple-mind-map/src/utils/index'
 
-export default {
-  data() {
-    return {
-      dialogVisible: false,
-      tagArr: [],
-      tag: '',
-      activeNodes: [],
-      max: 5,
-      isMobile: isMobile(),
-    }
-  },
-  watch: {
-    dialogVisible(val, oldVal) {
-      if (!val && oldVal) {
-        $emit(this.$bus, 'endTextEdit')
-      }
-    },
-  },
-  created() {
-    $on(this.$bus, 'node_active', this.handleNodeActive)
-    $on(this.$bus, 'showNodeTag', this.handleShowNodeTag)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'node_active', this.handleNodeActive)
-    $off(this.$bus, 'showNodeTag', this.handleShowNodeTag)
-  },
-  methods: {
-    generateColorByContent,
+const { proxy } = getCurrentInstance()
 
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-      if (this.activeNodes.length > 0) {
-        let firstNode = this.activeNodes[0]
-        this.tagArr = firstNode.getData('tag') || []
-      } else {
-        this.tagArr = []
-        this.tag = ''
-      }
-    },
+const dialogVisible = ref(false)
+const tagArr = ref([])
+const tag = ref('')
+const activeNodes = ref([])
+const max = ref(5)
+const isMobile = ref(isMobileUtil())
 
-    handleShowNodeTag() {
-      $emit(this.$bus, 'startTextEdit')
-      this.dialogVisible = true
-    },
+watch(dialogVisible, (val, oldVal) => {
+  if (!val && oldVal) {
+    proxy.$bus.$emit('endTextEdit')
+  }
+})
 
-    add() {
-      const text = this.tag.trim()
-      if (!text) return
-      this.tagArr.push(text)
-      this.tag = ''
-    },
-
-    del(index) {
-      this.tagArr.splice(index, 1)
-    },
-
-    cancel() {
-      this.dialogVisible = false
-    },
-
-    confirm() {
-      this.activeNodes.forEach((node) => {
-        node.setTag(this.tagArr)
-      })
-      this.cancel()
-    },
-  },
-  emits: ['endTextEdit', 'startTextEdit'],
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    tagArr.value = firstNode.getData('tag') || []
+  } else {
+    tagArr.value = []
+    tag.value = ''
+  }
 }
+
+const handleShowNodeTag = () => {
+  proxy.$bus.$emit('startTextEdit')
+  dialogVisible.value = true
+}
+
+const add = () => {
+  const text = tag.value.trim()
+  if (!text) return
+  tagArr.value.push(text)
+  tag.value = ''
+}
+
+const del = (index) => {
+  tagArr.value.splice(index, 1)
+}
+
+const cancel = () => {
+  dialogVisible.value = false
+}
+
+const confirm = () => {
+  activeNodes.value.forEach(node => {
+    node.setTag(tagArr.value)
+  })
+  cancel()
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeTag', handleShowNodeTag)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeTag', handleShowNodeTag)
+})
 </script>
 
 <style lang="less" scoped>

@@ -8,16 +8,16 @@
   >
     <div class="title">方式一</div>
     <ImgUpload
-      ref="ImgUpload"
-      v-model:value="img"
-      style="margin-bottom: 12px"
+      ref="ImgUploadRef"
+      v-model="img"
+      style="margin-bottom: 12px;"
     ></ImgUpload>
     <div class="title">方式二</div>
     <div class="inputBox">
       <span class="label">请输入图片地址</span>
       <el-input
         v-model="imgUrl"
-        size="mini"
+        size="small"
         placeholder="http://xxx.com/xx.jpg"
         @keydown.stop
       ></el-input>
@@ -25,9 +25,9 @@
     <div class="title">可选</div>
     <div class="inputBox">
       <span class="label">{{ $t('nodeImage.imgTitle') }}</span>
-      <el-input v-model="imgTitle" size="mini" @keydown.stop></el-input>
+      <el-input v-model="imgTitle" size="small" @keydown.stop></el-input>
     </div>
-    <template v-slot:footer>
+    <template #footer>
       <span class="dialog-footer">
         <el-button @click="cancel">{{ $t('dialog.cancel') }}</el-button>
         <el-button type="primary" @click="confirm">{{
@@ -38,101 +38,95 @@
   </el-dialog>
 </template>
 
-<script>
-import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+<script setup>
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import ImgUpload from '@/components/ImgUpload/index.vue'
-import { getImageSize, isMobile } from 'simple-mind-map/src/utils/index'
+import { getImageSize, isMobile as isMobileUtil } from 'simple-mind-map/src/utils/index'
 
-// 节点图片内容设置
-export default {
-  components: {
-    ImgUpload,
-  },
-  data() {
-    return {
-      dialogVisible: false,
-      img: '',
-      imgUrl: '',
-      imgTitle: '',
-      activeNodes: null,
-      isMobile: isMobile(),
-    }
-  },
-  created() {
-    $on(this.$bus, 'node_active', this.handleNodeActive)
-    $on(this.$bus, 'showNodeImage', this.handleShowNodeImage)
-  },
-  beforeUnmount() {
-    $off(this.$bus, 'node_active', this.handleNodeActive)
-    $off(this.$bus, 'showNodeImage', this.handleShowNodeImage)
-  },
-  methods: {
-    handleNodeActive(...args) {
-      this.activeNodes = [...args[1]]
-    },
+const { proxy } = getCurrentInstance()
 
-    handleShowNodeImage() {
-      this.reset()
-      if (this.activeNodes.length > 0) {
-        let firstNode = this.activeNodes[0]
-        let img = firstNode.getImageUrl() || ''
-        if (img) {
-          if (/^https?:\/\//.test(img)) {
-            this.imgUrl = img
-          } else {
-            this.img = img
-          }
-        }
-        this.imgTitle = firstNode.getData('imageTitle') || ''
-      }
-      this.dialogVisible = true
-    },
+const dialogVisible = ref(false)
+const img = ref('')
+const imgUrl = ref('')
+const imgTitle = ref('')
+const activeNodes = ref(null)
+const isMobile = ref(isMobileUtil())
+const ImgUploadRef = ref(null)
 
-    cancel() {
-      this.dialogVisible = false
-      this.reset()
-    },
-
-    reset() {
-      this.img = ''
-      this.imgTitle = ''
-      this.imgUrl = ''
-    },
-
-    async confirm() {
-      try {
-        // 删除图片
-        if (!this.img && !this.imgUrl) {
-          this.cancel()
-          this.activeNodes.forEach((node) => {
-            node.setImage(null)
-          })
-          return
-        }
-        let res = null
-        let img = ''
-        if (this.img) {
-          img = this.img
-          res = await this.$refs.ImgUpload.getSize()
-        } else if (this.imgUrl) {
-          img = this.imgUrl
-          res = await getImageSize(img)
-        }
-        this.activeNodes.forEach((node) => {
-          node.setImage({
-            url: img || 'none',
-            title: this.imgTitle,
-            width: res.width || 100,
-            height: res.height || 100,
-          })
-        })
-        this.cancel()
-      } catch (error) {
-        console.log(error)
-      }
-    },
-  },
+const handleNodeActive = (...args) => {
+  activeNodes.value = [...args[1]]
 }
+
+const handleShowNodeImage = () => {
+  reset()
+  if (activeNodes.value.length > 0) {
+    let firstNode = activeNodes.value[0]
+    let imgData = firstNode.getImageUrl() || ''
+    if (imgData) {
+      if (/^https?:\/\//.test(imgData)) {
+        imgUrl.value = imgData
+      } else {
+        img.value = imgData
+      }
+    }
+    imgTitle.value = firstNode.getData('imageTitle') || ''
+  }
+  dialogVisible.value = true
+}
+
+const cancel = () => {
+  dialogVisible.value = false
+  reset()
+}
+
+const reset = () => {
+  img.value = ''
+  imgTitle.value = ''
+  imgUrl.value = ''
+}
+
+const confirm = async () => {
+  try {
+    // 删除图片
+    if (!img.value && !imgUrl.value) {
+      cancel()
+      activeNodes.value.forEach(node => {
+        node.setImage(null)
+      })
+      return
+    }
+    let res = null
+    let imgData = ''
+    if (img.value) {
+      imgData = img.value
+      res = await ImgUploadRef.value.getSize()
+    } else if (imgUrl.value) {
+      imgData = imgUrl.value
+      res = await getImageSize(imgData)
+    }
+    activeNodes.value.forEach(node => {
+      node.setImage({
+        url: imgData || 'none',
+        title: imgTitle.value,
+        width: res.width || 100,
+        height: res.height || 100
+      })
+    })
+    cancel()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+onMounted(() => {
+  proxy.$bus.$on('node_active', handleNodeActive)
+  proxy.$bus.$on('showNodeImage', handleShowNodeImage)
+})
+
+onBeforeUnmount(() => {
+  proxy.$bus.$off('node_active', handleNodeActive)
+  proxy.$bus.$off('showNodeImage', handleShowNodeImage)
+})
 </script>
 
 <style lang="less" scoped>
