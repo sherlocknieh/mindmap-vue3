@@ -2,14 +2,14 @@
   <el-dialog
     class="nodeHyperlinkDialog"
     :title="$t('nodeHyperlink.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <div class="item">
       <span class="name">{{ $t('nodeHyperlink.link') }}</span>
       <el-input
-        v-model:value="link"
+        v-model="link"
         size="mini"
         placeholder="http://xxxx.com/"
         @keyup.stop
@@ -17,7 +17,7 @@
         @blur="handleUrl()"
       >
         <template v-slot:prepend>
-          <el-select v-model:value="protocol" style="width: 80px">
+          <el-select v-model="protocol" style="width: 80px">
             <el-option label="https" value="https"></el-option>
             <el-option label="http" value="http"></el-option>
             <el-option label="无" value="none"></el-option>
@@ -28,7 +28,7 @@
     <div class="item">
       <span class="name">{{ $t('nodeHyperlink.name') }}</span>
       <el-input
-        v-model:value="linkTitle"
+        v-model="linkTitle"
         size="mini"
         @keyup.stop
         @keydown.stop

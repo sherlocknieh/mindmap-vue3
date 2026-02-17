@@ -8,14 +8,14 @@
         ref="searchInputRef"
         :placeholder="$t('search.searchPlaceholder')"
         size="small"
-        v-model:value="searchText"
+        v-model="searchText"
         @keyup.enter.stop="onSearchNext"
         @keydown.stop
         @focus="onFocus"
         @blur="onBlur"
       >
         <template v-slot:prefix>
-          <i class="el-input__icon el-icon-search"></i>
+          <el-icon class="el-input__icon"><el-icon-search /></el-icon>
         </template>
         <template v-slot:append>
           <el-button
@@ -35,14 +35,14 @@
       ref="replaceInputRef"
       :placeholder="$t('search.replacePlaceholder')"
       size="small"
-      v-model:value="replaceText"
+      v-model="replaceText"
       style="margin: 12px 0"
       @keydown.stop
       @focus="onFocus"
       @blur="onBlur"
     >
       <template v-slot:prefix>
-        <i class="el-input__icon el-icon-edit"></i>
+        <el-icon class="el-input__icon"><el-icon-edit /></el-icon>
       </template>
       <template v-slot:append>
         <el-button size="small" @click="hideReplaceInput">{{
@@ -80,12 +80,17 @@
 </template>
 
 <script>
+import { Search as ElIconSearch, Edit as ElIconEdit } from '@element-plus/icons'
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { isUndef, getTextFromHtml } from 'simple-mind-map/src/utils/index'
 
 export default {
+  components: {
+    ElIconSearch,
+    ElIconEdit,
+  },
   props: {
     mindMap: {
       type: Object,

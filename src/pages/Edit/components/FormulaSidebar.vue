@@ -3,7 +3,7 @@
     <div class="box" :class="{ isDark: isDark }">
       <div class="formulaInputBox">
         <el-input
-          v-model:value="formulaText"
+          v-model="formulaText"
           :rows="4"
           resize="none"
           type="textarea"

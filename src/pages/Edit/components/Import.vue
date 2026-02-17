@@ -3,7 +3,7 @@
     <el-dialog
       class="nodeImportDialog"
       :title="$t('import.title')"
-      v-model:visible="dialogVisible"
+      v-model="dialogVisible"
       width="350px"
     >
       <el-upload
@@ -42,11 +42,11 @@
     <el-dialog
       class="xmindCanvasSelectDialog"
       :title="$t('import.xmindCanvasSelectDialogTitle')"
-      v-model:visible="xmindCanvasSelectDialogVisible"
+      v-model="xmindCanvasSelectDialogVisible"
       width="300px"
       :show-close="false"
     >
-      <el-radio-group v-model:value="selectCanvas" class="canvasList">
+      <el-radio-group v-model="selectCanvas" class="canvasList">
         <el-radio
           v-for="(item, index) in canvasList"
           :key="index"

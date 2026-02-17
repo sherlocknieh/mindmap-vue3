@@ -8,7 +8,7 @@
       <!-- 背景 -->
       <div class="title noTop">{{ $t('baseStyle.background') }}</div>
       <div class="row">
-        <el-tabs class="tab" v-model:value="activeTab">
+        <el-tabs class="tab" v-model="activeTab">
           <el-tab-pane :label="$t('baseStyle.color')" name="color">
             <Color
               :color="style.backgroundColor"
@@ -35,7 +35,7 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model:value="style.backgroundRepeat"
+                v-model="style.backgroundRepeat"
                 placeholder=""
                 @change="
                   (value) => {
@@ -58,7 +58,7 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model:value="style.backgroundPosition"
+                v-model="style.backgroundPosition"
                 placeholder=""
                 @change="
                   (value) => {
@@ -81,7 +81,7 @@
               <el-select
                 size="mini"
                 style="width: 120px"
-                v-model:value="style.backgroundSize"
+                v-model="style.backgroundSize"
                 placeholder=""
                 @change="
                   (value) => {
@@ -153,7 +153,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.lineWidth"
+            v-model="style.lineWidth"
             placeholder=""
             @change="
               (value) => {
@@ -184,7 +184,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.lineStyle"
+            v-model="style.lineStyle"
             placeholder=""
             @change="
               (value) => {
@@ -218,7 +218,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.rootLineKeepSameInCurve"
+            v-model="style.rootLineKeepSameInCurve"
             placeholder=""
             @change="
               (value) => {
@@ -241,7 +241,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.lineRadius"
+            v-model="style.lineRadius"
             placeholder=""
             @change="
               (value) => {
@@ -271,7 +271,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.rootLineStartPositionKeepSameInCurve"
+            v-model="style.rootLineStartPositionKeepSameInCurve"
             placeholder=""
             @change="
               (value) => {
@@ -293,7 +293,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="style.showLineMarker"
+            v-model="style.showLineMarker"
             @change="
               (value) => {
                 update('showLineMarker', value)
@@ -310,7 +310,7 @@
           <el-popover
             placement="right"
             trigger="click"
-            v-model:value="rainbowLinesPopoverVisible"
+            v-model="rainbowLinesPopoverVisible"
           >
             <div class="rainbowLinesOptionsBox" :class="{ isDark: isDark }">
               <div
@@ -375,7 +375,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.generalizationLineWidth"
+            v-model="style.generalizationLineWidth"
             placeholder=""
             @change="
               (value) => {
@@ -425,7 +425,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineWidth"
+            v-model="style.associativeLineWidth"
             placeholder=""
             @change="
               (value) => {
@@ -477,7 +477,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineActiveWidth"
+            v-model="style.associativeLineActiveWidth"
             placeholder=""
             @change="
               (value) => {
@@ -507,7 +507,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineDasharray"
+            v-model="style.associativeLineDasharray"
             placeholder=""
             @change="
               (value) => {
@@ -549,7 +549,7 @@
           <span class="name">{{ $t('baseStyle.fontFamily') }}</span>
           <el-select
             size="mini"
-            v-model:value="style.associativeLineTextFontFamily"
+            v-model="style.associativeLineTextFontFamily"
             placeholder=""
             @change="update('associativeLineTextFontFamily', $event)"
           >
@@ -588,7 +588,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineTextFontSize"
+            v-model="style.associativeLineTextFontSize"
             placeholder=""
             @change="update('associativeLineTextFontSize', $event)"
           >
@@ -609,7 +609,7 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model:value="style.nodeUseLineStyle"
+              v-model="style.nodeUseLineStyle"
               @change="
                 (value) => {
                   update('nodeUseLineStyle', value)
@@ -627,7 +627,7 @@
           <span class="name">{{ $t('baseStyle.horizontal') }}</span>
           <el-slider
             style="width: 200px"
-            v-model:value="style.paddingX"
+            v-model="style.paddingX"
             @change="
               (value) => {
                 update('paddingX', value)
@@ -641,7 +641,7 @@
           <span class="name">{{ $t('baseStyle.vertical') }}</span>
           <el-slider
             style="width: 200px"
-            v-model:value="style.paddingY"
+            v-model="style.paddingY"
             @change="
               (value) => {
                 update('paddingY', value)
@@ -657,7 +657,7 @@
           <span class="name">{{ $t('baseStyle.maximumWidth') }}</span>
           <el-slider
             style="width: 140px"
-            v-model:value="style.imgMaxWidth"
+            v-model="style.imgMaxWidth"
             :min="10"
             :max="500"
             @change="
@@ -673,7 +673,7 @@
           <span class="name">{{ $t('baseStyle.maximumHeight') }}</span>
           <el-slider
             style="width: 140px"
-            v-model:value="style.imgMaxHeight"
+            v-model="style.imgMaxHeight"
             :min="10"
             :max="500"
             @change="
@@ -691,7 +691,7 @@
           <span class="name">{{ $t('baseStyle.size') }}</span>
           <el-slider
             style="width: 200px"
-            v-model:value="style.iconSize"
+            v-model="style.iconSize"
             :min="12"
             :max="50"
             @change="
@@ -707,7 +707,7 @@
       <div class="row column noBottom">
         <el-tabs
           class="tab"
-          v-model:value="marginActiveTab"
+          v-model="marginActiveTab"
           @tab-click="initMarginStyle"
         >
           <el-tab-pane
@@ -724,7 +724,7 @@
           <el-slider
             :max="200"
             style="width: 200px"
-            v-model:value="style.marginX"
+            v-model="style.marginX"
             @change="
               (value) => {
                 updateMargin('marginX', value)
@@ -737,7 +737,7 @@
           <el-slider
             :max="200"
             style="width: 200px"
-            v-model:value="style.marginY"
+            v-model="style.marginY"
             @change="
               (value) => {
                 updateMargin('marginY', value)
@@ -753,7 +753,7 @@
           <span class="name">{{ $t('baseStyle.horizontal') }}</span>
           <el-slider
             style="width: 200px"
-            v-model:value="outerFramePadding.outerFramePaddingX"
+            v-model="outerFramePadding.outerFramePaddingX"
             @change="
               (value) => {
                 updateOuterFramePadding('outerFramePaddingX', value)
@@ -767,7 +767,7 @@
           <span class="name">{{ $t('baseStyle.vertical') }}</span>
           <el-slider
             style="width: 200px"
-            v-model:value="outerFramePadding.outerFramePaddingY"
+            v-model="outerFramePadding.outerFramePaddingY"
             @change="
               (value) => {
                 updateOuterFramePadding('outerFramePaddingY', value)

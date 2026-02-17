@@ -2,7 +2,7 @@
   <el-dialog
     class="aiConfigDialog"
     :title="$t('ai.AIConfiguration')"
-    v-model:visible="aiConfigDialogVisible"
+    v-model="aiConfigDialogVisible"
     width="550px"
     append-to-body
   >
@@ -23,24 +23,24 @@
           >。
         </p>
         <el-form-item label="API Key" prop="key">
-          <el-input v-model:value="ruleForm.key"></el-input>
+          <el-input v-model="ruleForm.key"></el-input>
         </el-form-item>
         <el-form-item :label="$t('ai.inferenceAccessPoint')" prop="model">
-          <el-input v-model:value="ruleForm.model"></el-input>
+          <el-input v-model="ruleForm.model"></el-input>
         </el-form-item>
         <!-- <el-form-item label="接口" prop="api">
-            <el-input v-model="ruleForm.api"></el-input>
-          </el-form-item>
-          <el-form-item label="请求方式" prop="method">
-            <el-select v-model="ruleForm.method" placeholder="请选择">
-              <el-option key="POST" label="POST" value="POST"></el-option>
-              <el-option key="GET" label="GET" value="GET"></el-option>
-            </el-select>
-          </el-form-item> -->
+              <el-input v-model="ruleForm.api"></el-input>
+            </el-form-item>
+            <el-form-item label="请求方式" prop="method">
+              <el-select v-model="ruleForm.method" placeholder="请选择">
+                <el-option key="POST" label="POST" value="POST"></el-option>
+                <el-option key="GET" label="GET" value="GET"></el-option>
+              </el-select>
+            </el-form-item> -->
         <!-- <p class="title">{{ $t('ai.mindMappingClientConfiguration') }}</p>
-          <el-form-item :label="$t('ai.port')" prop="port">
-            <el-input v-model="ruleForm.port"></el-input>
-          </el-form-item> -->
+            <el-form-item :label="$t('ai.port')" prop="port">
+              <el-input v-model="ruleForm.port"></el-input>
+            </el-form-item> -->
       </el-form>
     </div>
     <template v-slot:footer>

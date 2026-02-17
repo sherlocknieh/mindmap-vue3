@@ -6,7 +6,7 @@
         <ToolbarNodeBtnList :list="horizontalList"></ToolbarNodeBtnList>
         <!-- 更多 -->
         <el-popover
-          v-model:value="popoverShow"
+          v-model="popoverShow"
           placement="bottom-end"
           width="120"
           trigger="hover"

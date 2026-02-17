@@ -4,7 +4,7 @@
     <el-dialog
       class="clientTipDialog"
       :title="$t('ai.connectFailedTitle')"
-      v-model:visible="clientTipDialogVisible"
+      v-model="clientTipDialogVisible"
       width="400px"
       append-to-body
     >
@@ -38,7 +38,7 @@
     <el-dialog
       class="createDialog"
       :title="$t('ai.createMindMapTitle')"
-      v-model:visible="createDialogVisible"
+      v-model="createDialogVisible"
       width="450px"
       append-to-body
     >
@@ -47,7 +47,7 @@
           type="textarea"
           :rows="5"
           :placeholder="$t('ai.createTip')"
-          v-model:value="aiInput"
+          v-model="aiInput"
         >
         </el-input>
         <div class="tip warning">
@@ -86,13 +86,12 @@
     <el-dialog
       class="createDialog"
       :title="$t('ai.aiCreatePart')"
-      v-model:visible="createPartDialogVisible"
+      v-model="createPartDialogVisible"
       width="450px"
       append-to-body
     >
       <div class="inputBox">
-        <el-input type="textarea" :rows="5" v-model:value="aiPartInput">
-        </el-input>
+        <el-input type="textarea" :rows="5" v-model="aiPartInput"> </el-input>
       </div>
       <template v-slot:footer>
         <div class="dialog-footer">

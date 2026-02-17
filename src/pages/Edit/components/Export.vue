@@ -3,7 +3,7 @@
     class="nodeExportDialog"
     :class="{ isMobile: isMobile, isDark: isDark }"
     :title="$t('export.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     v-loading.fullscreen.lock="loading"
     :element-loading-text="loadingText"
     element-loading-spinner="el-icon-loading"
@@ -38,7 +38,7 @@
               <span class="name">{{ $t('export.filename') }}</span>
               <el-input
                 style="max-width: 250px"
-                v-model:value="fileName"
+                v-model="fileName"
                 size="mini"
                 @keydown.stop
               ></el-input>
@@ -67,7 +67,7 @@
                   class="valueItem"
                   v-show="['smm', 'json'].includes(exportType)"
                 >
-                  <el-checkbox v-model:value="widthConfig">{{
+                  <el-checkbox v-model="widthConfig">{{
                     $t('export.include')
                   }}</el-checkbox>
                 </div>
@@ -77,7 +77,7 @@
                 >
                   <div class="valueSubItem" v-if="['png'].includes(exportType)">
                     <span class="name">{{ $t('export.format') }}</span>
-                    <el-radio-group v-model:value="imageFormat">
+                    <el-radio-group v-model="imageFormat">
                       <el-radio label="png">PNG</el-radio>
                     </el-radio-group>
                   </div>
@@ -85,7 +85,7 @@
                     <span class="name">{{ $t('export.paddingX') }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model:value="paddingX"
+                      v-model="paddingX"
                       size="mini"
                       @change="onPaddingChange"
                       @keydown.stop
@@ -95,7 +95,7 @@
                     <span class="name">{{ $t('export.paddingY') }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model:value="paddingY"
+                      v-model="paddingY"
                       size="mini"
                       @change="onPaddingChange"
                       @keydown.stop
@@ -107,7 +107,7 @@
                     }}</span>
                     <el-input
                       style="width: 200px"
-                      v-model:value="extraText"
+                      v-model="extraText"
                       size="mini"
                       :placeholder="$t('export.addFooterTextPlaceholder')"
                       @keydown.stop
@@ -116,16 +116,14 @@
                   <div class="valueSubItem">
                     <el-checkbox
                       v-show="['png', 'pdf'].includes(exportType)"
-                      v-model:value="isTransparent"
+                      v-model="isTransparent"
                       >{{ $t('export.isTransparent') }}</el-checkbox
                     >
                   </div>
                   <div class="valueSubItem">
-                    <el-checkbox
-                      v-show="showFitBgOption"
-                      v-model:value="isFitBg"
-                      >{{ $t('export.isFitBg') }}</el-checkbox
-                    >
+                    <el-checkbox v-show="showFitBgOption" v-model="isFitBg">{{
+                      $t('export.isFitBg')
+                    }}</el-checkbox>
                   </div>
                 </div>
               </div>

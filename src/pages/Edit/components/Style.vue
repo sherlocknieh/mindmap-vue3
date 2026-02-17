@@ -14,7 +14,7 @@
             <el-select
               size="mini"
               style="width: 100px"
-              v-model:value="style.fontFamily"
+              v-model="style.fontFamily"
               placeholder=""
               @change="update('fontFamily')"
             >
@@ -33,7 +33,7 @@
             <el-select
               size="mini"
               style="width: 60px"
-              v-model:value="style.fontSize"
+              v-model="style.fontSize"
               placeholder=""
               @change="update('fontSize')"
             >
@@ -51,7 +51,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.textAlign"
+              v-model="style.textAlign"
               placeholder=""
               @change="update('textAlign')"
             >
@@ -117,7 +117,7 @@
           <el-popover ref="popover2" placement="bottom" trigger="hover">
             <el-radio-group
               size="mini"
-              v-model:value="style.textDecoration"
+              v-model="style.textDecoration"
               @change="update('textDecoration')"
             >
               <el-radio-button label="none">{{
@@ -157,7 +157,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.borderDasharray"
+              v-model="style.borderDasharray"
               placeholder=""
               @change="update('borderDasharray')"
             >
@@ -194,7 +194,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.borderWidth"
+              v-model="style.borderWidth"
               placeholder=""
               @change="update('borderWidth')"
             >
@@ -218,7 +218,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.borderRadius"
+              v-model="style.borderRadius"
               placeholder=""
               @change="update('borderRadius')"
             >
@@ -249,7 +249,7 @@
               $t('style.gradientStyle')
             }}</span>
             <el-checkbox
-              v-model:value="style.gradientStyle"
+              v-model="style.gradientStyle"
               @change="update('gradientStyle')"
             ></el-checkbox>
           </div>
@@ -285,7 +285,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.linearGradientDir"
+              v-model="style.linearGradientDir"
               placeholder=""
               @change="update('linearGradientDir')"
             >
@@ -307,7 +307,7 @@
             <el-select
               size="mini"
               style="width: 120px"
-              v-model:value="style.shape"
+              v-model="style.shape"
               placeholder=""
               @change="update('shape')"
             >
@@ -363,7 +363,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.lineDasharray"
+              v-model="style.lineDasharray"
               placeholder=""
               @change="update('lineDasharray')"
             >
@@ -400,7 +400,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.lineWidth"
+              v-model="style.lineWidth"
               placeholder=""
               @change="update('lineWidth')"
             >
@@ -424,7 +424,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="style.lineMarkerDir"
+              v-model="style.lineMarkerDir"
               placeholder=""
               @change="update('lineMarkerDir')"
             >
@@ -448,7 +448,7 @@
             <span class="name">{{ $t('style.horizontal') }}</span>
             <el-slider
               style="width: 200px"
-              v-model:value="style.paddingX"
+              v-model="style.paddingX"
               @change="update('paddingX')"
             ></el-slider>
           </div>
@@ -458,7 +458,7 @@
             <span class="name">{{ $t('style.vertical') }}</span>
             <el-slider
               style="width: 200px"
-              v-model:value="style.paddingY"
+              v-model="style.paddingY"
               @change="update('paddingY')"
             ></el-slider>
           </div>
@@ -469,7 +469,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
-              v-model:value="style.imgPlacement"
+              v-model="style.imgPlacement"
               size="mini"
               @change="update('imgPlacement')"
             >
@@ -494,7 +494,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
-              v-model:value="style.tagPlacement"
+              v-model="style.tagPlacement"
               size="mini"
               @change="update('tagPlacement')"
             >

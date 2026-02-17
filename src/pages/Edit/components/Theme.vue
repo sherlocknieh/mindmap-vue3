@@ -1,7 +1,7 @@
 <template>
   <Sidebar ref="sidebar" :title="$t('theme.title')">
     <div class="themeGroupList" :class="{ isDark: isDark }">
-      <el-tabs v-model:value="activeName" class="tabBox">
+      <el-tabs v-model="activeName" class="tabBox">
         <el-tab-pane
           v-for="group in groupList"
           :key="group.name"

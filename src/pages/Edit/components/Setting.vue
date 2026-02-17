@@ -10,7 +10,7 @@
         <!-- 是否显示水印 -->
         <div class="rowItem">
           <el-checkbox
-            v-model:value="watermarkConfig.show"
+            v-model="watermarkConfig.show"
             @change="watermarkShowChange"
             >{{ $t('setting.showWatermark') }}</el-checkbox
           >
@@ -21,7 +21,7 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model:value="watermarkConfig.onlyExport"
+              v-model="watermarkConfig.onlyExport"
               @change="updateWatermarkConfig"
               >{{ $t('setting.onlyExport') }}</el-checkbox
             >
@@ -31,7 +31,7 @@
         <div class="row">
           <div class="rowItem">
             <el-checkbox
-              v-model:value="watermarkConfig.belowNode"
+              v-model="watermarkConfig.belowNode"
               @change="updateWatermarkConfig"
               >{{ $t('setting.belowNode') }}</el-checkbox
             >
@@ -42,7 +42,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkText') }}</span>
             <el-input
-              v-model:value="watermarkConfig.text"
+              v-model="watermarkConfig.text"
               size="small"
               @change="updateWatermarkConfig"
               @keydown.stop
@@ -76,7 +76,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextOpacity') }}</span>
             <el-slider
-              v-model:value="watermarkConfig.textStyle.opacity"
+              v-model="watermarkConfig.textStyle.opacity"
               style="width: 170px"
               :min="0"
               :max="1"
@@ -90,7 +90,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextFontSize') }}</span>
             <el-input-number
-              v-model:value="watermarkConfig.textStyle.fontSize"
+              v-model="watermarkConfig.textStyle.fontSize"
               size="small"
               :min="0"
               :max="50"
@@ -105,7 +105,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkAngle') }}</span>
             <el-input-number
-              v-model:value="watermarkConfig.angle"
+              v-model="watermarkConfig.angle"
               size="small"
               :min="0"
               :max="90"
@@ -120,7 +120,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkLineSpacing') }}</span>
             <el-input-number
-              v-model:value="watermarkConfig.lineSpacing"
+              v-model="watermarkConfig.lineSpacing"
               size="small"
               :step="10"
               @change="updateWatermarkConfig"
@@ -133,7 +133,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextSpacing') }}</span>
             <el-input-number
-              v-model:value="watermarkConfig.textSpacing"
+              v-model="watermarkConfig.textSpacing"
               size="small"
               :step="10"
               @change="updateWatermarkConfig"
@@ -146,7 +146,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.openPerformance"
+            v-model="config.openPerformance"
             @change="
               (value) => {
                 updateOtherConfig('openPerformance', value)
@@ -160,7 +160,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.enableFreeDrag"
+            v-model="config.enableFreeDrag"
             @change="
               (value) => {
                 updateOtherConfig('enableFreeDrag', value)
@@ -174,7 +174,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="enableNodeRichText"
+            v-model="enableNodeRichText"
             @change="enableNodeRichTextChange"
             >{{ $t('setting.isEnableNodeRichText') }}</el-checkbox
           >
@@ -184,7 +184,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.openRealtimeRenderOnNodeTextEdit"
+            v-model="config.openRealtimeRenderOnNodeTextEdit"
             @change="
               updateOtherConfig('openRealtimeRenderOnNodeTextEdit', $event)
             "
@@ -196,7 +196,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="localConfigs.isShowScrollbar"
+            v-model="localConfigs.isShowScrollbar"
             @change="updateLocalConfig('isShowScrollbar', $event)"
             >{{ $t('setting.isShowScrollbar') }}</el-checkbox
           >
@@ -206,7 +206,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.alwaysShowExpandBtn"
+            v-model="config.alwaysShowExpandBtn"
             @change="updateOtherConfig('alwaysShowExpandBtn', $event)"
             >{{ $t('setting.alwaysShowExpandBtn') }}</el-checkbox
           >
@@ -216,7 +216,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.enableAutoEnterTextEditWhenKeydown"
+            v-model="config.enableAutoEnterTextEditWhenKeydown"
             @change="
               updateOtherConfig('enableAutoEnterTextEditWhenKeydown', $event)
             "
@@ -228,7 +228,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="localConfigs.enableDragImport"
+            v-model="localConfigs.enableDragImport"
             @change="updateLocalConfig('enableDragImport', $event)"
             >{{ $t('setting.enableDragImport') }}</el-checkbox
           >
@@ -238,7 +238,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="config.enableInheritAncestorLineStyle"
+            v-model="config.enableInheritAncestorLineStyle"
             @change="
               updateOtherConfig('enableInheritAncestorLineStyle', $event)
             "
@@ -250,7 +250,7 @@
       <div class="row">
         <div class="rowItem">
           <el-checkbox
-            v-model:value="localConfigs.enableAi"
+            v-model="localConfigs.enableAi"
             @change="updateLocalConfig('enableAi', $event)"
             >{{ $t('setting.enableAi') }}</el-checkbox
           >
@@ -263,7 +263,7 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model:value="config.mousewheelAction"
+            v-model="config.mousewheelAction"
             placeholder=""
             @change="
               (value) => {
@@ -288,7 +288,7 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model:value="config.mousewheelZoomActionReverse"
+            v-model="config.mousewheelZoomActionReverse"
             placeholder=""
             @change="
               (value) => {
@@ -314,7 +314,7 @@
           <el-select
             size="mini"
             style="width: 120px"
-            v-model:value="config.createNewNodeBehavior"
+            v-model="config.createNewNodeBehavior"
             placeholder=""
             @change="
               (value) => {
@@ -343,7 +343,7 @@
           <span class="name">{{ $t('setting.imgTextMargin') }}</span>
           <el-slider
             style="width: 150px"
-            v-model:value="config.imgTextMargin"
+            v-model="config.imgTextMargin"
             @change="
               (value) => {
                 updateOtherConfig('imgTextMargin', value)
@@ -358,7 +358,7 @@
           <span class="name">{{ $t('setting.textContentMargin') }}</span>
           <el-slider
             style="width: 150px"
-            v-model:value="config.textContentMargin"
+            v-model="config.textContentMargin"
             @change="
               (value) => {
                 updateOtherConfig('textContentMargin', value)

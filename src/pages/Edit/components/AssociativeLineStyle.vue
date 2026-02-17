@@ -26,7 +26,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineWidth"
+            v-model="style.associativeLineWidth"
             placeholder=""
             @change="
               (value) => {
@@ -78,7 +78,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineActiveWidth"
+            v-model="style.associativeLineActiveWidth"
             placeholder=""
             @change="
               (value) => {
@@ -108,7 +108,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineDasharray"
+            v-model="style.associativeLineDasharray"
             placeholder=""
             @change="
               (value) => {
@@ -150,7 +150,7 @@
           <span class="name">{{ $t('baseStyle.fontFamily') }}</span>
           <el-select
             size="mini"
-            v-model:value="style.associativeLineTextFontFamily"
+            v-model="style.associativeLineTextFontFamily"
             placeholder=""
             @change="update('associativeLineTextFontFamily', $event)"
           >
@@ -189,7 +189,7 @@
           <el-select
             size="mini"
             style="width: 80px"
-            v-model:value="style.associativeLineTextFontSize"
+            v-model="style.associativeLineTextFontSize"
             placeholder=""
             @change="update('associativeLineTextFontSize', $event)"
           >

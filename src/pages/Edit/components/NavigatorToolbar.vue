@@ -2,7 +2,7 @@
   <div class="navigatorContainer customScrollbar" :class="{ isDark: isDark }">
     <div class="item">
       <el-select
-        v-model:value="lang"
+        v-model="lang"
         size="small"
         style="width: 100px"
         @change="onLangChange"
@@ -45,12 +45,12 @@
     </div>
     <div class="item">
       <!-- <el-switch
-          v-model="isReadonly"
-          :active-text="$t('navigatorToolbar.readonly')"
-          :inactive-text="$t('navigatorToolbar.edit')"
-          @change="readonlyChange"
-        >
-        </el-switch> -->
+            v-model="isReadonly"
+            :active-text="$t('navigatorToolbar.readonly')"
+            :inactive-text="$t('navigatorToolbar.edit')"
+            @change="readonlyChange"
+          >
+          </el-switch> -->
       <el-tooltip
         effect="dark"
         :content="
@@ -81,14 +81,14 @@
       ></div>
     </div>
     <!-- <div class="item">
-        <el-tooltip
-          effect="dark"
-          :content="$t('navigatorToolbar.changeSourceCodeEdit')"
-          placement="top"
-        >
-          <div class="btn iconfont iconyuanma" @click="openSourceCodeEdit"></div>
-        </el-tooltip>
-      </div> -->
+          <el-tooltip
+            effect="dark"
+            :content="$t('navigatorToolbar.changeSourceCodeEdit')"
+            placement="top"
+          >
+            <div class="btn iconfont iconyuanma" @click="openSourceCodeEdit"></div>
+          </el-tooltip>
+        </div> -->
     <div class="item">
       <Demonstrate :isDark="isDark" :mindMap="mindMap"></Demonstrate>
     </div>

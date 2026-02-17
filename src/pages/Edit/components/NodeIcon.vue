@@ -2,7 +2,7 @@
   <el-dialog
     class="nodeIconDialog"
     :title="$t('nodeIcon.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     width="500"
   >
     <div class="item" v-for="item in nodeIconList" :key="item.name">

@@ -8,7 +8,7 @@
   >
     <div class="row">
       <el-input
-        v-model:value="text"
+        v-model="text"
         :placeholder="$t('nodeTagStyle.placeholder')"
         size="mini"
         @blur="updateTagText"

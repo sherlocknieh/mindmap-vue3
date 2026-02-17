@@ -2,17 +2,17 @@
   <el-dialog
     class="nodeNoteDialog"
     :title="$t('nodeNote.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <!-- <el-input
-        type="textarea"
-        :autosize="{ minRows: 3, maxRows: 5 }"
-        placeholder="请输入内容"
-        v-model="note"
-      >
-      </el-input> -->
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 5 }"
+          placeholder="请输入内容"
+          v-model="note"
+        >
+        </el-input> -->
     <div class="noteEditor" ref="noteEditor" @keyup.stop @keydown.stop></div>
     <!-- <div class="tip">换行请使用：Enter+Shift</div> -->
     <template v-slot:footer>

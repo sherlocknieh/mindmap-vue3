@@ -2,12 +2,12 @@
   <el-dialog
     class="nodeTagDialog"
     :title="$t('nodeTag.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     :width="isMobile ? '90%' : '50%'"
     :top="isMobile ? '20px' : '15vh'"
   >
     <el-input
-      v-model:value="tag"
+      v-model="tag"
       @keyup.enter="add"
       @keyup.stop
       @keydown.stop

@@ -1,7 +1,7 @@
 <template>
   <Sidebar ref="sidebar" :title="$t('nodeIconSidebar.title')">
     <div class="box" :class="{ isDark: isDark }">
-      <el-tabs v-model:value="activeName">
+      <el-tabs v-model="activeName">
         <el-tab-pane
           :label="$t('nodeIconSidebar.icon')"
           name="icon"

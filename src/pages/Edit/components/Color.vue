@@ -15,7 +15,7 @@
       <el-color-picker
         size="mini"
         show-alpha
-        v-model:value="selectColor"
+        v-model="selectColor"
         @change="changeColor"
       ></el-color-picker>
     </div>

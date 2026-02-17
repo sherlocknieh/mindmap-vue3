@@ -16,7 +16,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="styleConfig.strokeWidth"
+              v-model="styleConfig.strokeWidth"
               placeholder=""
               @change="
                 (value) => {
@@ -42,7 +42,7 @@
             <el-select
               size="mini"
               style="width: 80px; margin-left: 4px"
-              v-model:value="styleConfig.strokeDasharray"
+              v-model="styleConfig.strokeDasharray"
               placeholder=""
               @change="
                 (value) => {
@@ -101,7 +101,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="styleConfig.radius"
+              v-model="styleConfig.radius"
               placeholder=""
               @change="
                 (value) => {
@@ -153,7 +153,7 @@
             <span class="name">{{ $t('nodeOuterFrame.fontFamily') }}</span>
             <el-select
               size="mini"
-              v-model:value="styleConfig.fontFamily"
+              v-model="styleConfig.fontFamily"
               placeholder=""
               @change="
                 (value) => {
@@ -232,7 +232,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="styleConfig.lineHeight"
+              v-model="styleConfig.lineHeight"
               placeholder=""
               @change="
                 (value) => {
@@ -254,7 +254,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="styleConfig.fontSize"
+              v-model="styleConfig.fontSize"
               placeholder=""
               @change="
                 (color) => {
@@ -297,7 +297,7 @@
             <el-select
               size="mini"
               style="width: 80px"
-              v-model:value="styleConfig.textFillRadius"
+              v-model="styleConfig.textFillRadius"
               placeholder=""
               @change="
                 (value) => {
@@ -319,7 +319,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.textAlign') }}</span>
             <el-radio-group
-              v-model:value="styleConfig.textAlign"
+              v-model="styleConfig.textAlign"
               size="mini"
               @change="
                 (value) => {
@@ -344,7 +344,7 @@
             <span class="name">{{ $t('nodeOuterFrame.paddingX') }}</span>
             <el-slider
               style="width: 180px"
-              v-model:value="paddingStyle.paddingX"
+              v-model="paddingStyle.paddingX"
               @change="
                 (value) => {
                   updatePadding('x', value)
@@ -358,7 +358,7 @@
             <span class="name">{{ $t('nodeOuterFrame.paddingY') }}</span>
             <el-slider
               style="width: 180px"
-              v-model:value="paddingStyle.paddingY"
+              v-model="paddingStyle.paddingY"
               @change="
                 (value) => {
                   updatePadding('y', value)

@@ -2,7 +2,7 @@
   <el-dialog
     class="nodeImageDialog"
     :title="$t('nodeImage.title')"
-    v-model:visible="dialogVisible"
+    v-model="dialogVisible"
     :width="isMobile ? '90%' : '600px'"
     :top="isMobile ? '20px' : '15vh'"
   >
@@ -16,7 +16,7 @@
     <div class="inputBox">
       <span class="label">请输入图片地址</span>
       <el-input
-        v-model:value="imgUrl"
+        v-model="imgUrl"
         size="mini"
         placeholder="http://xxx.com/xx.jpg"
         @keydown.stop
@@ -25,7 +25,7 @@
     <div class="title">可选</div>
     <div class="inputBox">
       <span class="label">{{ $t('nodeImage.imgTitle') }}</span>
-      <el-input v-model:value="imgTitle" size="mini" @keydown.stop></el-input>
+      <el-input v-model="imgTitle" size="mini" @keydown.stop></el-input>
     </div>
     <template v-slot:footer>
       <span class="dialog-footer">
