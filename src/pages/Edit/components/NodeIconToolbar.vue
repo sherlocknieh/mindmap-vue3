@@ -54,7 +54,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeSidebar']),
+    ...mapState(useAppStore, ['activeSidebar']),
   },
   created() {
     this.mindMap.on('node_icon_click', this.show)

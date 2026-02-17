@@ -127,6 +127,7 @@ import NodeImgPlacementToolbar from './NodeImgPlacementToolbar.vue'
 import NodeNoteSidebar from './NodeNoteSidebar.vue'
 import AiCreate from './AiCreate.vue'
 import AiChat from './AiChat.vue'
+import imgLoadFail from '@/assets/img/图片加载失败.svg'
 
 // 注册插件
 MindMap.usePlugin(MiniMap)
@@ -382,7 +383,7 @@ export default {
         useLeftKeySelectionRightKeyDrag: this.useLeftKeySelectionRightKeyDrag,
         customInnerElsAppendTo: null,
         customHandleClipboardText: handleClipboardText,
-        defaultNodeImage: require('../../../assets/img/图片加载失败.svg'),
+        defaultNodeImage: imgLoadFail,
         initRootNodePosition: ['center', 'center'],
         handleIsSplitByWrapOnPasteCreateNewNode: () => {
           return this.$confirm(

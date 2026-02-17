@@ -120,7 +120,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['aiConfig']),
+    ...mapState(useAppStore, ['aiConfig']),
   },
   watch: {
     visible(val) {

@@ -155,7 +155,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['aiConfig']),
+    ...mapState(useAppStore, ['aiConfig']),
   },
   created() {
     $on(this.$bus, 'ai_create_all', this.aiCrateAll)
