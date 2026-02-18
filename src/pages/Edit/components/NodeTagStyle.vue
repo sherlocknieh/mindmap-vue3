@@ -1,11 +1,12 @@
 <template>
-  <div
-    class="nodeTagStyleContainer"
-    ref="elRef"
-    :style="position"
-    v-show="show"
-    :class="{ isDark: isDark }"
-  >
+  <teleport to="body">
+    <div
+      class="nodeTagStyleContainer"
+      ref="elRef"
+      :style="position"
+      v-show="show"
+      :class="{ isDark: isDark }"
+    >
     <div class="row">
       <el-input
         v-model="text"
@@ -24,6 +25,7 @@
       <Color :color="fill" @change="updateTagFill"></Color>
     </div>
   </div>
+  </teleport>
 </template>
 
 <script>
@@ -72,9 +74,7 @@ export default {
     this.mindMap.off('svg_mousedown', this.hide)
     this.mindMap.off('expand_btn_click', this.hide)
   },
-  mounted() {
-    document.body.appendChild(this.$refs.elRef)
-  },
+  mounted() {},
   methods: {
     onNodeTagClick(node, tag, index, el) {
       this.node = node

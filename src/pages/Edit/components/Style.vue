@@ -103,10 +103,13 @@
               U
             </div>
           </div>
-          <el-popover ref="popover" placement="bottom" trigger="hover">
+          <el-popover placement="bottom" trigger="hover">
             <Color :color="style.color" @change="changeFontColor"></Color>
             <template v-slot:reference>
-              <div class="styleBtn" :title="$t('style.color')">
+              <div
+                class="styleBtn"
+                :style="{ color: style.color || '#eee' }"
+              >
                 A
                 <span
                   class="colorShow"
@@ -142,16 +145,17 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('style.color') }}</span>
-            <span
-              class="block"
-              v-popover:popover3
-              :style="{ width: '80px', backgroundColor: style.borderColor }"
-            ></span>
-            <el-popover ref="popover3" placement="bottom" trigger="hover">
+            <el-popover placement="bottom" trigger="hover">
               <Color
                 :color="style.borderColor"
                 @change="changeBorderColor"
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ width: '80px', backgroundColor: style.borderColor }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">
@@ -239,17 +243,16 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('style.color') }}</span>
-            <span
-              class="block"
-              v-popover:popover4
-              :style="{ backgroundColor: style.fillColor }"
-            ></span>
-            <el-popover ref="popover4" placement="bottom" trigger="hover">
+            <el-popover placement="bottom" trigger="hover">
               <Color :color="style.fillColor" @change="changeFillColor"></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: style.fillColor }"
+                ></span>
+              </template>
             </el-popover>
-            <span class="name" style="margin-left: 20px">{{
-              $t('style.gradientStyle')
-            }}</span>
+            <span class="name" style="margin-left: 20px">{{ $t('style.gradientStyle') }}</span>
             <el-checkbox
               v-model="style.gradientStyle"
               @change="update('gradientStyle')"
@@ -259,27 +262,29 @@
         <div class="row" v-if="style.gradientStyle">
           <div class="rowItem">
             <span class="name">{{ $t('style.startColor') }}</span>
-            <span
-              class="block"
-              v-popover:popover6
-              :style="{ backgroundColor: style.startColor }"
-            ></span>
-            <el-popover ref="popover6" placement="bottom" trigger="hover">
+            <el-popover placement="bottom" trigger="hover">
               <Color
                 :color="style.startColor"
                 @change="changeStartColor"
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: style.startColor }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">
             <span class="name">{{ $t('style.endColor') }}</span>
-            <span
-              class="block"
-              v-popover:popover7
-              :style="{ backgroundColor: style.endColor }"
-            ></span>
-            <el-popover ref="popover7" placement="bottom" trigger="hover">
+            <el-popover placement="bottom" trigger="hover">
               <Color :color="style.endColor" @change="changeEndColor"></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: style.endColor }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">
@@ -351,13 +356,17 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('style.color') }}</span>
-            <span
-              class="block"
-              v-popover:popover5
-              :style="{ width: '80px', backgroundColor: style.lineColor }"
-            ></span>
-            <el-popover ref="popover5" placement="bottom" trigger="hover">
-              <Color :color="style.lineColor" @change="changeLineColor"></Color>
+            <el-popover placement="bottom" trigger="hover">
+              <Color
+                :color="style.lineColor"
+                @change="changeLineColor"
+              ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ width: '80px', backgroundColor: style.lineColor }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">

@@ -80,12 +80,7 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.boxColor') }}</span>
-            <span
-              class="block"
-              v-popover:popover
-              :style="{ backgroundColor: styleConfig.strokeColor }"
-            ></span>
-            <el-popover ref="popover" placement="bottom" trigger="click">
+            <el-popover placement="bottom" trigger="click">
               <Color
                 :color="styleConfig.strokeColor"
                 @change="
@@ -94,6 +89,12 @@
                   }
                 "
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: styleConfig.strokeColor }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">
@@ -122,12 +123,7 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.fillColor') }}</span>
-            <span
-              class="block"
-              v-popover:popover2
-              :style="{ backgroundColor: styleConfig.fill }"
-            ></span>
-            <el-popover ref="popover2" placement="bottom" trigger="click">
+            <el-popover placement="bottom" trigger="click">
               <Color
                 :color="styleConfig.fill"
                 @change="
@@ -136,6 +132,12 @@
                   }
                 "
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: styleConfig.fill }"
+                ></span>
+              </template>
             </el-popover>
           </div>
         </div>
@@ -174,18 +176,27 @@
         </div>
         <div class="row">
           <div class="btnGroup">
-            <el-tooltip
-              :content="$t('nodeOuterFrame.color')"
-              placement="bottom"
-            >
-              <div class="styleBtn" v-popover:popover3>
-                A
-                <span
-                  class="colorShow"
-                  :style="{ backgroundColor: styleConfig.color }"
-                ></span>
-              </div>
-            </el-tooltip>
+            <div class="styleBtn" :title="$t('nodeOuterFrame.color')">
+              <el-popover placement="bottom" trigger="click">
+                <Color
+                  :color="styleConfig.textColor"
+                  @change="
+                    (color) => {
+                      updateOuterFrame('textColor', color)
+                    }
+                  "
+                ></Color>
+                <template v-slot:reference>
+                  <div>
+                    A
+                    <span
+                      class="colorShow"
+                      :style="{ backgroundColor: styleConfig.textColor }"
+                    ></span>
+                  </div>
+                </template>
+              </el-popover>
+            </div>
             <el-tooltip
               :content="$t('nodeOuterFrame.fontBold')"
               placement="bottom"
@@ -215,7 +226,7 @@
               </div>
             </el-tooltip>
           </div>
-          <el-popover ref="popover3" placement="bottom" trigger="hover">
+          <el-popover placement="bottom" trigger="hover">
             <Color
               :color="styleConfig.color"
               @change="
@@ -224,6 +235,15 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <div>
+                A
+                <span
+                  class="colorShow"
+                  :style="{ backgroundColor: styleConfig.color }"
+                ></span>
+              </div>
+            </template>
           </el-popover>
         </div>
         <div class="row">
@@ -276,12 +296,7 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('nodeOuterFrame.textFill') }}</span>
-            <span
-              class="block"
-              v-popover:popover4
-              :style="{ backgroundColor: styleConfig.textFill }"
-            ></span>
-            <el-popover ref="popover4" placement="bottom" trigger="click">
+            <el-popover placement="bottom" trigger="click">
               <Color
                 :color="styleConfig.textFill"
                 @change="
@@ -290,6 +305,12 @@
                   }
                 "
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: styleConfig.textFill }"
+                ></span>
+              </template>
             </el-popover>
           </div>
           <div class="rowItem">

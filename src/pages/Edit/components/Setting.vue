@@ -53,12 +53,7 @@
         <div class="row">
           <div class="rowItem">
             <span class="name">{{ $t('setting.watermarkTextColor') }}</span>
-            <span
-              class="block"
-              v-popover:popover3
-              :style="{ backgroundColor: watermarkConfig.textStyle.color }"
-            ></span>
-            <el-popover ref="popover3" placement="bottom" trigger="click">
+            <el-popover placement="bottom" trigger="click">
               <Color
                 :color="watermarkConfig.textStyle.color"
                 @change="
@@ -68,6 +63,12 @@
                   }
                 "
               ></Color>
+              <template v-slot:reference>
+                <span
+                  class="block"
+                  :style="{ backgroundColor: watermarkConfig.textStyle.color }"
+                ></span>
+              </template>
             </el-popover>
           </div>
         </div>

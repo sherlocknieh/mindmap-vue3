@@ -65,8 +65,6 @@ onMounted(async () => {
 </script>
 
 <style lang="less">
-.container {
-}
 body {
   &.isDark {
     /* el-button */

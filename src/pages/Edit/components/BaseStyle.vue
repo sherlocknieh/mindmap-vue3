@@ -135,12 +135,7 @@
       <div class="row">
         <div class="rowItem">
           <span class="name">{{ $t('baseStyle.color') }}</span>
-          <span
-            class="block"
-            v-popover:popover
-            :style="{ backgroundColor: style.lineColor }"
-          ></span>
-          <el-popover ref="popover" placement="bottom" trigger="click">
+          <el-popover placement="bottom" trigger="click">
             <Color
               :color="style.lineColor"
               @change="
@@ -149,6 +144,12 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <span
+                class="block"
+                :style="{ backgroundColor: style.lineColor }"
+              ></span>
+            </template>
           </el-popover>
         </div>
         <div class="rowItem">
@@ -357,12 +358,7 @@
       <div class="row">
         <div class="rowItem">
           <span class="name">{{ $t('baseStyle.color') }}</span>
-          <span
-            class="block"
-            v-popover:popover2
-            :style="{ backgroundColor: style.generalizationLineColor }"
-          ></span>
-          <el-popover ref="popover2" placement="bottom" trigger="click">
+          <el-popover placement="bottom" trigger="click">
             <Color
               :color="style.generalizationLineColor"
               @change="
@@ -371,6 +367,12 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <span
+                class="block"
+                :style="{ backgroundColor: style.generalizationLineColor }"
+              ></span>
+            </template>
           </el-popover>
         </div>
         <div class="rowItem">
@@ -407,12 +409,7 @@
       <div class="row">
         <div class="rowItem">
           <span class="name">{{ $t('baseStyle.associativeLineColor') }}</span>
-          <span
-            class="block"
-            v-popover:popover4
-            :style="{ backgroundColor: style.associativeLineColor }"
-          ></span>
-          <el-popover ref="popover4" placement="bottom" trigger="click">
+          <el-popover placement="bottom" trigger="click">
             <Color
               :color="style.associativeLineColor"
               @change="
@@ -421,6 +418,12 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <span
+                class="block"
+                :style="{ backgroundColor: style.associativeLineColor }"
+              ></span>
+            </template>
           </el-popover>
         </div>
         <div class="rowItem">
@@ -454,15 +457,8 @@
       </div>
       <div class="row">
         <div class="rowItem">
-          <span class="name">{{
-            $t('baseStyle.associativeLineActiveColor')
-          }}</span>
-          <span
-            class="block"
-            v-popover:popover5
-            :style="{ backgroundColor: style.associativeLineActiveColor }"
-          ></span>
-          <el-popover ref="popover5" placement="bottom" trigger="click">
+          <span class="name">{{ $t('baseStyle.associativeLineActiveColor') }}</span>
+          <el-popover placement="bottom" trigger="click">
             <Color
               :color="style.associativeLineActiveColor"
               @change="
@@ -471,6 +467,12 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <span
+                class="block"
+                :style="{ backgroundColor: style.associativeLineActiveColor }"
+              ></span>
+            </template>
           </el-popover>
         </div>
         <div class="rowItem">
@@ -570,12 +572,7 @@
       <div class="row">
         <div class="rowItem">
           <span class="name">{{ $t('baseStyle.color') }}</span>
-          <span
-            class="block"
-            v-popover:popover6
-            :style="{ backgroundColor: style.associativeLineTextColor }"
-          ></span>
-          <el-popover ref="popover6" placement="bottom" trigger="click">
+          <el-popover placement="bottom" trigger="click">
             <Color
               :color="style.associativeLineTextColor"
               @change="
@@ -584,6 +581,12 @@
                 }
               "
             ></Color>
+            <template v-slot:reference>
+              <span
+                class="block"
+                :style="{ backgroundColor: style.associativeLineTextColor }"
+              ></span>
+            </template>
           </el-popover>
         </div>
         <div class="rowItem">

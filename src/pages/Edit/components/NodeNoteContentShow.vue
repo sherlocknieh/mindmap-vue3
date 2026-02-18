@@ -1,20 +1,22 @@
 <template>
-  <div
-    class="noteContentViewer customScrollbar"
-    ref="noteContentViewer"
-    :style="{
-      left: this.left + 'px',
-      top: this.top + 'px',
-      visibility: show ? 'visible' : 'hidden',
-    }"
-    @click.stop
-    @mousedown.stop
-    @mousemove.stop
-    @mouseup.stop
-    @wheel.stop
-  >
-    <div class="noteContentWrap customScrollbar" ref="noteContentWrap"></div>
-  </div>
+  <teleport to="body">
+    <div
+      class="noteContentViewer customScrollbar"
+      ref="noteContentViewer"
+      :style="{
+        left: this.left + 'px',
+        top: this.top + 'px',
+        visibility: show ? 'visible' : 'hidden',
+      }"
+      @click.stop
+      @mousedown.stop
+      @mousemove.stop
+      @mouseup.stop
+      @wheel.passive.stop
+    >
+      <div class="noteContentWrap customScrollbar" ref="noteContentWrap"></div>
+    </div>
+  </teleport>
 </template>
 
 <script>
@@ -52,7 +54,6 @@ export default {
     $on(this.$bus, 'expand_btn_click', this.hideNoteContent)
   },
   mounted() {
-    this.mindMap.el.appendChild(this.$refs.noteContentViewer)
     this.initEditor()
   },
   beforeUnmount() {

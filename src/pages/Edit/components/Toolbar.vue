@@ -5,26 +5,26 @@
       <div class="toolbarBlock">
         <ToolbarNodeBtnList :list="horizontalList"></ToolbarNodeBtnList>
         <!-- 更多 -->
-        <el-popover
-          v-model="popoverShow"
-          placement="bottom-end"
-          width="120"
-          trigger="hover"
-          v-if="showMoreBtn"
-          :style="{ marginLeft: horizontalList.length > 0 ? '20px' : 0 }"
-        >
-          <ToolbarNodeBtnList
-            dir="v"
-            :list="verticalList"
-            @click="popoverShow = false"
-          ></ToolbarNodeBtnList>
-          <template v-slot:reference>
-            <div class="toolbarBtn">
-              <span class="icon iconfont icongongshi"></span>
-              <span class="text">{{ $t('toolbar.more') }}</span>
-            </div>
-          </template>
-        </el-popover>
+        <div v-if="showMoreBtn" :style="{ marginLeft: horizontalList.length > 0 ? '20px' : 0 }">
+          <el-popover
+            v-model="popoverShow"
+            placement="bottom-end"
+            width="120"
+            trigger="hover"
+          >
+            <ToolbarNodeBtnList
+              dir="v"
+              :list="verticalList"
+              @click="popoverShow = false"
+            ></ToolbarNodeBtnList>
+            <template v-slot:reference>
+              <div class="toolbarBtn">
+                <span class="icon iconfont icongongshi"></span>
+                <span class="text">{{ $t('toolbar.more') }}</span>
+              </div>
+            </template>
+          </el-popover>
+        </div>
       </div>
       <!-- 导出 -->
       <div class="toolbarBlock">
@@ -32,28 +32,30 @@
           <span class="icon iconfont icondakai"></span>
           <span class="text">{{ $t('toolbar.directory') }}</span>
         </div>
-        <el-tooltip
-          effect="dark"
-          :content="$t('toolbar.newFileTip')"
-          placement="bottom"
-          v-if="!isMobile"
-        >
-          <div class="toolbarBtn" @click="createNewLocalFile">
-            <span class="icon iconfont iconxinjian"></span>
-            <span class="text">{{ $t('toolbar.newFile') }}</span>
-          </div>
-        </el-tooltip>
-        <el-tooltip
-          effect="dark"
-          :content="$t('toolbar.openFileTip')"
-          placement="bottom"
-          v-if="!isMobile"
-        >
-          <div class="toolbarBtn" @click="openLocalFile">
-            <span class="icon iconfont iconwenjian1"></span>
-            <span class="text">{{ $t('toolbar.openFile') }}</span>
-          </div>
-        </el-tooltip>
+        <div v-if="!isMobile">
+          <el-tooltip
+            effect="dark"
+            :content="$t('toolbar.newFileTip')"
+            placement="bottom"
+          >
+            <div class="toolbarBtn" @click="createNewLocalFile">
+              <span class="icon iconfont iconxinjian"></span>
+              <span class="text">{{ $t('toolbar.newFile') }}</span>
+            </div>
+          </el-tooltip>
+        </div>
+        <div v-if="!isMobile">
+          <el-tooltip
+            effect="dark"
+            :content="$t('toolbar.openFileTip')"
+            placement="bottom"
+          >
+            <div class="toolbarBtn" @click="openLocalFile">
+              <span class="icon iconfont iconwenjian1"></span>
+              <span class="text">{{ $t('toolbar.openFile') }}</span>
+            </div>
+          </el-tooltip>
+        </div>
         <div class="toolbarBtn" @click="saveLocalFile" v-if="!isMobile">
           <span class="icon iconfont iconlingcunwei"></span>
           <span class="text">{{ $t('toolbar.saveAs') }}</span>
@@ -670,9 +672,6 @@ export default {
           border-bottom: 1px solid #e9e9e9;
           margin-bottom: 12px;
           padding-left: 12px;
-
-          .fileTreeName {
-          }
 
           .fileTreeActionList {
             .btn {

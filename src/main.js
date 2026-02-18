@@ -10,6 +10,7 @@ import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
 import eventBus, { emitter } from '@/utils/eventBus'
 import { getLang } from '@/api'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -27,6 +28,27 @@ i18n.global.locale.value = getLang()
 
 // Make emitter globally available
 app.config.globalProperties.$emitter = emitter
+
+// Register Element Plus icons globally to simplify usage
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
+
+// Debug: capture Element Plus only-child warnings to identify the component
+app.config.warnHandler = (msg, instance, trace) => {
+  try {
+    const text = typeof msg === 'string' ? msg : String(msg)
+    if (text.includes('[ElOnlyChild]')) {
+      const comp = instance && instance.type
+      const name = comp && (comp.name || comp.__file) ? (comp.name || comp.__file) : comp
+      // Print clearer diagnostic info for developer
+      // eslint-disable-next-line no-console
+      console.error('[ElOnlyChild] detected in component:', name, '\nTrace:', trace)
+    }
+  } catch (e) {
+    // ignore
+  }
+}
 
 const initApp = () => {
   app.mount('#app')

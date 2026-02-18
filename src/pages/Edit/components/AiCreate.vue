@@ -72,15 +72,17 @@
       </template>
     </el-dialog>
     <!-- ai生成中添加一个透明层，防止期间用户进行操作 -->
-    <div
-      class="aiCreatingMask"
-      ref="aiCreatingMaskRef"
-      v-show="aiCreatingMaskVisible"
-    >
-      <el-button type="warning" class="btn" @click="stopCreate">{{
-        $t('ai.stopGenerating')
-      }}</el-button>
-    </div>
+    <teleport to="body">
+      <div
+        class="aiCreatingMask"
+        ref="aiCreatingMaskRef"
+        v-show="aiCreatingMaskVisible"
+      >
+        <el-button type="warning" class="btn" @click="stopCreate">{{
+          $t('ai.stopGenerating')
+        }}</el-button>
+      </div>
+    </teleport>
     <AiConfigDialog v-model:value="aiConfigDialogVisible"></AiConfigDialog>
     <!-- AI续写 -->
     <el-dialog
@@ -164,9 +166,7 @@ export default {
     $on(this.$bus, 'ai_chat_stop', this.aiChatStop)
     $on(this.$bus, 'showAiConfigDialog', this.showAiConfigDialog)
   },
-  mounted() {
-    document.body.appendChild(this.$refs.aiCreatingMaskRef)
-  },
+  mounted() {},
   beforeUnmount() {
     $off(this.$bus, 'ai_create_all', this.aiCrateAll)
     $off(this.$bus, 'ai_create_part', this.showAiCreatePartDialog)

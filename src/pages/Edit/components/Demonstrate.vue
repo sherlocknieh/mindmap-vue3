@@ -8,25 +8,26 @@
     >
       <div class="btn iconfont iconyanshibofang" @click="enterDemoMode"></div>
     </el-tooltip>
-    <div
-      class="exitDemonstrateBtn"
-      @click="exit"
-      ref="exitDemonstrateBtnRef"
-      v-if="isEnterDemonstrate"
-      @mousedown.stop
-      @mousemove.stop
-      @mouseup.stop
-    >
-      <span class="icon iconfont iconguanbi"></span>
-    </div>
-    <div
-      class="stepBox"
-      ref="stepBoxRef"
-      v-if="isEnterDemonstrate"
-      @mousedown.stop
-      @mousemove.stop
-      @mouseup.stop
-    >
+    <teleport to="body">
+      <div
+        class="exitDemonstrateBtn"
+        @click="exit"
+        ref="exitDemonstrateBtnRef"
+        v-if="isEnterDemonstrate"
+        @mousedown.stop
+        @mousemove.stop
+        @mouseup.stop
+      >
+        <span class="icon iconfont iconguanbi"></span>
+      </div>
+      <div
+        class="stepBox"
+        ref="stepBoxRef"
+        v-if="isEnterDemonstrate"
+        @mousedown.stop
+        @mousemove.stop
+        @mouseup.stop
+      >
       <div class="jump" @click="prev" :class="{ disabled: curStepIndex <= 0 }">
         <el-icon class="icon" :size="16">
           <ArrowLeft />
@@ -50,7 +51,8 @@
           @keydown.stop
         />
       </div>
-    </div>
+      </div>
+    </teleport>
   </div>
 </template>
 
@@ -82,11 +84,6 @@ export default {
   methods: {
     enterDemoMode() {
       this.isEnterDemonstrate = true
-      this.$nextTick(() => {
-        const el = document.querySelector('#mindMapContainer')
-        el.appendChild(this.$refs.exitDemonstrateBtnRef)
-        el.appendChild(this.$refs.stepBoxRef)
-      })
       this.mindMap.demonstrate.enter()
     },
 

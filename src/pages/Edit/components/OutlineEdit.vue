@@ -1,21 +1,15 @@
 <template>
-  <div
-    class="outlineEditContainer"
-    :class="{ isDark: isDark }"
-    ref="outlineEditContainer"
-    v-if="isOutlineEdit"
-  >
+  <teleport to="body">
+    <div
+      class="outlineEditContainer"
+      :class="{ isDark: isDark }"
+      ref="outlineEditContainer"
+      v-if="isOutlineEdit"
+    >
     <div class="btnList">
-      <el-tooltip
-        class="item"
-        effect="dark"
-        :content="$t('outline.print')"
-        placement="top"
-      >
-        <div class="btn" @click="onPrint">
-          <span class="icon iconfont iconprinting"></span>
-        </div>
-      </el-tooltip>
+      <div class="btn" @click="onPrint" :title="$t('outline.print')">
+        <span class="icon iconfont iconprinting"></span>
+      </div>
       <div class="btn" @click="onClose">
         <span class="icon iconfont iconguanbi"></span>
       </div>
@@ -59,6 +53,7 @@
       </div>
     </div>
   </div>
+  </teleport>
 </template>
 
 <script>
@@ -98,13 +93,10 @@ export default {
       isOutlineEdit: (state) => state.isOutlineEdit,
     }),
   },
-  watch: {
+    watch: {
     isOutlineEdit(val) {
       if (val) {
         this.refresh()
-        this.$nextTick(() => {
-          document.body.appendChild(this.$refs.outlineEditContainer)
-        })
       }
     },
   },
