@@ -11,6 +11,11 @@ import VueViewer from 'v-viewer'
 import eventBus, { emitter } from '@/utils/eventBus'
 import { getLang } from '@/api'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// Polyfills for Node globals used by some deps in browser
+import { Buffer } from 'buffer'
+import process from 'process'
+if (!window.Buffer) window.Buffer = Buffer
+if (!window.process) window.process = process
 
 const app = createApp(App)
 const pinia = createPinia()
