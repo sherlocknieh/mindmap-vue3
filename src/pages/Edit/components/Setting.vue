@@ -261,7 +261,7 @@
         <div class="rowItem">
           <span class="name">{{ $t('setting.mousewheelAction') }}</span>
           <el-select
-            size="mini"
+            size="small"
             style="width: 120px"
             v-model="config.mousewheelAction"
             placeholder=""
@@ -286,7 +286,7 @@
             $t('setting.mousewheelZoomActionReverse')
           }}</span>
           <el-select
-            size="mini"
+            size="small"
             style="width: 120px"
             v-model="config.mousewheelZoomActionReverse"
             placeholder=""
@@ -312,7 +312,7 @@
         <div class="rowItem">
           <span class="name">{{ $t('setting.createNewNodeBehavior') }}</span>
           <el-select
-            size="mini"
+            size="small"
             style="width: 120px"
             v-model="config.createNewNodeBehavior"
             placeholder=""

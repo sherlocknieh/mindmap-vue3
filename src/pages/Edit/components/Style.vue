@@ -12,7 +12,7 @@
           <div class="rowItem">
             <!-- <span class="name">{{ $t('style.fontFamily') }}</span> -->
             <el-select
-              size="mini"
+              size="small"
               style="width: 100px"
               v-model="style.fontFamily"
               placeholder=""
@@ -31,7 +31,7 @@
           <div class="rowItem">
             <!-- <span class="name">{{ $t('style.fontSize') }}</span> -->
             <el-select
-              size="mini"
+              size="small"
               style="width: 60px"
               v-model="style.fontSize"
               placeholder=""
@@ -49,7 +49,7 @@
           </div>
           <div class="rowItem">
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.textAlign"
               placeholder=""
@@ -67,15 +67,13 @@
         </div>
         <div class="row">
           <div class="btnGroup">
-            <el-tooltip :content="$t('style.color')" placement="bottom">
-              <div class="styleBtn" v-popover:popover>
-                A
-                <span
-                  class="colorShow"
-                  :style="{ backgroundColor: style.color || '#eee' }"
-                ></span>
-              </div>
-            </el-tooltip>
+            <div class="styleBtn">
+              A
+              <span
+                class="colorShow"
+                :style="{ backgroundColor: style.color || '#eee' }"
+              ></span>
+            </div>
             <el-tooltip :content="$t('style.addFontWeight')" placement="bottom">
               <div
                 class="styleBtn"
@@ -98,41 +96,45 @@
                 I
               </div>
             </el-tooltip>
-            <el-tooltip
-              :content="$t('style.textDecoration')"
-              placement="bottom"
+            <div
+              class="styleBtn u"
+              :style="{ textDecoration: style.textDecoration || 'none' }"
             >
-              <div
-                class="styleBtn u"
-                :style="{ textDecoration: style.textDecoration || 'none' }"
-                v-popover:popover2
-              >
-                U
-              </div>
-            </el-tooltip>
+              U
+            </div>
           </div>
           <el-popover ref="popover" placement="bottom" trigger="hover">
             <Color :color="style.color" @change="changeFontColor"></Color>
+            <template v-slot:reference>
+              <div class="styleBtn" :title="$t('style.color')">
+                A
+                <span
+                  class="colorShow"
+                  :style="{ backgroundColor: style.color || '#eee' }"
+                ></span>
+              </div>
+            </template>
           </el-popover>
           <el-popover ref="popover2" placement="bottom" trigger="hover">
             <el-radio-group
-              size="mini"
+              size="small"
               v-model="style.textDecoration"
               @change="update('textDecoration')"
             >
-              <el-radio-button label="none">{{
-                $t('style.none')
-              }}</el-radio-button>
-              <el-radio-button label="underline">{{
-                $t('style.underline')
-              }}</el-radio-button>
-              <el-radio-button label="line-through">{{
-                $t('style.lineThrough')
-              }}</el-radio-button>
-              <el-radio-button label="overline">{{
-                $t('style.overline')
-              }}</el-radio-button>
+              <el-radio-button value="none">{{ $t('style.none') }}</el-radio-button>
+              <el-radio-button value="underline">{{ $t('style.underline') }}</el-radio-button>
+              <el-radio-button value="line-through">{{ $t('style.lineThrough') }}</el-radio-button>
+              <el-radio-button value="overline">{{ $t('style.overline') }}</el-radio-button>
             </el-radio-group>
+            <template v-slot:reference>
+              <div
+                class="styleBtn u"
+                :style="{ textDecoration: style.textDecoration || 'none' }"
+                :title="$t('style.textDecoration')"
+              >
+                U
+              </div>
+            </template>
           </el-popover>
         </div>
         <!-- 边框 -->
@@ -155,7 +157,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.style') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.borderDasharray"
               placeholder=""
@@ -192,7 +194,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.width') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.borderWidth"
               placeholder=""
@@ -216,7 +218,7 @@
           <div class="rowItem" v-show="style.shape === 'rectangle'">
             <span class="name">{{ $t('style.borderRadius') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.borderRadius"
               placeholder=""
@@ -283,7 +285,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.direction') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.linearGradientDir"
               placeholder=""
@@ -305,7 +307,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.shape') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 120px"
               v-model="style.shape"
               placeholder=""
@@ -361,7 +363,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.style') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.lineDasharray"
               placeholder=""
@@ -398,7 +400,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.width') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.lineWidth"
               placeholder=""
@@ -422,7 +424,7 @@
           <div class="rowItem">
             <span class="name">{{ $t('style.arrowDir') }}</span>
             <el-select
-              size="mini"
+              size="small"
               style="width: 80px"
               v-model="style.lineMarkerDir"
               placeholder=""
@@ -470,21 +472,13 @@
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
               v-model="style.imgPlacement"
-              size="mini"
+              size="small"
               @change="update('imgPlacement')"
             >
-              <el-radio-button label="top">{{
-                $t('style.top')
-              }}</el-radio-button>
-              <el-radio-button label="bottom">{{
-                $t('style.bottom')
-              }}</el-radio-button>
-              <el-radio-button label="left">{{
-                $t('style.left')
-              }}</el-radio-button>
-              <el-radio-button label="right">{{
-                $t('style.right')
-              }}</el-radio-button>
+              <el-radio-button value="top">{{ $t('style.top') }}</el-radio-button>
+              <el-radio-button value="bottom">{{ $t('style.bottom') }}</el-radio-button>
+              <el-radio-button value="left">{{ $t('style.left') }}</el-radio-button>
+              <el-radio-button value="right">{{ $t('style.right') }}</el-radio-button>
             </el-radio-group>
           </div>
         </div>
@@ -495,15 +489,11 @@
             <span class="name">{{ $t('style.placement') }}</span>
             <el-radio-group
               v-model="style.tagPlacement"
-              size="mini"
+              size="small"
               @change="update('tagPlacement')"
             >
-              <el-radio-button label="right">{{
-                $t('style.right')
-              }}</el-radio-button>
-              <el-radio-button label="bottom">{{
-                $t('style.bottom')
-              }}</el-radio-button>
+              <el-radio-button value="right">{{ $t('style.right') }}</el-radio-button>
+              <el-radio-button value="bottom">{{ $t('style.bottom') }}</el-radio-button>
             </el-radio-group>
           </div>
         </div>
@@ -888,9 +878,6 @@ export default {
 
       &.i {
         font-style: italic;
-      }
-
-      &.u {
       }
 
       .colorShow {

@@ -81,17 +81,13 @@
               {{ rootDirName ? '/' + rootDirName : '' }}
             </div>
             <div class="fileTreeActionList">
-              <div
-                class="btn"
-                :class="[
-                  fileTreeExpand ? 'el-icon-arrow-up' : 'el-icon-arrow-down',
-                ]"
-                @click="fileTreeExpand = !fileTreeExpand"
-              ></div>
-              <div
-                class="btn el-icon-close"
-                @click="fileTreeVisible = false"
-              ></div>
+              <el-icon class="btn" @click="fileTreeExpand = !fileTreeExpand" :size="16">
+                <ArrowUp v-if="fileTreeExpand" />
+                <ArrowDown v-else />
+              </el-icon>
+              <el-icon class="btn" @click="fileTreeVisible = false" :size="16">
+                <Close />
+              </el-icon>
             </div>
           </div>
           <div class="fileTreeWrap">
@@ -116,14 +112,14 @@
                   <div class="treeNodeBtnList" v-if="data.type === 'file'">
                     <el-button
                       type="text"
-                      size="mini"
+                      size="small"
                       v-if="data.enableEdit"
                       @click="editLocalFile(data)"
                       >编辑</el-button
                     >
                     <el-button
                       type="text"
-                      size="mini"
+                      size="small"
                       v-else
                       @click="importLocalFile(data)"
                       >导入</el-button
@@ -162,6 +158,7 @@ import exampleData from 'simple-mind-map/example/exampleData'
 import { getData } from '../../../api'
 import ToolbarNodeBtnList from './ToolbarNodeBtnList.vue'
 import { throttle, isMobile } from 'simple-mind-map/src/utils/index'
+import { Close, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 
 // 工具栏
 let fileHandle = null
@@ -196,6 +193,9 @@ export default {
     Export,
     Import,
     ToolbarNodeBtnList,
+    Close,
+    ArrowUp,
+    ArrowDown,
   },
   data() {
     return {
@@ -514,7 +514,6 @@ export default {
         const loading = this.$loading({
           lock: true,
           text: this.$t('toolbar.creatingTip'),
-          spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
         fileHandle = _fileHandle

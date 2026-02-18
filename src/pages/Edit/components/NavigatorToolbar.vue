@@ -94,7 +94,9 @@
     </div>
     <div class="item">
       <el-dropdown @command="handleCommand">
-        <div class="btn el-icon-more"></div>
+        <el-icon class="btn" :size="16">
+          <More />
+        </el-icon>
         <template v-slot:dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="shortcutKey">
@@ -141,6 +143,7 @@ import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import pkg from 'simple-mind-map/package.json'
 import Demonstrate from './Demonstrate.vue'
+import { More } from '@element-plus/icons-vue'
 
 export default {
   components: {
@@ -148,6 +151,7 @@ export default {
     Fullscreen,
     MouseAction,
     Demonstrate,
+    More,
   },
   props: {
     mindMap: {

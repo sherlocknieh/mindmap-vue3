@@ -124,7 +124,9 @@
       </div>
       <div class="item">
         <span class="name">{{ $t('contextmenu.expandTo') }}</span>
-        <span class="el-icon-arrow-right"></span>
+        <el-icon class="el-icon-arrow-right" :size="16">
+          <ArrowRight />
+        </el-icon>
         <div
           class="subItems listBox"
           :class="{ isDark: isDark, showLeft: subItemsShowLeft }"
@@ -161,7 +163,9 @@
       </div>
       <div class="item">
         <span class="name">{{ $t('contextmenu.copyToClipboard') }}</span>
-        <span class="el-icon-arrow-right"></span>
+        <el-icon class="el-icon-arrow-right" :size="16">
+          <ArrowRight />
+        </el-icon>
         <div
           class="subItems listBox"
           :class="{ isDark: isDark, showLeft: subItemsShowLeft }"
@@ -183,6 +187,7 @@
 
 <script>
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+import { ArrowRight } from '@element-plus/icons-vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
 import { getTextFromHtml, imgToDataUrl } from 'simple-mind-map/src/utils'
@@ -192,6 +197,7 @@ import { setDataToClipboard, setImgToClipboard, copy } from '@/utils'
 import { numberTypeList, numberLevelList } from '@/config'
 
 export default {
+  components: { ArrowRight },
   props: {
     mindMap: {
       type: Object,

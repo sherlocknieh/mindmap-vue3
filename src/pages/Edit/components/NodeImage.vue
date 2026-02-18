@@ -17,7 +17,7 @@
       <span class="label">请输入图片地址</span>
       <el-input
         v-model="imgUrl"
-        size="mini"
+        size="small"
         placeholder="http://xxx.com/xx.jpg"
         @keydown.stop
       ></el-input>
@@ -25,7 +25,7 @@
     <div class="title">可选</div>
     <div class="inputBox">
       <span class="label">{{ $t('nodeImage.imgTitle') }}</span>
-      <el-input v-model="imgTitle" size="mini" @keydown.stop></el-input>
+      <el-input v-model="imgTitle" size="small" @keydown.stop></el-input>
     </div>
     <template v-slot:footer>
       <span class="dialog-footer">

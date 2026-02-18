@@ -5,7 +5,9 @@
     :class="{ show: show, isDark: isDark }"
     :style="{ zIndex: zIndex }"
   >
-    <span class="closeBtn el-icon-close" @click="close"></span>
+    <el-icon class="closeBtn" @click="close" :size="20">
+      <Close />
+    </el-icon>
     <div class="sidebarHeader" v-if="title">
       {{ title }}
     </div>
@@ -20,9 +22,11 @@ import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { store } from '@/config'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
+import { Close } from '@element-plus/icons-vue'
 
 // 侧边栏容器
 export default {
+  components: { Close },
   props: {
     title: {
       type: String,

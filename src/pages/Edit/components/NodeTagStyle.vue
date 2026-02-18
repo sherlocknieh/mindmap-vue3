@@ -10,7 +10,7 @@
       <el-input
         v-model="text"
         :placeholder="$t('nodeTagStyle.placeholder')"
-        size="mini"
+        size="small"
         @blur="updateTagText"
         @keydown.stop
         @keyup.enter.stop="updateTagText"

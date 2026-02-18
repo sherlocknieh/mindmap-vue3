@@ -2,12 +2,12 @@
   <Sidebar ref="sidebar" :title="$t('ai.chatTitle')">
     <div class="aiChatBox" :class="{ isDark: isDark }">
       <div class="chatHeader">
-        <el-button size="mini" @click="clear">
-          <span class="el-icon-delete"></span>
+        <el-button size="small" @click="clear">
+          <el-icon :size="16"><Delete /></el-icon>
           {{ $t('ai.clearRecords') }}
         </el-button>
-        <el-button size="mini" @click="modifyAiConfig">
-          <span class="el-icon-edit"></span>
+        <el-button size="small" @click="modifyAiConfig">
+          <el-icon :size="16"><Edit /></el-icon>
           {{ $t('ai.modifyAIConfiguration') }}
         </el-button>
       </div>
@@ -20,7 +20,7 @@
         >
           <div class="chatItemInner" v-if="item.type === 'user'">
             <div class="avatar">
-              <span class="icon el-icon-user"></span>
+              <el-icon class="icon" :size="20"><User /></el-icon>
             </div>
             <div class="content">{{ item.content }}</div>
           </div>
@@ -39,13 +39,13 @@
           :placeholder="$t('ai.chatInputPlaceholder')"
           @keydown="onKeydown"
         ></textarea>
-        <el-button class="btn" size="mini" @click="send" :loading="isCreating">
+        <el-button class="btn" size="small" @click="send" :loading="isCreating">
           {{ $t('ai.send') }}
-          <span class="el-icon-position"></span>
+          <el-icon :size="16"><Position /></el-icon>
         </el-button>
         <el-button
           class="stop"
-          size="mini"
+          size="small"
           type="warning"
           @click="stop"
           v-show="isCreating"
@@ -59,6 +59,7 @@
 
 <script>
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+import { Delete, Edit, User, Position } from '@element-plus/icons-vue'
 import Sidebar from './Sidebar.vue'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -70,6 +71,10 @@ let md = null
 export default {
   components: {
     Sidebar,
+    Delete,
+    Edit,
+    User,
+    Position,
   },
   data() {
     return {

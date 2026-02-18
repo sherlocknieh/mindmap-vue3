@@ -28,7 +28,9 @@
       @mouseup.stop
     >
       <div class="jump" @click="prev" :class="{ disabled: curStepIndex <= 0 }">
-        <span class="icon el-icon-back"></span>
+        <el-icon class="icon" :size="16">
+          <ArrowLeft />
+        </el-icon>
       </div>
       <div class="step">{{ curStepIndex + 1 }} / {{ totalStep }}</div>
       <div
@@ -36,7 +38,9 @@
         @click="next"
         :class="{ disabled: curStepIndex >= totalStep - 1 }"
       >
-        <span class="icon el-icon-right"></span>
+        <el-icon class="icon" :size="16">
+          <ArrowRight />
+        </el-icon>
       </div>
       <div class="input">
         <input
@@ -52,7 +56,9 @@
 
 <script>
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 export default {
+  components: { ArrowLeft, ArrowRight },
   props: {
     mindMap: {
       type: Object,

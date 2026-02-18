@@ -1,12 +1,13 @@
 <template>
-  <div
-    class="richTextToolbar"
-    ref="richTextToolbar"
-    :style="style"
-    :class="{ isDark: isDark }"
-    @click.stop.passive
-    v-show="showRichTextToolbar"
-  >
+  <teleport to="body">
+    <div
+      class="richTextToolbar"
+      ref="richTextToolbar"
+      :style="style"
+      :class="{ isDark: isDark }"
+      @click.stop.passive
+      v-show="showRichTextToolbar"
+    >
     <el-tooltip :content="$t('richTextToolbar.bold')" placement="top">
       <div class="btn" :class="{ active: formatInfo.bold }" @click="toggleBold">
         <span class="icon iconfont iconzitijiacu"></span>
@@ -43,8 +44,12 @@
       </div>
     </el-tooltip>
 
-    <el-tooltip :content="$t('richTextToolbar.fontFamily')" placement="top">
-      <el-popover placement="bottom" trigger="hover">
+    <div class="toolbarBtnWrapper" :title="$t('richTextToolbar.fontFamily')">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        :show-arrow="false"
+      >
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
@@ -63,10 +68,14 @@
           </div>
         </template>
       </el-popover>
-    </el-tooltip>
+    </div>
 
-    <el-tooltip :content="$t('richTextToolbar.fontSize')" placement="top">
-      <el-popover placement="bottom" trigger="hover">
+    <div class="toolbarBtnWrapper" :title="$t('richTextToolbar.fontSize')">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        :show-arrow="false"
+      >
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
@@ -88,10 +97,14 @@
           </div>
         </template>
       </el-popover>
-    </el-tooltip>
+    </div>
 
-    <el-tooltip :content="$t('richTextToolbar.color')" placement="top">
-      <el-popover placement="bottom" trigger="hover">
+    <div class="toolbarBtnWrapper" :title="$t('richTextToolbar.color')">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        :show-arrow="false"
+      >
         <Color :color="fontColor" @change="changeFontColor"></Color>
         <template v-slot:reference>
           <div class="btn" :style="{ color: formatInfo.color }">
@@ -99,13 +112,14 @@
           </div>
         </template>
       </el-popover>
-    </el-tooltip>
+    </div>
 
-    <el-tooltip
-      :content="$t('richTextToolbar.backgroundColor')"
-      placement="top"
-    >
-      <el-popover placement="bottom" trigger="hover">
+    <div class="toolbarBtnWrapper" :title="$t('richTextToolbar.backgroundColor')">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        :show-arrow="false"
+      >
         <Color
           :color="fontBackgroundColor"
           @change="changeFontBackgroundColor"
@@ -116,10 +130,14 @@
           </div>
         </template>
       </el-popover>
-    </el-tooltip>
+    </div>
 
-    <el-tooltip :content="$t('richTextToolbar.textAlign')" placement="top">
-      <el-popover placement="bottom" trigger="hover">
+    <div class="toolbarBtnWrapper" :title="$t('richTextToolbar.textAlign')">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        :show-arrow="false"
+      >
         <div class="fontOptionsList" :class="{ isDark: isDark }">
           <div
             class="fontOptionItem"
@@ -137,7 +155,7 @@
           </div>
         </template>
       </el-popover>
-    </el-tooltip>
+    </div>
 
     <el-tooltip :content="$t('richTextToolbar.removeFormat')" placement="top">
       <div class="btn" @click="removeFormat">
@@ -145,6 +163,7 @@
       </div>
     </el-tooltip>
   </div>
+  </teleport>
 </template>
 
 <script>
@@ -192,9 +211,7 @@ export default {
   created() {
     $on(this.$bus, 'rich_text_selection_change', this.onRichTextSelectionChange)
   },
-  mounted() {
-    document.body.append(this.$refs.richTextToolbar)
-  },
+  mounted() {},
   beforeUnmount() {
     $off(
       this.$bus,
@@ -294,6 +311,19 @@ export default {
   display: flex;
   align-items: center;
   transform: translateX(-50%);
+
+  .toolbarBtnWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background-color: #eefbed;
+    }
+  }
+
   &.isDark {
     background: #363b3f;
 
@@ -303,6 +333,10 @@ export default {
       &:hover {
         background: hsla(0, 0%, 100%, 0.05);
       }
+    }
+
+    .toolbarBtnWrapper:hover {
+      background: hsla(0, 0%, 100%, 0.05);
     }
   }
 

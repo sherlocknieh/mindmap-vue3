@@ -1,8 +1,10 @@
 <template>
   <div class="searchContainer" :class="{ isDark: isDark, show: show }">
     <div class="closeBtnBox">
-      <span class="closeBtn el-icon-close" @click="close"></span>
-    </div>
+        <el-icon class="closeBtn" @click="close" :size="16">
+          <Close />
+        </el-icon>
+      </div>
     <div class="searchInputBox">
       <el-input
         ref="searchInputRef"
@@ -80,7 +82,7 @@
 </template>
 
 <script>
-import { Search as ElIconSearch, Edit as ElIconEdit } from '@element-plus/icons-vue'
+import { Search as ElIconSearch, Edit as ElIconEdit, Close } from '@element-plus/icons-vue'
 import { $on, $off, $once, $emit } from '../../../utils/gogocodeTransfer'
 import { mapState, mapActions } from 'pinia'
 import { useAppStore } from '@/store'
@@ -90,6 +92,7 @@ export default {
   components: {
     ElIconSearch,
     ElIconEdit,
+    Close,
   },
   props: {
     mindMap: {

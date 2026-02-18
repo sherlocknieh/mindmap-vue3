@@ -22,7 +22,9 @@
           class="previewBox"
           :style="{ backgroundImage: `url('${value}')` }"
         ></div>
-        <span class="delBtn el-icon-close" @click="deleteImg"></span>
+        <el-icon class="delBtn" @click="deleteImg" :size="16">
+          <Close />
+        </el-icon>
       </div>
     </div>
   </div>
@@ -30,7 +32,9 @@
 
 <script>
 import { $on, $off, $once, $emit } from '../../utils/gogocodeTransfer'
+import { Close } from '@element-plus/icons-vue'
 export default {
+  components: { Close },
   model: {
     prop: 'value',
     event: 'change',

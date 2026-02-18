@@ -6,7 +6,9 @@
       :content="$t('scale.zoomOut')"
       placement="top"
     >
-      <div class="btn el-icon-minus" @click="narrow"></div>
+      <el-icon class="btn" @click="narrow" :size="16">
+        <Minus />
+      </el-icon>
     </el-tooltip>
     <div class="scaleInfo">
       <input
@@ -26,14 +28,18 @@
       :content="$t('scale.zoomIn')"
       placement="top"
     >
-      <div class="btn el-icon-plus" @click="enlarge"></div>
+      <el-icon class="btn" @click="enlarge" :size="16">
+        <Plus />
+      </el-icon>
     </el-tooltip>
   </div>
 </template>
 
 <script>
+import { Minus, Plus } from '@element-plus/icons-vue'
 // 放大缩小
 export default {
+  components: { Minus, Plus },
   props: {
     mindMap: {
       type: Object,

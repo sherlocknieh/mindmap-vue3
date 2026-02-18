@@ -4,14 +4,10 @@
     :class="{ isMobile: isMobile, isDark: isDark }"
     :title="$t('export.title')"
     v-model="dialogVisible"
-    v-loading.fullscreen.lock="loading"
-    :element-loading-text="loadingText"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
     :width="isMobile ? '90%' : '800px'"
     :top="isMobile ? '20px' : '15vh'"
   >
-    <div class="exportContainer" :class="{ isDark: isDark }">
+    <div class="exportContainer" :class="{ isDark: isDark }" v-loading.fullscreen.lock="loading" :element-loading-text="loadingText" element-loading-background="rgba(0, 0, 0, 0.8)">
       <!-- 导出类型选择 -->
       <div class="downloadTypeSelectBox">
         <!-- 类型列表 -->
@@ -27,7 +23,9 @@
           >
             <div class="typeIcon" :class="[item.type]"></div>
             <div class="name">{{ item.name }}</div>
-            <div class="icon checked el-icon-check"></div>
+            <el-icon class="icon checked" :size="16">
+              <Check />
+            </el-icon>
           </div>
         </div>
         <!-- 类型内容 -->
@@ -39,11 +37,13 @@
               <el-input
                 style="max-width: 250px"
                 v-model="fileName"
-                size="mini"
+                size="small"
                 @keydown.stop
               ></el-input>
             </div>
-            <span class="closeBtn el-icon-close" @click="cancel"></span>
+              <el-icon class="closeBtn" @click="cancel" :size="16">
+                <Close />
+              </el-icon>
           </div>
           <!-- 配置 -->
           <div class="contentBox customScrollbar">
@@ -78,7 +78,7 @@
                   <div class="valueSubItem" v-if="['png'].includes(exportType)">
                     <span class="name">{{ $t('export.format') }}</span>
                     <el-radio-group v-model="imageFormat">
-                      <el-radio label="png">PNG</el-radio>
+                      <el-radio value="png">PNG</el-radio>
                     </el-radio-group>
                   </div>
                   <div class="valueSubItem">
@@ -86,7 +86,7 @@
                     <el-input
                       style="width: 200px"
                       v-model="paddingX"
-                      size="mini"
+                      size="small"
                       @change="onPaddingChange"
                       @keydown.stop
                     ></el-input>
@@ -96,7 +96,7 @@
                     <el-input
                       style="width: 200px"
                       v-model="paddingY"
-                      size="mini"
+                      size="small"
                       @change="onPaddingChange"
                       @keydown.stop
                     ></el-input>
@@ -108,22 +108,16 @@
                     <el-input
                       style="width: 200px"
                       v-model="extraText"
-                      size="mini"
+                      size="small"
                       :placeholder="$t('export.addFooterTextPlaceholder')"
                       @keydown.stop
                     ></el-input>
                   </div>
-                  <div class="valueSubItem">
-                    <el-checkbox
-                      v-show="['png', 'pdf'].includes(exportType)"
-                      v-model="isTransparent"
-                      >{{ $t('export.isTransparent') }}</el-checkbox
-                    >
+                  <div class="valueSubItem" v-show="['png', 'pdf'].includes(exportType)">
+                    <el-checkbox v-model="isTransparent">{{ $t('export.isTransparent') }}</el-checkbox>
                   </div>
-                  <div class="valueSubItem">
-                    <el-checkbox v-show="showFitBgOption" v-model="isFitBg">{{
-                      $t('export.isFitBg')
-                    }}</el-checkbox>
+                  <div class="valueSubItem" v-show="showFitBgOption">
+                    <el-checkbox v-model="isFitBg">{{ $t('export.isFitBg') }}</el-checkbox>
                   </div>
                 </div>
               </div>
@@ -151,10 +145,12 @@ import { useAppStore } from '@/store'
 import { downTypeList } from '@/config'
 import { isMobile } from 'simple-mind-map/src/utils/index'
 import MarkdownIt from 'markdown-it'
+import { Close, Check } from '@element-plus/icons-vue'
 
 // 导出
 let md = null
 export default {
+  components: { Close, Check },
   data() {
     return {
       dialogVisible: false,
