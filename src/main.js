@@ -9,7 +9,7 @@ import '@/assets/icon-font/iconfont.css'
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
 import eventBus, { emitter } from '@/utils/eventBus'
-import { getLang } from '@/api'
+import { getLang } from '@/api/localStorage'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // Polyfills for Node globals used by some deps in browser
 import { Buffer } from 'buffer'

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { storeLocalConfig } from '@/api'
+import { storeLocalConfig } from '@/api/localStorage'
 
 export const useAppStore = defineStore('app', {
   state: () => ({

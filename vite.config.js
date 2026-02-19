@@ -5,6 +5,7 @@ import { resolve } from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  server: { open: true }, // 启动后自动打开浏览器
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
